@@ -1,5 +1,4 @@
 #!/usr/bin/env python2
-
 """The fake-core binary of your application
 
 Assume this is the core binary of your application. Assume your goal
@@ -20,9 +19,11 @@ import sys
 
 COMMENT_STYLES = {
     '.java': ['//', ('/*', '*/')],
-    '.js': ['//'],
+    '.js': ['//', ('/*', '*/')],
     '.html': [('<!--', '-->')],
+    '.xml': [('<!--', '-->')],
 }
+
 
 def count_comments_from_contents(contents, style):
     lines = 0
@@ -48,6 +49,7 @@ def count_comments_from_contents(contents, style):
                 lines += 1
         return lines
 
+
 def count_comments(path):
     for ext, styles in COMMENT_STYLES.items():
         if path.endswith(ext):
@@ -58,23 +60,31 @@ def count_comments(path):
                 comment_lines += count_comments_from_contents(contents, s)
 
             if comment_lines:
-                print('Found %d lines of comments in %s' % (comment_lines, path))
+                print('Found %d lines of comments in %s' %
+                      (comment_lines, path))
             return comment_lines
     assert '%s not ending with any supported file extensions' % path
+
 
 def collect_programs(threshold_lines):
     directory = os.path.abspath(os.path.dirname(__file__))
     total_lines = 0
-    for top in [os.path.join(directory, '../frontend'),
-              os.path.join(directory, '../backend')]:
+    for top in [
+            os.path.join(directory, '../frontend'),
+            os.path.join(directory, '../backend')
+    ]:
         for root, _, files in os.walk(top):
             for f in files:
                 if f.endswith(tuple(COMMENT_STYLES.keys())):
                     total_lines += count_comments(os.path.join(root, f))
     if total_lines > threshold_lines:
-        raise RuntimeError('Oh no!!!! You have %d lines of comments, exceeding the threshold of %d' % (total_lines, threshold_lines))
-    print('You have total of %d lines of comments in all %s files in the repo' % (
-        total_lines, COMMENT_STYLES.keys()))
+        raise RuntimeError(
+            'Oh no!!!! You have %d lines of comments, exceeding the threshold of %d'
+            % (total_lines, threshold_lines))
+    print(
+        'You have total of %d lines of comments in all %s files in the repo' %
+        (total_lines, COMMENT_STYLES.keys()))
+
 
 def main(argv):
     parser = argparse.ArgumentParser()
@@ -82,11 +92,14 @@ def main(argv):
         '--number',
         type=int,
         default=1000,
-        help='The "ideal" number of comments in all of these repo. Exceeding this number will cause this script to raise an error. Default is %(default)s'
-    )
+        help=(
+            'The "ideal" number of comments in all of these repo. '
+            'Exceeding this number will cause this script to raise an error. '
+            'Default is %(default)s'))
 
     options = parser.parse_args(argv)
     collect_programs(options.number)
 
+
 if __name__ == '__main__':
-  sys.exit(main(sys.argv[1:]))
+    sys.exit(main(sys.argv[1:]))

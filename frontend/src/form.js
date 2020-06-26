@@ -25,15 +25,15 @@ const useStyles = makeStyles(theme => ({
 
 export default function Form() {
 	const classes = useStyles();
-
-  return (
-    <div>
+	
+	return (
+		<div>
 			<div className={classes.divStyle}>
 				<p>I'm free until...</p>
 				<TextField className={classes.textField}
-					id="time" 
-					label="Select a time" 
-					type="time" 
+					id="time"
+					label="Select a time"
+					type="time"
 					defaultValue="09:30"/>
 			</div>
 			<div className={classes.divStyle}>
@@ -56,6 +56,6 @@ export default function Form() {
 					Submit
 				</Button>
 			</div>
-  	</div>
+		</div>
   );
 }

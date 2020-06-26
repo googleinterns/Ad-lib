@@ -55,7 +55,7 @@ export default function Form() {
 				<Button variant="contained" color="primary">
 					Submit
 				</Button>
-    	</div>
-    </div>
+			</div>
+  	</div>
   );
 }

@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
 import TextField from "@material-ui/core/TextField";
-import Button from '@material-ui/core/Button';
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -37,7 +37,7 @@ export default function Form() {
 					defaultValue="09:30"/>
 			</div>
 			<div className={classes.divStyle}>
-				<p>I'm want to talk for...</p>
+				<p>I want to talk for...</p>
 				<FormControl className={classes.formControl}>
 					<NativeSelect
 						id="duration-input"

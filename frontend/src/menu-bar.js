@@ -23,15 +23,15 @@ const useStyles = makeStyles(theme => ({
 // Create menu bar component with title and help icon (with About and FAQ links)
 export default function MenuAppBar() {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
+  const [anchorElement, setAnchorElement] = React.useState(null);
+  const open = Boolean(anchorElement);
 
   const handleMenu = event => {
-    setAnchorEl(event.currentTarget);
+    setAnchorElement(event.currentTarget);
   };
 
   const handleClose = () => {
-    setAnchorEl(null);
+    setAnchorElement(null);
   };
 
   return (
@@ -54,7 +54,7 @@ export default function MenuAppBar() {
               </IconButton>
               <Menu
                 id="help-appbar"
-                anchorEl={anchorEl}
+                anchorElement={anchorElement}
                 anchorOrigin={{
                   vertical: "top",
                   horizontal: "right"

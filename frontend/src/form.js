@@ -7,14 +7,14 @@ import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles(theme => ({
 	root: {
-    margin: theme.spacing(1),
-  },
+		margin: theme.spacing(1)
+	},
 	formControl: {
-    margin: theme.spacing(2),
-    minWidth: 120
-  },
-  textField: {
-    margin: theme.spacing(2)
+		margin: theme.spacing(2),
+		minWidth: 120
+	},
+	textField: {
+		margin: theme.spacing(2)
 	},
 	divStyle: {
 		display: 'flex',

@@ -3,7 +3,7 @@ import './App.css';
 import MenuBar from './menu-bar.js';
 import Form from './form.js'
 
-
+// Add components and content to UI
 function App() {
   return (
     <div>

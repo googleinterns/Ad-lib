@@ -23,6 +23,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+// Create basic form component with two fields and submit button
 export default function Form() {
   const classes = useStyles();
 

@@ -20,6 +20,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+// Create menu bar component with title and help icon (with About and FAQ links)
 export default function MenuAppBar() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);

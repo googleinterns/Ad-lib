@@ -36,36 +36,36 @@ public final class TimeTest {
     // 1/1/2020 2:00pm GMT
     c.set(Calendar.HOUR_OF_DAY, 14);
     c.set(Calendar.MINUTE, 0);
-    Assert.assertEquals(/* expected */c.getTime().getTime(), /* actual */time.getTimeMillis(14, 0));
+    Assert.assertEquals(/* expected */c.getTime().getTime(), /* actual */Time.getTimeMillis(14, 0));
 
     // 1/1/2020 10:30am GMT
     c.set(Calendar.HOUR_OF_DAY, 10);
     c.set(Calendar.MINUTE, 30);
-    Assert.assertEquals(c.getTime().getTime(), time.getTimeMillis(10, 30));
+    Assert.assertEquals(c.getTime().getTime(), Time.getTimeMillis(10, 30));
 
     // 1/1/2020 11:45pm GMT
     c.set(Calendar.HOUR_OF_DAY, 23);
     c.set(Calendar.MINUTE, 45);
-    Assert.assertEquals(c.getTime().getTime(), time.getTimeMillis(23, 45));
+    Assert.assertEquals(c.getTime().getTime(), Time.getTimeMillis(23, 45));
   }
 
   @Test (expected = IllegalArgumentException.class) 
   public void negativeHours() {
-    long timestamp = time.getTimeMillis(-1, 0);
+    long timestamp = Time.getTimeMillis(-1, 0);
   }
 
   @Test (expected = IllegalArgumentException.class) 
   public void over24Hours() {
-    long timestamp = time.getTimeMillis(24, 0);
+    long timestamp = Time.getTimeMillis(24, 0);
   }
 
   @Test (expected = IllegalArgumentException.class) 
   public void negativeMinutes() {
-    long timestamp = time.getTimeMillis(2, -1);
+    long timestamp = Time.getTimeMillis(2, -1);
   }
 
   @Test (expected = IllegalArgumentException.class) 
   public void over60Minutes() {
-    long timestamp = time.getTimeMillis(2, 60);
+    long timestamp = Time.getTimeMillis(2, 60);
   }
 }

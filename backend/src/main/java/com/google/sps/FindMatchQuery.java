@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,12 +21,12 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/** Class used to find a match in a list of Participants with the most recently added Participant */
 public final class FindMatchQuery {
 
   private Date date;
@@ -36,44 +36,40 @@ public final class FindMatchQuery {
     date = new Date();
   }
 
-  /** Constructor with manually set date*/
+  /** Constructor with manually set date */
   public FindMatchQuery(Date date) {
     this.date = date;
   }
 
   /** Find match of new participant or add to list of participants, return whether or not match was found 
-      right after being added */
-  public Match findMatchQuery(List<Participant> participants) {
+    * right after being added
+    */
+  public Match findMatch(List<Participant> participants, Participant newParticipant) {
+    int MAX_DURATION_DIFF = 15; // maximum difference in duration to be compatible
+    int PADDING_TIME = 15; // extra padding time to ensure large enough meeting time block
     
     // Compare new participant preferences with others in list to find match
-    int numParticipants = participants.size();
-    Participant newParticipant = participants.get(numParticipants - 1);
-    for (int i = 0; i < numParticipants - 1; i++) {
-      Participant currParticipant = participants.get(i);
-      
+    for (Participant currParticipant : participants) {
+
       // Check if participants are looking for similar meeting duration
       int newDuration = newParticipant.getDuration();
       int currDuration = currParticipant.getDuration();
-      boolean compatibleDuration = Math.abs(newDuration - currDuration) <= 15;
+      boolean compatibleDuration = Math.abs(newDuration - currDuration) <= MAX_DURATION_DIFF;
       int duration = Math.min(newDuration, currDuration);
       
-      if (compatibleDuration) {
-        // Check if participants are both free for that duration + extra
-        long newTimeAvailableUntil = newParticipant.getTimeAvailableUntil();
-        long currTimeAvailableUntil = currParticipant.getTimeAvailableUntil();
-        boolean compatibleTime = date.getTime() + Duration.ofMinutes(duration + 15).toMillis() <=
-                                    Math.min(newTimeAvailableUntil, currTimeAvailableUntil);
-        
-        if (compatibleTime) {
-          // TODO: change match ID (currently -1 for easy error checking)
-          return new Match(-1L, newParticipant, currParticipant, duration, date.getTime());
-        }
-        else {
-          continue;
-        }
-      }
-      else {
+      if (!compatibleDuration) {
         continue;
+      }
+      
+      // Check if participants are both free for that duration + extra
+      long newTimeAvailableUntil = newParticipant.getTimeAvailableUntil();
+      long currTimeAvailableUntil = currParticipant.getTimeAvailableUntil();
+      boolean compatibleTime = date.getTime() + Duration.ofMinutes(duration + PADDING_TIME).toMillis() <=
+                                  Math.min(newTimeAvailableUntil, currTimeAvailableUntil);
+      
+      if (!compatibleTime) {
+        // TODO: change match ID (currently -1 for easy error checking)
+        return new Match(-1L, newParticipant, currParticipant, duration, date.getTime());
       }
     }
     // No inital match found

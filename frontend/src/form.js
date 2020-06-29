@@ -4,6 +4,7 @@ import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import Switch from './switch.js'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -14,6 +15,9 @@ const useStyles = makeStyles(theme => ({
     minWidth: 120
   },
   textField: {
+    margin: theme.spacing(2)
+  },
+  switch: {
     margin: theme.spacing(2)
   },
   divStyle: {
@@ -51,6 +55,10 @@ export default function Form() {
             <option value={60}>60 minutes</option>
           </NativeSelect>
         </FormControl>
+      </div>
+      <div className={classes.divStyle}>
+        <p>I want to  be matched with a Googler like me.</p>
+        <Switch className={classes.switch}></Switch>
       </div>
       <div className={classes.root}>
         <Button variant="contained" color="primary">

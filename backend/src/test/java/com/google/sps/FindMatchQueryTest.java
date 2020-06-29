@@ -75,7 +75,7 @@ public final class FindMatchQueryTest {
     Participant participantA = new Participant(ID_DEFAULT, PERSON_A, TIME_0400PM, TIMEZONE_DEFAULT, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
     Participant participantB = new Participant(ID_DEFAULT, PERSON_B, TIME_0600PM, TIMEZONE_DEFAULT, DURATION_15_MINUTES, TIMESTAMP_DEFAULT);
     
-    Match match = query.findMatch(ImmutableList.copyOf(Arrays.asList(participantA), participantB));
+    Match match = query.findMatch(Arrays.asList(participantA), participantB);
 
     assertThat(match.getFirstParticipant().getLdap().equals(PERSON_B));
     assertThat(match.getSecondParticipant().getLdap().equals(PERSON_A));
@@ -88,7 +88,7 @@ public final class FindMatchQueryTest {
     Participant participantA = new Participant(ID_DEFAULT, PERSON_A, TIME_0400PM, TIMEZONE_DEFAULT, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
     Participant participantB = new Participant(ID_DEFAULT, PERSON_B, TIME_0600PM, TIMEZONE_DEFAULT, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
     
-    Match match = query.findMatch(ImmutableList.copyOf(Arrays.asList(participantA), participantB));
+    Match match = query.findMatch(Arrays.asList(participantA), participantB);
 
     assertThat(Objects.isNull(match)).isTrue();
   }
@@ -99,7 +99,7 @@ public final class FindMatchQueryTest {
     Participant participantA = new Participant(ID_DEFAULT, PERSON_A, TIME_0250PM, TIMEZONE_DEFAULT, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
     Participant participantB = new Participant(ID_DEFAULT, PERSON_B, TIME_0400PM, TIMEZONE_DEFAULT, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
     
-    Match match = query.findMatch(ImmutableList.copyOf(Arrays.asList(participantA), participantB));
+    Match match = query.findMatch(Arrays.asList(participantA), participantB);
     
     assertThat(Objects.isNull(match)).isTrue();
   }
@@ -111,7 +111,7 @@ public final class FindMatchQueryTest {
     Participant participantB = new Participant(ID_DEFAULT, PERSON_B, TIME_0250PM, TIMEZONE_DEFAULT, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
     Participant participantC = new Participant(ID_DEFAULT, PERSON_C, TIME_0600PM, TIMEZONE_DEFAULT, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
     
-    Match match = query.findMatch(ImmutableList.copyOf(Arrays.asList(participantA, participantB), participantC));
+    Match match = query.findMatch(Arrays.asList(participantA, participantB), participantC);
     
     assertThat(match.getFirstParticipant().getLdap().equals(PERSON_C));
     assertThat(match.getSecondParticipant().getLdap().equals(PERSON_A));
@@ -125,7 +125,7 @@ public final class FindMatchQueryTest {
     Participant participantB = new Participant(ID_DEFAULT, PERSON_B, TIME_0400PM, TIMEZONE_DEFAULT, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
     Participant participantC = new Participant(ID_DEFAULT, PERSON_C, TIME_0600PM, TIMEZONE_DEFAULT, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
     
-    Match match = query.findMatch(ImmutableList.copyOf(Arrays.asList(participantA, participantB), participantC));
+    Match match = query.findMatch(Arrays.asList(participantA, participantB), participantC);
     
     assertThat(match.getFirstParticipant().getLdap().equals(PERSON_C));
     assertThat(match.getSecondParticipant().getLdap().equals(PERSON_B));
@@ -139,7 +139,7 @@ public final class FindMatchQueryTest {
     Participant participantB = new Participant(ID_DEFAULT, PERSON_B, TIME_0600PM, TIMEZONE_DEFAULT, DURATION_15_MINUTES, TIMESTAMP_DEFAULT);
     Participant participantC = new Participant(ID_DEFAULT, PERSON_C, TIME_0800PM, TIMEZONE_DEFAULT, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
     
-    Match match = query.findMatch(ImmutableList.copyOf(Arrays.asList(participantA, participantB), participantC));
+    Match match = query.findMatch(Arrays.asList(participantA, participantB), participantC);
     
     assertThat(match.getFirstParticipant().getLdap().equals(PERSON_C));
     assertThat(match.getSecondParticipant().getLdap().equals(PERSON_A));

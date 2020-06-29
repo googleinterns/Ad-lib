@@ -49,9 +49,9 @@ public class AddParticipantServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     String ldap = email.split("@")[0];
-    long timeAvailableUntil = Long.parseLong(request.getParameter("timeAvailableUntil"));
+    long timeAvailableUntil = converToLong(request.getParameter("timeAvailableUntil"));
     String timezone = request.getParameter("timezone");
-    int duration = Integer.parseInt(request.getParameter("duration"));
+    int duration = convertToInt(request.getParameter("duration"));
     long timestamp = System.currentTimeMillis();
 
     Participant newParticipant = new Participant(-1L, ldap, timeAvailableUntil, timezone, duration, timestamp);
@@ -120,5 +120,31 @@ public class AddParticipantServlet extends HttpServlet {
   private void deleteSecondParticipantFromDatastore(Participant secondParticipant, DatastoreService datastore) {
     Key secondParticipantEntityKey = KeyFactory.createKey("Participant", secondParticipant.getId());
     datastore.delete(secondParticipantEntityKey);
+  }
+
+
+  /** Return positive long value, or -1L if invalid or negative */
+  private static int convertToInteger(String s) {
+    if (s == null) {
+        return -1L;
+    }
+    try {
+        int parsed = Long.parseLong(s);
+        return (parsed >= 0L) ? parsed : -1L;
+    } catch(NumberFormatException e) { 
+        return -1L;
+    }
+  }
+  /** Return positive integer value, or -1 if invalid or negative */
+  private static int convertToInteger(String s) {
+    if (s == null) {
+        return -1;
+    }
+    try {
+        int parsed = Integer.parseInt(s);
+        return (parsed >= 0) ? parsed : -1;
+    } catch(NumberFormatException e) { 
+        return -1;
+    }
   }
 }

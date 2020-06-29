@@ -54,13 +54,13 @@ public class AddParticipantServlet extends HttpServlet {
     int duration = Integer.parseInt(request.getParameter("duration"));
     long timestamp = System.currentTimeMillis();
 
-    Participant newParticipant = new (-1L, ldap, timeAvailableUntil, timezone, duration, timestamp);
+    Participant newParticipant = new Participant(-1L, ldap, timeAvailableUntil, timezone, duration, timestamp);
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     // Find immediate match if possible
     FindMatchQuery query = new FindMatchQuery();
-    Match match = query.findMatchQuery(getParticipants(datastore), newParticipant);
+    Match match = query.findMatch(getParticipants(datastore), newParticipant);
 
     // Match found, add to datastore, delete matched participants from datastore
     if (match != null) {

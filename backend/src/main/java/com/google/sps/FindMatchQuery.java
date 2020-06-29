@@ -67,7 +67,7 @@ public final class FindMatchQuery {
       boolean compatibleTime = date.getTime() + Duration.ofMinutes(duration + PADDING_TIME).toMillis() <=
                                   Math.min(newTimeAvailableUntil, currTimeAvailableUntil);
       
-      if (!compatibleTime) {
+      if (compatibleTime) {
         // TODO: change match ID (currently -1 for easy error checking)
         return new Match(-1L, newParticipant, currParticipant, duration, date.getTime());
       }

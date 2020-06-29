@@ -49,7 +49,7 @@ public class AddParticipantServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     String ldap = email.split("@")[0];
-    long timeAvailableUntil = converToLong(request.getParameter("timeAvailableUntil"));
+    long timeAvailableUntil = convertToLong(request.getParameter("timeAvailableUntil"));
     String timezone = request.getParameter("timezone");
     int duration = convertToInt(request.getParameter("duration"));
     long timestamp = System.currentTimeMillis();
@@ -124,7 +124,7 @@ public class AddParticipantServlet extends HttpServlet {
 
 
   /** Return positive long value, or -1L if invalid or negative */
-  private static int convertToInteger(String s) {
+  private static int convertToLong(String s) {
     if (s == null) {
         return -1L;
     }
@@ -136,7 +136,7 @@ public class AddParticipantServlet extends HttpServlet {
     }
   }
   /** Return positive integer value, or -1 if invalid or negative */
-  private static int convertToInteger(String s) {
+  private static int convertToInt(String s) {
     if (s == null) {
         return -1;
     }

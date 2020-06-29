@@ -19,7 +19,7 @@ public final class Time {
   }
 
   /** Return today's date with time of hours:minutes in milliseconds since epoch */
-  public static long getTimeMillis(int hours, int minutes) {
+  public static long getDateMillis(int hours, int minutes) {
     // Validate hours and minutes
     if (hours < 0 || hours >= 24) {
       throw new IllegalArgumentException("Hours can only be 0 through 23 (inclusive).");

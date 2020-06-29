@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles } from "@material-ui/core/styles";
 import './App.css';
 import MenuBar from './menu-bar.js';
-import Form from './form.js'
+import Form from './form.js';
 
 const useStyles = makeStyles(theme => ({
   contentStyle: {

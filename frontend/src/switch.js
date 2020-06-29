@@ -15,7 +15,7 @@ export default function CustomizedSwitches() {
 
   return (
       <Typography>
-        <Grid component="label" container alignItems="center" spacing={1}>
+        <Grid component="label" container>
           <Grid item>No</Grid>
           <Grid item>
             <Switch 

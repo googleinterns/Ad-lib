@@ -14,7 +14,7 @@ public final class Time {
   }
 
   /** Constructor with manually set date */
-  private Time(Date date) {
+  public Time(Date date) {
     this.date = date;
   }
 

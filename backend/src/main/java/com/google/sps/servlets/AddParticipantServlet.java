@@ -53,25 +53,28 @@ public class AddParticipantServlet extends HttpServlet {
     String timezone = request.getParameter("timezone");
     int duration = Integer.parseInt(request.getParameter("duration"));
     long timestamp = System.currentTimeMillis();
+
+    Participant newParticipant = new (-1L, ldap, timeAvailableUntil, timezone, duration, timestamp);
     
-    // Set properties of entity
-    Entity participantEntity = new Entity("Participant");
-    participantEntity.setProperty("ldap", ldap);
-    participantEntity.setProperty("timeAvailableUntil", timeAvailableUntil);
-    participantEntity.setProperty("timezone", timezone);
-    participantEntity.setProperty("duration", duration);
-    participantEntity.setProperty("timestamp", timestamp);
-
-    // Insert entity into datastore
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(participantEntity);
 
-    // Find match if possible or add to datastore.
-    FindMatchQuery findMatchQuery = new FindMatchQuery();
-    Match match = findMatchQuery.findMatchQuery(getParticipants());
+    // Find immediate match if possible
+    FindMatchQuery query = new FindMatchQuery();
+    Match match = query.findMatchQuery(getParticipants(datastore), newParticipant);
+
+    // Match found, add to datastore, delete matched participants from datastore
     if (match != null) {
       addMatchToDatastore(match, datastore);
-      deleteParticipantsFromList(match, datastore);
+      deleteSecondParticipantFromDatastore(match.getSecondParticipant(), datastore);
+    } else {
+      // Match not found, insert participant entity into datastore
+      Entity participantEntity = new Entity("Participant");
+      participantEntity.setProperty("ldap", ldap);
+      participantEntity.setProperty("timeAvailableUntil", timeAvailableUntil);
+      participantEntity.setProperty("timezone", timezone);
+      participantEntity.setProperty("duration", duration);
+      participantEntity.setProperty("timestamp", timestamp);
+      datastore.put(participantEntity);
     }
 
     // Redirect back to the HTML page
@@ -79,8 +82,7 @@ public class AddParticipantServlet extends HttpServlet {
   }
 
   /** Return list of current participants from datastore*/
-  private List<Participant> getParticipants() {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private List<Participant> getParticipants(DatastoreService datastore) {
 
     // Create and sort participant queries by time
     Query query = new Query("Participant").addSort("timestamp", SortDirection.DESCENDING);
@@ -98,7 +100,6 @@ public class AddParticipantServlet extends HttpServlet {
         Participant newParticipant = new Participant(id, ldap, timeAvailableUntil, timezone, duration, timestamp);
         participants.add(newParticipant);
     }
-
     return participants;
   }
 
@@ -116,10 +117,8 @@ public class AddParticipantServlet extends HttpServlet {
   }
 
   /** Delete matched participants from datastore */
-  private void deleteParticipantsFromList(Match match, DatastoreService datastore) {
-    Key firstParticipantEntityKey = KeyFactory.createKey("Participant", match.getFirstParticipant().getId());
-    datastore.delete(firstParticipantEntityKey);
-    Key secondParticipantEntityKey = KeyFactory.createKey("Participant", match.getSecondParticipant().getId());
+  private void deleteSecondParticipantFromDatastore(Participant secondParticipant, DatastoreService datastore) {
+    Key secondParticipantEntityKey = KeyFactory.createKey("Participant", secondParticipant.getId());
     datastore.delete(secondParticipantEntityKey);
   }
 }

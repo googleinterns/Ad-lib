@@ -4,17 +4,26 @@ package com.google.sps.data;
 public final class Match {
 
   private final long id;
-  private final Participant firstParticipant; // First participant
-  private final Participant secondParticipant; // Second participant
-  private final int duration; // Duration of meeting
-  private final long timestamp; // Time match found
+  private final Participant firstParticipant; /** First participant */
+  private final Participant secondParticipant; /** Second participant */
+  private final int duration; /** Duration of meeting */
+  private final long timestamp; /** Time match found */
   
-  /** Initialize constructor fields */
+  /** Constructor */
   public Match(long id, Participant firstParticipant, Participant secondParticipant, int duration, long timestamp) {
     this.id = id;
     this.firstParticipant = firstParticipant;
     this.secondParticipant = secondParticipant;
     this.duration = duration;
+    this.timestamp = timestamp;
+  }
+  
+  /** Constructor for empty match except timestamp*/
+  public Match(long timestamp) {
+    id = 0L;
+    firstParticipant = null;
+    secondParticipant = null;
+    duration = 0;
     this.timestamp = timestamp;
   }
 

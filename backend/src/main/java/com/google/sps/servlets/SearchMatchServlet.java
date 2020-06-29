@@ -64,11 +64,10 @@ public class SearchMatchServlet extends HttpServlet {
         matches.add(match);
     }
 
-    Match matchDetails = new Match(0, null, null, 0, System.currentTimeMillis()); // default if no match
+    Match matchDetails = new Match(System.currentTimeMillis()); // default if no match
     // Brute force search for match
     for (Match match : matches) {
-      if (ldap.equals(match.getFirstParticipant().getLdap()) || 
-            ldap.equals(match.getSecondParticipant().getLdap())) {
+      if (ldap.equals(match.getFirstParticipant().getLdap()) || ldap.equals(match.getSecondParticipant().getLdap())) {
         matchDetails = match;
         break;
       }

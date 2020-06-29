@@ -129,7 +129,7 @@ public class AddParticipantServlet extends HttpServlet {
         return -1L;
     }
     try {
-        int parsed = Long.parseLong(s);
+        long parsed = Long.parseLong(s);
         return (parsed >= 0L) ? parsed : -1L;
     } catch(NumberFormatException e) { 
         return -1L;

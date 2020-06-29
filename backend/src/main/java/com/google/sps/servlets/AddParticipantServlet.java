@@ -124,7 +124,7 @@ public class AddParticipantServlet extends HttpServlet {
 
 
   /** Return positive long value, or -1L if invalid or negative */
-  private static int convertToLong(String s) {
+  private static long convertToLong(String s) {
     if (s == null) {
         return -1L;
     }

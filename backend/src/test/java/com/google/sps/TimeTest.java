@@ -65,7 +65,7 @@ public final class TimeTest {
   }
 
   @Test (expected = IllegalArgumentException.class) 
-  public void over24Hours() {
+  public void over60Minutes() {
     long timestamp = time.getTimeMillis(2, 60);
   }
 }

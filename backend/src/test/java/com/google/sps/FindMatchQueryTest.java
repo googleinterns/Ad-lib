@@ -142,7 +142,7 @@ public final class FindMatchQueryTest {
     Match match = query.findMatch(ImmutableList.copyOf(Arrays.asList(participantA, participantB), participantC));
     
     assertThat(match.getFirstParticipant().getLdap().equals(PERSON_C));
-    assertThat(match.getSecondParticipant().getLdap().equals(PERSON_A);
+    assertThat(match.getSecondParticipant().getLdap().equals(PERSON_A));
     assertThat(match.getDuration() == DURATION_60_MINUTES);
   }
 }

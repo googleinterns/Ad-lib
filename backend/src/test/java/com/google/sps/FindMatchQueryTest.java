@@ -48,6 +48,7 @@ public final class FindMatchQueryTest {
   private static final long TIME_0330PM = Time.getDateMillis(15, 30);
   private static final long TIME_0400PM = Time.getDateMillis(16, 0);
   private static final long TIME_0600PM = Time.getDateMillis(18, 0);
+  private static final long TIME_0800PM = Time.getDateMillis(20, 0);
 
   private static final int DURATION_15_MINUTES = 15;
   private static final int DURATION_30_MINUTES = 30;

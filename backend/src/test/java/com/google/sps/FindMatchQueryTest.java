@@ -45,10 +45,10 @@ public final class FindMatchQueryTest {
   private static final long TIMESTAMP_DEFAULT = 0;
 
   // Some times available until on 6/25/2020
-  private static final long TIME_0250PM = Time.getTimeMillis(14, 50);
-  private static final long TIME_0330PM = Time.getTimeMillis(15, 30);
-  private static final long TIME_0400PM = Time.getTimeMillis(16, 0);
-  private static final long TIME_0600PM = Time.getTimeMillis(18, 0);
+  private static final long TIME_0250PM = Time.getDateMillis(14, 50);
+  private static final long TIME_0330PM = Time.getDateMillis(15, 30);
+  private static final long TIME_0400PM = Time.getDateMillis(16, 0);
+  private static final long TIME_0600PM = Time.getDateMillis(18, 0);
 
   private static final int DURATION_15_MINUTES = 15;
   private static final int DURATION_30_MINUTES = 30;

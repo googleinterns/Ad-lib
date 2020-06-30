@@ -1,6 +1,6 @@
 name: JavaScript Lint
 
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   lint:
@@ -9,6 +9,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install npm packages
-        run: npm install eslint --save-dev
+        run: npm install eslint@latest --save-dev
+      - name: Install eslint React Plugin
+        run: npm install eslint-plugin-react@latest --save-dev
       - name: Lint with ESLint
         run: ./node_modules/.bin/eslint frontend/**/*.js

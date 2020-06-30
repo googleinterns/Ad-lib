@@ -10,7 +10,7 @@ export default function CustomizedSwitches() {
   });
 
   const handleChange = (event) => {
-    setState({ ...state, [event.target.name]: event.target.checked });
+    setState({ state, [event.target.name]: event.target.checked });
   };
 
   return (

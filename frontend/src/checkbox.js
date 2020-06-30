@@ -8,7 +8,7 @@ export default function PreferencesCheckbox() {
   });
 
   const handleChange = (event) => {
-    setState({ ...state, [event.target.name]: event.target.checked });
+    setState({ state, [event.target.name]: event.target.checked });
   };
 
   return (

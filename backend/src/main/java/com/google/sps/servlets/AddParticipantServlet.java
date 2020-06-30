@@ -49,9 +49,9 @@ public class AddParticipantServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     String ldap = email.split("@")[0];
-    long timeAvailableUntil = convertToLong(request.getParameter("timeAvailableUntil"));
+    long timeAvailableUntil = convertToPositiveLong(request.getParameter("timeAvailableUntil"));
     String timezone = request.getParameter("timezone");
-    int duration = convertToInt(request.getParameter("duration"));
+    int duration = convertToPositiveInt(request.getParameter("duration"));
     if (email == null || timeAvailableUntil == -1L || duration == -1) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Invalid input(s).");
     }
@@ -69,7 +69,7 @@ public class AddParticipantServlet extends HttpServlet {
     // Match found, add to datastore, delete matched participants from datastore
     if (match != null) {
       addMatchToDatastore(match, datastore);
-      deleteSecondParticipantFromDatastore(match.getSecondParticipant(), datastore);
+      deleteParticipantFromDatastore(match.getSecondParticipant(), datastore);
     } else {
       // Match not found, insert participant entity into datastore
       Entity participantEntity = new Entity("Participant");
@@ -101,8 +101,8 @@ public class AddParticipantServlet extends HttpServlet {
         String timezone = (String) entity.getProperty("timezone"); 
         int duration = (int) entity.getProperty("duration"); 
         long timestamp = (long) entity.getProperty("timestamp");
-        Participant newParticipant = new Participant(id, ldap, timeAvailableUntil, timezone, duration, timestamp);
-        participants.add(newParticipant);
+        Participant currParticipant = new Participant(id, ldap, timeAvailableUntil, timezone, duration, timestamp);g
+        participants.add(currParticipant);
     }
     return participants;
   }
@@ -121,14 +121,13 @@ public class AddParticipantServlet extends HttpServlet {
   }
 
   /** Delete matched participants from datastore */
-  private void deleteSecondParticipantFromDatastore(Participant secondParticipant, DatastoreService datastore) {
-    Key secondParticipantEntityKey = KeyFactory.createKey("Participant", secondParticipant.getId());
-    datastore.delete(secondParticipantEntityKey);
+  private void deleteParticipantFromDatastore(Participant participant, DatastoreService datastore) {
+    Key participantEntityKey = KeyFactory.createKey("Participant", participant.getId());
+    datastore.delete(participantEntityKey);
   }
 
-
   /** Return positive long value, or -1L if invalid or negative */
-  private static long convertToLong(String s) {
+  private static long convertToPositiveLong(String s) {
     if (s == null) {
         return -1L;
     }
@@ -139,8 +138,9 @@ public class AddParticipantServlet extends HttpServlet {
         return -1L;
     }
   }
+
   /** Return positive integer value, or -1 if invalid or negative */
-  private static int convertToInt(String s) {
+  private static int convertToPositiveInt(String s) {
     if (s == null) {
         return -1;
     }

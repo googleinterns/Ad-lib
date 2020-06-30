@@ -1,6 +1,6 @@
 package com.google.sps;
 
-import com.google.sps.data.Time;
+import com.google.sps.data.TimeHelper;
 import java.util.Date;
 import java.util.Calendar;
 import org.junit.Assert;
@@ -10,9 +10,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /** */
-public final class TimeTest {
+public final class TimeHelperTest {
 
-  private Time time;
+  private TimeHelper timeHelper;
 
   @Before
   public void setUp() {
@@ -22,7 +22,7 @@ public final class TimeTest {
     c.set(Calendar.MILLISECOND, 0);
     Date date = c.getTime();
 
-    time = new Time(date);
+    timeHelper = new TimeHelper(date);
   }
 
   @Test
@@ -36,36 +36,36 @@ public final class TimeTest {
     // 1/1/2020 2:00pm GMT
     c.set(Calendar.HOUR_OF_DAY, 14);
     c.set(Calendar.MINUTE, 0);
-    Assert.assertEquals(/* expected */c.getTime().getTime(), /* actual */Time.getDateMillis(14, 0));
+    Assert.assertEquals(c.getTime().getTime(), LocalDate.now().atTime(14, 0).toEpochSecond(ZoneOffset.UTC));
 
     // 1/1/2020 10:30am GMT
     c.set(Calendar.HOUR_OF_DAY, 10);
     c.set(Calendar.MINUTE, 30);
-    Assert.assertEquals(c.getTime().getTime(), Time.getDateMillis(10, 30));
+    Assert.assertEquals(c.getTime().getTime(), LocalDate.now().atTime(10, 30).toEpochSecond(ZoneOffset.UTC));
 
     // 1/1/2020 11:45pm GMT
     c.set(Calendar.HOUR_OF_DAY, 23);
     c.set(Calendar.MINUTE, 45);
-    Assert.assertEquals(c.getTime().getTime(), Time.getDateMillis(23, 45));
+    Assert.assertEquals(c.getTime().getTime(), LocalDate.now().atTime(23, 45).toEpochSecond(ZoneOffset.UTC));
   }
 
   @Test (expected = IllegalArgumentException.class) 
   public void negativeHours() {
-    long timestamp = Time.getDateMillis(-1, 0);
+    long timestamp = LocalDate.now().atTime(-1, 0).toEpochSecond(ZoneOffset.UTC);
   }
 
   @Test (expected = IllegalArgumentException.class) 
   public void over24Hours() {
-    long timestamp = Time.getDateMillis(24, 0);
+    long timestamp = LocalDate.now().atTime(24, 0).toEpochSecond(ZoneOffset.UTC);
   }
 
   @Test (expected = IllegalArgumentException.class) 
   public void negativeMinutes() {
-    long timestamp = Time.getDateMillis(2, -1);
+    long timestamp = LocalDate.now().atTime(2, -1).toEpochSecond(ZoneOffset.UTC);
   }
 
   @Test (expected = IllegalArgumentException.class) 
   public void over60Minutes() {
-    long timestamp = Time.getDateMillis(2, 60);
+    long timestamp = LocalDate.now().atTime(2, 60).toEpochSecond(ZoneOffset.UTC);
   }
 }

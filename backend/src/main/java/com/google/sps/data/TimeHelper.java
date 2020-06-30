@@ -4,17 +4,17 @@ import java.util.Date;
 import java.util.Calendar;
 
 /** Class used to set reference date/time for testing and convert input timeAvailableUntil to date timestamp */
-public final class Time {
+public final class TimeHelper {
 
   private static Date date;
 
   /** Constructor */
-  public Time() {
+  public TimeHelper() {
     this(new Date());
   }
 
   /** Constructor with manually set date */
-  public Time(Date date) {
+  public TimeHelper(Date date) {
     this.date = date;
   }
 

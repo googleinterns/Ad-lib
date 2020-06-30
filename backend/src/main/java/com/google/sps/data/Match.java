@@ -20,11 +20,7 @@ public final class Match {
   
   /** Constructor for empty match except timestamp*/
   public Match(long timestamp) {
-    id = 0L;
-    firstParticipant = null;
-    secondParticipant = null;
-    duration = 0;
-    this.timestamp = timestamp;
+    this(0L, null, null, 0, timestamp);
   }
 
   public long getId() {

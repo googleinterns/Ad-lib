@@ -54,7 +54,8 @@ public class AddParticipantServlet extends HttpServlet {
     int duration = convertToInt(request.getParameter("duration"));
     long timestamp = System.currentTimeMillis();
 
-    Participant newParticipant = new Participant(-1L, ldap, timeAvailableUntil, timezone, duration, timestamp);
+    // id is irrelevant, only relevant when getting from datastore
+    Participant newParticipant = new Participant(/* id= */ -1L, ldap, timeAvailableUntil, timezone, duration, timestamp);
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 

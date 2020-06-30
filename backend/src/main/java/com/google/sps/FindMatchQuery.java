@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -64,7 +65,7 @@ public final class FindMatchQuery {
       // Check if participants are both free for that duration + extra
       long newTimeAvailableUntil = newParticipant.getTimeAvailableUntil();
       long currTimeAvailableUntil = currParticipant.getTimeAvailableUntil();
-      boolean compatibleTime = Instant.now().plusMillis(Duration.ofMinutes(duration + PADDING_TIME).toMillis()).isBefore(Math.min(newTimeAvailableUntil, currTimeAvailableUntil));
+      boolean compatibleTime = Instant.now().plusMillis(Duration.ofMinutes(duration + PADDING_TIME).toMillis()).isBefore(Instant.ofEpochMilli(Math.min(newTimeAvailableUntil, currTimeAvailableUntil)));
       
       if (compatibleTime) {
         // TODO: change match ID (currently -1 for easy error checking)

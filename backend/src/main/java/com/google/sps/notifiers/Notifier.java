@@ -18,8 +18,8 @@ public class Notifier {
 
   private String name; /* String representing the user who is to be notified's name */
 
-  public Notifier(String Name) {
-    setName(Name);
+  public Notifier(String name) {
+    setName(name);
   }
 
   public String getName() {

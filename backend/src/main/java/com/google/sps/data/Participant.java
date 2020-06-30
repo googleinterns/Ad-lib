@@ -7,8 +7,10 @@ public final class Participant {
   private final long id;
   /** Google username */
   private final String ldap;
+  /** Time user is starts being available */
+  private final long startTimeAvailable;
   /** Time user is available until */
-  private final long timeAvailableUntil;
+  private final long endTimeAvailable;
   /** User timezone */
   private final String timezone;
   /** How long user wants to chat */
@@ -17,10 +19,11 @@ public final class Participant {
   private final long timestamp;
   
   /** Initialize constructor fields */
-  public Participant(long id, String ldap, long timeAvailableUntil, String timezone, int duration, long timestamp) {
+  public Participant(long id, String ldap, long startTimeAvailable, long endTimeAvailable, String timezone, int duration, long timestamp) {
     this.id = id;
     this.ldap = ldap;
-    this.timeAvailableUntil = timeAvailableUntil;
+    this.startTimeAvailable = startTimeAvailable;
+    this.endTimeAvailable = endTimeAvailable;
     this.timezone = timezone;
     this.duration = duration;
     this.timestamp = timestamp;
@@ -34,8 +37,12 @@ public final class Participant {
     return ldap;
   }
   
-  public long getTimeAvailableUntil() {
-    return timeAvailableUntil;
+  public long getStartTimeAvailable() {
+    return startTimeAvailable;
+  }
+
+  public long getEndTimeAvailable() {
+    return endTimeAvailable;
   }
 
   public String getTimezone() {

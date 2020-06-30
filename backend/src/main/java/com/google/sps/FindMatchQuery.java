@@ -64,10 +64,10 @@ public final class FindMatchQuery {
       }
       
       // Check if participants are both free for that duration + extra
-      long newTimeAvailableUntil = newParticipant.getTimeAvailableUntil();
-      long currTimeAvailableUntil = currParticipant.getTimeAvailableUntil();
+      long newEndTimeAvailable = newParticipant.getEndTimeAvailable();
+      long currEndTimeAvailable = currParticipant.getEndTimeAvailable();
       boolean compatibleTime = Instant.now(clock).plusMillis(Duration.ofMinutes(duration + PADDING_TIME).toMillis())
-          .isBefore(Instant.ofEpochMillis(Math.min(newTimeAvailableUntil, currTimeAvailableUntil)));
+          .isBefore(Instant.ofEpochMillis(Math.min(newEndTimeAvailable, currEndTimeAvailable)));
 
       if (compatibleTime) {
         // TODO: change match ID (currently -1 for easy error checking)

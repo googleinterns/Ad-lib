@@ -22,11 +22,6 @@ public final class Match {
     this.duration = duration;
     this.timestamp = timestamp;
   }
-  
-  /** Constructor for empty match except timestamp*/
-  public Match(long timestamp) {
-    this(0L, null, null, 0, timestamp);
-  }
 
   public long getId() {
     return id;

@@ -61,7 +61,7 @@ public final class TimeHelperTest {
 
   @Test (expected = IllegalArgumentException.class) 
   public void negativeMinutes() {
-    long timestamp = Time.getDateMillis(2, -1);
+    long timestamp = TimeHelper.getDateMillis(2, -1);
   }
 
   @Test (expected = IllegalArgumentException.class) 

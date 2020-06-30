@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 public final class FindMatchQuery {
 
   private Date date;
+  private static int MAX_DURATION_DIFF = 15; // maximum difference in duration to be compatible
+  private static int PADDING_TIME = 15; // extra padding time to ensure large enough meeting time block
   
   /** Constructor */
   public FindMatchQuery() {
@@ -45,8 +47,6 @@ public final class FindMatchQuery {
     * right after being added
     */
   public Match findMatch(List<Participant> participants, Participant newParticipant) {
-    int MAX_DURATION_DIFF = 15; // maximum difference in duration to be compatible
-    int PADDING_TIME = 15; // extra padding time to ensure large enough meeting time block
     
     // Compare new participant preferences with others in list to find match
     for (Participant currParticipant : participants) {
@@ -64,12 +64,11 @@ public final class FindMatchQuery {
       // Check if participants are both free for that duration + extra
       long newTimeAvailableUntil = newParticipant.getTimeAvailableUntil();
       long currTimeAvailableUntil = currParticipant.getTimeAvailableUntil();
-      boolean compatibleTime = date.getTime() + Duration.ofMinutes(duration + PADDING_TIME).toMillis() <=
-                                  Math.min(newTimeAvailableUntil, currTimeAvailableUntil);
+      boolean compatibleTime = Instant.now().plusMillis(Duration.ofMinutes(duration + PADDING_TIME).toMillis()).isBefore(Math.min(newTimeAvailableUntil, currTimeAvailableUntil));
       
       if (compatibleTime) {
         // TODO: change match ID (currently -1 for easy error checking)
-        return new Match(-1L, newParticipant, currParticipant, duration, date.getTime());
+        return new Match(/* id= */ -1L, /* firstParticipant= */ newParticipant, /* secondParticipant= */ currParticipant, /* duration= */ duration, /* timestamp= */ date.getTime());
       }
     }
     // No inital match found

@@ -80,7 +80,7 @@ public final class FindMatchQueryTest {
 
     assertThat(match.getFirstParticipant().getLdap().equals(PERSON_B));
     assertThat(match.getSecondParticipant().getLdap().equals(PERSON_A));
-    assertThat(match.getDuration() == DURATION_15_MINUTES);
+    assertThat(match.getDuration().isEqualTo(DURATION_15_MINUTES));
   }
 
   @Test
@@ -91,7 +91,7 @@ public final class FindMatchQueryTest {
     
     Match match = query.findMatch(Arrays.asList(participantA), participantB);
 
-    assertThat(Objects.isNull(match)).isTrue();
+    assertThat(match).isNull();
   }
 
   @Test
@@ -102,7 +102,7 @@ public final class FindMatchQueryTest {
     
     Match match = query.findMatch(Arrays.asList(participantA), participantB);
     
-    assertThat(Objects.isNull(match)).isTrue();
+    assertThat(match).isNull();
   }
 
   @Test
@@ -116,7 +116,7 @@ public final class FindMatchQueryTest {
     
     assertThat(match.getFirstParticipant().getLdap().equals(PERSON_C));
     assertThat(match.getSecondParticipant().getLdap().equals(PERSON_A));
-    assertThat(match.getDuration() == DURATION_60_MINUTES);
+    assertThat(match.getDuration().isEqualTo(DURATION_60_MINUTES));
   }
 
   @Test
@@ -130,7 +130,7 @@ public final class FindMatchQueryTest {
     
     assertThat(match.getFirstParticipant().getLdap().equals(PERSON_C));
     assertThat(match.getSecondParticipant().getLdap().equals(PERSON_B));
-    assertThat(match.getDuration() == DURATION_60_MINUTES);
+    assertThat(match.getDuration().isEqualTo(DURATION_60_MINUTES));
   }
 
   @Test
@@ -144,6 +144,6 @@ public final class FindMatchQueryTest {
     
     assertThat(match.getFirstParticipant().getLdap().equals(PERSON_C));
     assertThat(match.getSecondParticipant().getLdap().equals(PERSON_A));
-    assertThat(match.getDuration() == DURATION_60_MINUTES);
+    assertThat(match.getDuration().isEqualTo(DURATION_60_MINUTES));
   }
 }

@@ -18,8 +18,9 @@ import static com.google.common.truth.Truth.assertThat;
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
 import com.google.sps.data.Time;
+import java.time.Clock;
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Calendar;
 import java.util.Objects;
 import org.junit.Assert;
@@ -65,7 +66,9 @@ public final class FindMatchQueryTest {
     c.set(Calendar.MILLISECOND, 0);
     Date date = c.getTime();
 
-    query = new FindMatchQuery(date);
+    clock = Clock.fixed(Instant.parse("2020-01-01T14:00:00Z"), ZoneOffset.UTC));
+
+    query = new FindMatchQuery(clock);
     time = new Time(date);
   }
 

@@ -52,6 +52,9 @@ public class AddParticipantServlet extends HttpServlet {
     long timeAvailableUntil = convertToLong(request.getParameter("timeAvailableUntil"));
     String timezone = request.getParameter("timezone");
     int duration = convertToInt(request.getParameter("duration"));
+    if (email == null || timeAvailableUntil == -1L || duration == -1) {
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Invalid input(s).");
+    }
     long timestamp = System.currentTimeMillis();
 
     // id is irrelevant, only relevant when getting from datastore

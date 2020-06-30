@@ -64,18 +64,27 @@ public class SearchMatchServlet extends HttpServlet {
         matches.add(match);
     }
 
-    Match matchDetails = new Match(System.currentTimeMillis()); // default if no match
+    JsonObject matchDoesNotExist = new JsonObject();
+    matchDoesNotExist.addProperty("matchStatus", "false");
+    String matchDetails = matchExists.toString(); // default if no match found
+    
     // Brute force search for match
     for (Match match : matches) {
-      if (ldap.equals(match.getFirstParticipant().getLdap()) || ldap.equals(match.getSecondParticipant().getLdap())) {
-        matchDetails = match;
+      firstParticipantLdap = match.getFirstParticipant().getLdap();
+      secondParticipantLdap = match.getSecondParticipant().getLdap();
+      if (ldap.equals(firstParticipantLdap) || ldap.equals(secondParticipantLdap)) {
+        JsonObject matchExists = new JsonObject();
+        matchExists.addProperty("matchStatus", "true");
+        matchExists.addProperty("firstParticipantLdap", firstParticipantLdap);
+        matchExists.addProperty("secondParticipantLdap", secondParticipantLdap);
+        matchExists.addProperty("duration", match.getDuration());
+        matchDetails = matchExists.toString();
         break;
       }
     }
     
     // Send the JSON back as the response
-    Gson gson = new Gson();
     response.setContentType("application/json");
-    response.getWriter().println(gson.toJson(matchDetails));
+    response.getWriter().println(matchDetails);
   }
 }

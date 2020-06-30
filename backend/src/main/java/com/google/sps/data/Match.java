@@ -2,12 +2,17 @@ package com.google.sps.data;
 
 /** A match of two users */
 public final class Match {
-
+  
+  /** Datastore entity ID */
   private final long id;
-  private final Participant firstParticipant; /** First participant */
-  private final Participant secondParticipant; /** Second participant */
-  private final int duration; /** Duration of meeting */
-  private final long timestamp; /** Time match found */
+  /** First participant */
+  private final Participant firstParticipant;
+  /** Second participant */
+  private final Participant secondParticipant;
+  /** Duration of meeting */
+  private final int duration;
+  /** Time match found */
+  private final long timestamp;
   
   /** Constructor */
   public Match(long id, Participant firstParticipant, Participant secondParticipant, int duration, long timestamp) {

@@ -1,0 +1,18 @@
+<component name="libraryTable">
+  <library name="com.sendgrid:sendgrid-java:4.4.4" type="repository">
+    <properties maven-id="com.sendgrid:sendgrid-java:4.4.4" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/sendgrid/sendgrid-java/4.4.4/sendgrid-java-4.4.4.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/sendgrid/java-http-client/4.3.3/java-http-client-4.3.3.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/httpcomponents/httpcore/4.4.12/httpcore-4.4.12.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/httpcomponents/httpclient/4.5.10/httpclient-4.5.10.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/commons-logging/commons-logging/1.2/commons-logging-1.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.11/commons-codec-1.11.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-core/2.10.2/jackson-core-2.10.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-annotations/2.10.2/jackson-annotations-2.10.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-databind/2.10.2/jackson-databind-2.10.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

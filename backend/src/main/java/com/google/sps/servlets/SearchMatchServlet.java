@@ -32,6 +32,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.simple.JSONObject;
 
 /**
 * Servlet that returns some example content.
@@ -64,20 +65,20 @@ public class SearchMatchServlet extends HttpServlet {
         matches.add(match);
     }
 
-    JsonObject matchDoesNotExist = new JsonObject();
-    matchDoesNotExist.addProperty("matchStatus", "false");
-    String matchDetails = matchExists.toString(); // default if no match found
+    JSONObject matchDoesNotExist = new JSONObject();
+    matchDoesNotExist.put("matchStatus", "false");
+    String matchDetails = matchDoesNotExist.toString(); // default if no match found
     
     // Brute force search for match
     for (Match match : matches) {
-      firstParticipantLdap = match.getFirstParticipant().getLdap();
-      secondParticipantLdap = match.getSecondParticipant().getLdap();
+      String firstParticipantLdap = match.getFirstParticipant().getLdap();
+      String secondParticipantLdap = match.getSecondParticipant().getLdap();
       if (ldap.equals(firstParticipantLdap) || ldap.equals(secondParticipantLdap)) {
-        JsonObject matchExists = new JsonObject();
-        matchExists.addProperty("matchStatus", "true");
-        matchExists.addProperty("firstParticipantLdap", firstParticipantLdap);
-        matchExists.addProperty("secondParticipantLdap", secondParticipantLdap);
-        matchExists.addProperty("duration", match.getDuration());
+        JSONObject matchExists = new JSONObject();
+        matchExists.put("matchStatus", "true");
+        matchExists.put("firstParticipantLdap", firstParticipantLdap);
+        matchExists.put("secondParticipantLdap", secondParticipantLdap);
+        matchExists.put("duration", match.getDuration());
         matchDetails = matchExists.toString();
         break;
       }

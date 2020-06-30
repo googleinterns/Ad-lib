@@ -14,19 +14,19 @@ export default function CustomizedSwitches() {
   };
 
   return (
-      <Typography>
-        <Grid component="label" container>
-          <Grid item>No</Grid>
-          <Grid item>
-            <Switch 
-              checked={state.similarityRating}
-              onChange={handleChange} 
-              name="similarityRating" 
-              color="primary"
-            />
-          </Grid>
-          <Grid item>Yes</Grid>
+    <Typography>
+      <Grid component="label" container>
+        <Grid item>No</Grid>
+        <Grid item>
+          <Switch 
+            checked={state.similarityRating}
+            onChange={handleChange} 
+            name="similarityRating" 
+            color="primary"
+          />
         </Grid>
-      </Typography>
+        <Grid item>Yes</Grid>
+      </Grid>
+    </Typography>
   );
 }

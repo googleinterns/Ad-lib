@@ -12,5 +12,7 @@ jobs:
         run: npm install eslint@latest --save-dev
       - name: Install eslint React Plugin
         run: npm install eslint-plugin-react@latest --save-dev
+      - name: Install Google style plugin
+        run: npm install eslint-config-google@latest --save-dev
       - name: Lint with ESLint
         run: ./node_modules/.bin/eslint frontend/**/*.js

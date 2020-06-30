@@ -101,7 +101,7 @@ public class AddParticipantServlet extends HttpServlet {
         String timezone = (String) entity.getProperty("timezone"); 
         int duration = (int) entity.getProperty("duration"); 
         long timestamp = (long) entity.getProperty("timestamp");
-        Participant currParticipant = new Participant(id, ldap, timeAvailableUntil, timezone, duration, timestamp);g
+        Participant currParticipant = new Participant(id, ldap, timeAvailableUntil, timezone, duration, timestamp);
         participants.add(currParticipant);
     }
     return participants;

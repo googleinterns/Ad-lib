@@ -29,7 +29,7 @@ public class EmailNotifier extends Notifier {
 
   /**
    * @param name Name of the recipient of the user
-   * @param toEmail main.java.com.google.sps.Email that this email is going to sent to.
+   * @param toEmail Email that this email is going to sent to.
    */
   public EmailNotifier(String name, String toEmail) {
     super(name);

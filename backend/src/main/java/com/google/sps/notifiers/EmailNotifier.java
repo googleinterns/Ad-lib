@@ -23,9 +23,11 @@ import com.sendgrid.helpers.mail.objects.*;
 
 import java.io.IOException;
 
-/** An instance of the email notifier class is used to send emails to participants. */
+/** Class representing the notification system capable of sending mails to the user. */
 public class EmailNotifier extends Notifier {
-  private String toEmail;
+
+  /** Variable representing the email to be notified */
+  private final String toEmail;
 
   /**
    * @param name Name of the recipient of the user
@@ -64,7 +66,12 @@ public class EmailNotifier extends Notifier {
     }
   }
 
-  public void setToEmail(String toEmail) {
-    this.toEmail = toEmail;
+  public String getToEmail() {
+    return toEmail;
+  }
+
+  @Override
+  public String getName() {
+    return super.getName();
   }
 }

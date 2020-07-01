@@ -38,6 +38,11 @@ public class EmailNotifier extends Notifier {
     this.toEmail = toEmail;
   }
 
+  /**
+   * Getter function that returns the string representing the email recipients name .
+   *
+   * @return String representing the name of the email recipient.
+   */
   @Override
   public String getName() {
     return super.getName();
@@ -72,7 +77,11 @@ public class EmailNotifier extends Notifier {
     }
   }
 
-  /** @return String representing the email to be notified. */
+  /**
+   * Getter function that returns the string representing the email to be sent .
+   *
+   * @return String representing the email to be notified.
+   */
   public String getToEmail() {
     return toEmail;
   }

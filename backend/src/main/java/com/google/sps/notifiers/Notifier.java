@@ -23,6 +23,11 @@ public class Notifier {
     this.name = name;
   }
 
+  /**
+   * Getter function that returns the notifications recipient's name.
+   *
+   * @return String representing the notifications recipients name
+   */
   public String getName() {
     return this.name;
   }

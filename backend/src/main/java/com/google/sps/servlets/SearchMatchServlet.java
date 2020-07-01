@@ -42,9 +42,13 @@ public class SearchMatchServlet extends HttpServlet {
     // Get participant ldap
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
+    if (email == null) {
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Invalid email.");
+    }
     String ldap = email.split("@")[0];
 
     // Create and sort queries by time
+    // TODO: eventually sort by startTimeAvailable
     Query query = new Query("Match").addSort("timestamp", SortDirection.DESCENDING);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -77,12 +81,4 @@ public class SearchMatchServlet extends HttpServlet {
         matchExists.put("secondParticipantLdap", secondParticipantLdap);
         matchExists.put("duration", match.getDuration());
         matchDetails = matchExists.toString();
-        break;
-      }
-    }
-
-    // Send the JSON back as the response
-    response.setContentType("application/json");
-    response.getWriter().println(matchDetails);
-  }
-}
+   g

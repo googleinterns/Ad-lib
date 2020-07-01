@@ -1,5 +1,7 @@
 package com.google.sps.data;
 
+import java.time.ZonedDateTime;
+
 /** A user who want to be matched. */
 public final class Participant {
 
@@ -8,11 +10,9 @@ public final class Participant {
   /** Google username */
   private final String ldap;
   /** Time user is starts being available */
-  private final long startTimeAvailable;
+  private final ZonedDateTime startTimeAvailable;
   /** Time user is available until */
-  private final long endTimeAvailable;
-  /** User timezone */
-  private final String timezone;
+  private final ZonedDateTime endTimeAvailable;
   /** How long user wants to chat */
   private final int duration;
   /** Time of submitted form */
@@ -20,18 +20,16 @@ public final class Participant {
 
   /** Initialize constructor fields */
   public Participant(
-      long id, 
-      String ldap, 
-      long startTimeAvailable, 
-      long endTimeAvailable, 
-      String timezone, 
-      int duration, 
+      long id,
+      String ldap,
+      ZonedDateTime startTimeAvailable,
+      ZonedDateTime endTimeAvailable,
+      int duration,
       long timestamp) {
     this.id = id;
     this.ldap = ldap;
     this.startTimeAvailable = startTimeAvailable;
     this.endTimeAvailable = endTimeAvailable;
-    this.timezone = timezone;
     this.duration = duration;
     this.timestamp = timestamp;
   }
@@ -43,17 +41,13 @@ public final class Participant {
   public String getLdap() {
     return ldap;
   }
-  
-  public long getStartTimeAvailable() {
+
+  public ZonedDateTime getStartTimeAvailable() {
     return startTimeAvailable;
   }
 
-  public long getEndTimeAvailable() {
+  public ZonedDateTime getEndTimeAvailable() {
     return endTimeAvailable;
-  }
-
-  public String getTimezone() {
-    return timezone;
   }
 
   public int getDuration() {

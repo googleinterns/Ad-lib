@@ -16,27 +16,25 @@ package com.google.sps;
 
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
-import java.time.Clock;
-import java.time.Duration;
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 /** Class used to find a match in a list of Participants with the most recently added Participant */
 public final class FindMatchQuery {
 
-  private Clock clock;
+  private ZonedDateTime dateTime;
   private static int MAX_DURATION_DIFF = 15; // maximum difference in duration to be compatible
   private static int PADDING_TIME =
       15; // extra padding time to ensure large enough meeting time block
 
   /** Constructor */
   public FindMatchQuery() {
-    clock = new Clock();
+    this(ZonedDateTime.now());
   }
 
   /** Constructor with manually set date */
-  public FindMatchQuery(Clock clock) {
-    this.clock = clock;
+  public FindMatchQuery(ZonedDateTime dateTime) {
+    this.dateTime = dateTime;
   }
 
   /**
@@ -59,13 +57,12 @@ public final class FindMatchQuery {
       }
 
       // Check if participants are both free for that duration + extra
-      long newEndTimeAvailable = newParticipant.getEndTimeAvailable();
-      long currEndTimeAvailable = currParticipant.getEndTimeAvailable();
-      boolean compatibleTime = 
-          Instant.now(clock)
-              .plusMillis(Duration.ofMinutes(duration + PADDING_TIME).toMillis())
-              .isBefore(
-                  Instant.ofEpochMillis(Math.min(newEndTimeAvailable, currEndTimeAvailable)));
+      ZonedDateTime newEndTimeAvailable = newParticipant.getEndTimeAvailable();
+      ZonedDateTime currEndTimeAvailable = currParticipant.getEndTimeAvailable();
+      ZonedDateTime earliestEndTimeAvailable =
+          getEarlier(newEndTimeAvailable, currEndTimeAvailable);
+      boolean compatibleTime =
+          dateTime.plusMinutes(duration + PADDING_TIME).isBefore(earliestEndTimeAvailable);
 
       if (compatibleTime) {
         // TODO: change match ID (currently -1 for easy error checking)
@@ -74,10 +71,19 @@ public final class FindMatchQuery {
             /* firstParticipant= */ newParticipant,
             /* secondParticipant= */ currParticipant,
             /* duration= */ duration,
-            /* timestamp= */ date.getTime());
+            /* timestamp= */ dateTime.toInstant().toEpochMilli());
       }
     }
     // No inital match found
     return null;
+  }
+
+  /** Return earlier of two ZonedDateTime objects */
+  private ZonedDateTime getEarlier(ZonedDateTime first, ZonedDateTime second) {
+    if (first.isBefore(second)) {
+      return first;
+    } else {
+      return second;
+    }
   }
 }

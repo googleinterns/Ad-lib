@@ -8,7 +8,7 @@ public final class Participant {
   /** Datastore ID */
   private final long id;
   /** Google username */
-  private final String ldap;
+  private final String username;
   /** Time user is starts being available */
   private final ZonedDateTime startTimeAvailable;
   /** Time user is available until */
@@ -21,13 +21,13 @@ public final class Participant {
   /** Initialize constructor fields */
   public Participant(
       long id,
-      String ldap,
+      String username,
       ZonedDateTime startTimeAvailable,
       ZonedDateTime endTimeAvailable,
       int duration,
       long timestamp) {
     this.id = id;
-    this.ldap = ldap;
+    this.username = username;
     this.startTimeAvailable = startTimeAvailable;
     this.endTimeAvailable = endTimeAvailable;
     this.duration = duration;
@@ -38,8 +38,8 @@ public final class Participant {
     return id;
   }
 
-  public String getLdap() {
-    return ldap;
+  public String getUsername() {
+    return username;
   }
 
   public ZonedDateTime getStartTimeAvailable() {

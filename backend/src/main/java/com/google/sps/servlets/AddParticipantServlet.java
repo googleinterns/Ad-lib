@@ -24,42 +24,60 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.sps.FindMatchQuery;
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
-import com.google.sps.FindMatchQuery;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
-* Servlet that returns some example content.
-*/
+/** Servlet that returns some example content. */
 @WebServlet("/add-participant")
 public class AddParticipantServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Request parameter values
-    // TODO: Error check input values (before allowing to submit)
+    // TODO: Check input values are filled (before allowing to submit)
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
-    String ldap = email.split("@")[0];
-    long endTimeAvailable = convertToPositiveLong(request.getParameter("endTimeAvailable"));
-    String timezone = request.getParameter("timezone");
-    int duration = convertToPositiveInt(request.getParameter("duration"));
-    if (email == null || endTimeAvailable == -1L || duration == -1) {
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Invalid input(s).");
+    if (email == null) {
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Invalid email.");
     }
+    String ldap = email.split("@")[0];
+
+    String timezone = request.getParameter("timezone");
+    ZoneId zoneId = ZoneId.of(timezone); // TODO: convert input timezone to valid ZoneId
+    ZonedDateTime startTimeAvailable =
+        LocalDateTime.now().atZone(zoneId); // TODO: set to future time if not available now
+    Instant endTimeAvailableInstant =
+        Instant.ofEpochMilli(
+            Long.parseLong(
+                request.getParameter("endTimeAvailable"))); // TODO: figure out input format
+    LocalDateTime endTimeAvailableLocal =
+        endTimeAvailableInstant.atZone(ZoneId.of("UTC")).toLocalDateTime();
+    ZonedDateTime endTimeAvailable = endTimeAvailableLocal.atZone(zoneId);
+
+    int duration = convertToPositiveInt(request.getParameter("duration"));
+    if (duration == -1) {
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Invalid duration.");
+    }
+
     long timestamp = System.currentTimeMillis();
 
     // id is irrelevant, only relevant when getting from datastore
-    Participant newParticipant = new Participant(/* id= */ -1L, ldap, endTimeAvailable, timezone, duration, timestamp);
-    
+    Participant newParticipant =
+        new Participant(
+            /* id= */ -1L, ldap, startTimeAvailable, endTimeAvailable, duration, timestamp);
+
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     // Find immediate match if possible
@@ -74,8 +92,8 @@ public class AddParticipantServlet extends HttpServlet {
       // Match not found, insert participant entity into datastore
       Entity participantEntity = new Entity("Participant");
       participantEntity.setProperty("ldap", ldap);
+      participantEntity.setProperty("startTimeAvailable", startTimeAvailable);
       participantEntity.setProperty("endTimeAvailable", endTimeAvailable);
-      participantEntity.setProperty("timezone", timezone);
       participantEntity.setProperty("duration", duration);
       participantEntity.setProperty("timestamp", timestamp);
       datastore.put(participantEntity);
@@ -85,7 +103,7 @@ public class AddParticipantServlet extends HttpServlet {
     response.sendRedirect("/index.html");
   }
 
-  /** Return list of current participants from datastore*/
+  /** Return list of current participants from datastore */
   private List<Participant> getParticipants(DatastoreService datastore) {
 
     // Create and sort participant queries by time
@@ -95,14 +113,15 @@ public class AddParticipantServlet extends HttpServlet {
     // Convert list of entities to list of participants
     List<Participant> participants = new ArrayList<Participant>();
     for (Entity entity : results.asIterable()) {
-        long id = (long) entity.getKey().getId();
-        String ldap = (String) entity.getProperty("ldap");
-        long endTimeAvailable = (long) entity.getProperty("endTimeAvailable"); 
-        String timezone = (String) entity.getProperty("timezone"); 
-        int duration = (int) entity.getProperty("duration"); 
-        long timestamp = (long) entity.getProperty("timestamp");
-        Participant currParticipant = new Participant(id, ldap, endTimeAvailable, timezone, duration, timestamp);
-        participants.add(currParticipant);
+      long id = (long) entity.getKey().getId();
+      String ldap = (String) entity.getProperty("ldap");
+      ZonedDateTime startTimeAvailable = (ZonedDateTime) entity.getProperty("startTimeAvailable");
+      ZonedDateTime endTimeAvailable = (ZonedDateTime) entity.getProperty("endTimeAvailable");
+      int duration = (int) entity.getProperty("duration");
+      long timestamp = (long) entity.getProperty("timestamp");
+      Participant currParticipant =
+          new Participant(id, ldap, startTimeAvailable, endTimeAvailable, duration, timestamp);
+      participants.add(currParticipant);
     }
     return participants;
   }
@@ -126,29 +145,16 @@ public class AddParticipantServlet extends HttpServlet {
     datastore.delete(participantEntityKey);
   }
 
-  /** Return positive long value, or -1L if invalid or negative */
-  private static long convertToPositiveLong(String s) {
-    if (s == null) {
-        return -1L;
-    }
-    try {
-        long parsed = Long.parseLong(s);
-        return (parsed >= 0L) ? parsed : -1L;
-    } catch(NumberFormatException e) { 
-        return -1L;
-    }
-  }
-
   /** Return positive integer value, or -1 if invalid or negative */
   private static int convertToPositiveInt(String s) {
     if (s == null) {
-        return -1;
+      return -1;
     }
     try {
-        int parsed = Integer.parseInt(s);
-        return (parsed >= 0) ? parsed : -1;
-    } catch(NumberFormatException e) { 
-        return -1;
+      int parsed = Integer.parseInt(s);
+      return (parsed >= 0) ? parsed : -1;
+    } catch (NumberFormatException e) {
+      return -1;
     }
   }
 }

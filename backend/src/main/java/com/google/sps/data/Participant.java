@@ -7,7 +7,7 @@ public final class Participant {
 
   /** Datastore ID */
   private final long id;
-  /** Google username */
+  /** Google username (ldap) */
   private final String username;
   /** Time user is starts being available */
   private final ZonedDateTime startTimeAvailable;

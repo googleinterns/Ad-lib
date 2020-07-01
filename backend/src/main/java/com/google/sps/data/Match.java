@@ -1,8 +1,8 @@
 package com.google.sps.data;
 
-/** A match of two users */
+/** A match of two participants */
 public final class Match {
-  
+
   /** Datastore entity ID */
   private final long id;
   /** First participant */
@@ -13,9 +13,18 @@ public final class Match {
   private final int duration;
   /** Time match found */
   private final long timestamp;
-  
+
   /** Constructor */
-  public Match(long id, Participant firstParticipant, Participant secondParticipant, int duration, long timestamp) {
+  public Match(
+      long id,
+      Participant firstParticipant,
+      Participant secondParticipant,
+      int duration,
+      long timestamp) {
+    // Note: Match includes entire Participants instead of just usernames to distinguish between a
+    // user participating
+    // and finding a match multiple times. This wouldn't be an issue if we deleted matches from the
+    // datastore.
     this.id = id;
     this.firstParticipant = firstParticipant;
     this.secondParticipant = secondParticipant;
@@ -42,5 +51,4 @@ public final class Match {
   public long getTimestamp() {
     return timestamp;
   }
-
 }

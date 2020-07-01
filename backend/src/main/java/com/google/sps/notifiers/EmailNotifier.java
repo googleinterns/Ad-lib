@@ -38,9 +38,15 @@ public class EmailNotifier extends Notifier {
     this.toEmail = toEmail;
   }
 
-  /** Function that access the Twilio api and using it sends an email */
+  @Override
+  public String getName() {
+    return super.getName();
+  }
+
+  /** Function that access its api and using it sends an email */
   //    TODO(): Create a dummy email for ad lib itself to send emails.
-  public void sendEmail() {
+  @Override
+  public void notifyUser() {
     Email from = new Email("jordangrant46@gmail.com");
     String subject = "Ad-lib: Match Found";
     Email to = new Email(toEmail);
@@ -66,12 +72,8 @@ public class EmailNotifier extends Notifier {
     }
   }
 
+  /** @return String representing the email to be notified. */
   public String getToEmail() {
     return toEmail;
-  }
-
-  @Override
-  public String getName() {
-    return super.getName();
   }
 }

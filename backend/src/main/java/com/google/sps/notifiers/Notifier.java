@@ -26,4 +26,6 @@ public class Notifier {
   public String getName() {
     return this.name;
   }
+  /** Method that will be used to notify the user via the notifier */
+  public void notifyUser() {}
 }

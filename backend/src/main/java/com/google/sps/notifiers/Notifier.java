@@ -14,7 +14,7 @@
 
 package main.java.com.google.sps.notifiers;
 
-public class Notifier {
+abstract public class Notifier {
 
   private final String name;
 
@@ -32,5 +32,5 @@ public class Notifier {
     return this.name;
   }
   /** Method that will be used to notify the user via the notifier */
-  public void notifyUser() {}
+  public abstract void notifyUser();
 }

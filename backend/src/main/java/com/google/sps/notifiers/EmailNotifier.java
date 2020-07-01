@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,12 +29,11 @@ public class EmailNotifier extends Notifier {
 
   /**
    * @param name Name of the recipient of the user
-   * @param toEmail1 main.java.com.google.sps.Email that this email is going to sent to.
+   * @param toEmail main.java.com.google.sps.Email that this email is going to sent to.
    */
-  public EmailNotifier(String name, String toEmail1) {
+  public EmailNotifier(String name, String toEmail) {
     super(name);
-    this.toEmail = toEmail1;
-    setToEmail(toEmail);
+    this.toEmail = toEmail;
   }
 
   /** Function that access the Twilio api and using it sends an email */

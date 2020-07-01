@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,17 +16,14 @@ package main.java.com.google.sps.notifiers;
 
 public class Notifier {
 
-  private String name; /* String representing the user who is to be notified's name */
+  private final String name;
 
+  /** @param name String representing the name of person to be notified */
   public Notifier(String name) {
-    setName(name);
+    this.name = name;
   }
 
   public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
+    return this.name;
   }
 }

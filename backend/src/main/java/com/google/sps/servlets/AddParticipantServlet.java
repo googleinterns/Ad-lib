@@ -52,7 +52,7 @@ public class AddParticipantServlet extends HttpServlet {
     if (email == null) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Invalid email.");
     }
-    String ldap = email.split("@")[0];
+    String username = email.split("@")[0];
 
     String timezone = request.getParameter("timezone");
     ZoneId zoneId = ZoneId.of(timezone); // TODO: convert input timezone to valid ZoneId
@@ -76,7 +76,7 @@ public class AddParticipantServlet extends HttpServlet {
     // id is irrelevant, only relevant when getting from datastore
     Participant newParticipant =
         new Participant(
-            /* id= */ -1L, ldap, startTimeAvailable, endTimeAvailable, duration, timestamp);
+            /* id= */ -1L, username, startTimeAvailable, endTimeAvailable, duration, timestamp);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -91,7 +91,7 @@ public class AddParticipantServlet extends HttpServlet {
     } else {
       // Match not found, insert participant entity into datastore
       Entity participantEntity = new Entity("Participant");
-      participantEntity.setProperty("ldap", ldap);
+      participantEntity.setProperty("username", username);
       participantEntity.setProperty("startTimeAvailable", startTimeAvailable);
       participantEntity.setProperty("endTimeAvailable", endTimeAvailable);
       participantEntity.setProperty("duration", duration);
@@ -114,13 +114,13 @@ public class AddParticipantServlet extends HttpServlet {
     List<Participant> participants = new ArrayList<Participant>();
     for (Entity entity : results.asIterable()) {
       long id = (long) entity.getKey().getId();
-      String ldap = (String) entity.getProperty("ldap");
+      String username = (String) entity.getProperty("username");
       ZonedDateTime startTimeAvailable = (ZonedDateTime) entity.getProperty("startTimeAvailable");
       ZonedDateTime endTimeAvailable = (ZonedDateTime) entity.getProperty("endTimeAvailable");
       int duration = (int) entity.getProperty("duration");
       long timestamp = (long) entity.getProperty("timestamp");
       Participant currParticipant =
-          new Participant(id, ldap, startTimeAvailable, endTimeAvailable, duration, timestamp);
+          new Participant(id, username, startTimeAvailable, endTimeAvailable, duration, timestamp);
       participants.add(currParticipant);
     }
     return participants;

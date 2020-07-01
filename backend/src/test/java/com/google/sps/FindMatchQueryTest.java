@@ -87,8 +87,8 @@ public final class FindMatchQueryTest {
 
     Match match = query.findMatch(Arrays.asList(participantA), participantB);
 
-    assertThat(match.getFirstParticipant().getLdap()).isEqualTo(PERSON_B);
-    assertThat(match.getSecondParticipant().getLdap()).isEqualTo(PERSON_A);
+    assertThat(match.getFirstParticipant().getUsername()).isEqualTo(PERSON_B);
+    assertThat(match.getSecondParticipant().getUsername()).isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_15_MINUTES);
   }
 
@@ -137,8 +137,8 @@ public final class FindMatchQueryTest {
 
     Match match = query.findMatch(Arrays.asList(participantA, participantB), participantC);
 
-    assertThat(match.getFirstParticipant().getLdap()).isEqualTo(PERSON_C);
-    assertThat(match.getSecondParticipant().getLdap()).isEqualTo(PERSON_A);
+    assertThat(match.getFirstParticipant().getUsername()).isEqualTo(PERSON_C);
+    assertThat(match.getSecondParticipant().getUsername()).isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_60_MINUTES);
   }
 
@@ -157,8 +157,8 @@ public final class FindMatchQueryTest {
 
     Match match = query.findMatch(Arrays.asList(participantA, participantB), participantC);
 
-    assertThat(match.getFirstParticipant().getLdap()).isEqualTo(PERSON_C);
-    assertThat(match.getSecondParticipant().getLdap()).isEqualTo(PERSON_B);
+    assertThat(match.getFirstParticipant().getUsername()).isEqualTo(PERSON_C);
+    assertThat(match.getSecondParticipant().getUsername()).isEqualTo(PERSON_B);
     assertThat(match.getDuration()).isEqualTo(DURATION_60_MINUTES);
   }
 
@@ -177,8 +177,8 @@ public final class FindMatchQueryTest {
 
     Match match = query.findMatch(Arrays.asList(participantA, participantB), participantC);
 
-    assertThat(match.getFirstParticipant().getLdap()).isEqualTo(PERSON_C);
-    assertThat(match.getSecondParticipant().getLdap()).isEqualTo(PERSON_A);
+    assertThat(match.getFirstParticipant().getUsername()).isEqualTo(PERSON_C);
+    assertThat(match.getSecondParticipant().getUsername()).isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_30_MINUTES);
   }
 }

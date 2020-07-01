@@ -39,13 +39,13 @@ public class SearchMatchServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Get participant ldap
+    // Get participant username
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     if (email == null) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Invalid email.");
     }
-    String ldap = email.split("@")[0];
+    String username = email.split("@")[0];
 
     // Create and sort queries by time
     // TODO: eventually sort by startTimeAvailable
@@ -72,13 +72,13 @@ public class SearchMatchServlet extends HttpServlet {
 
     // Brute force search for match
     for (Match match : matches) {
-      String firstParticipantLdap = match.getFirstParticipant().getLdap();
-      String secondParticipantLdap = match.getSecondParticipant().getLdap();
-      if (ldap.equals(firstParticipantLdap) || ldap.equals(secondParticipantLdap)) {
+      String firstParticipantUsername = match.getFirstParticipant().getUsername();
+      String secondParticipantUsername = match.getSecondParticipant().getUsername();
+      if (username.equals(firstParticipantUsername) || username.equals(secondParticipantUsername)) {
         JSONObject matchExists = new JSONObject();
         matchExists.put("matchStatus", "true");
-        matchExists.put("firstParticipantLdap", firstParticipantLdap);
-        matchExists.put("secondParticipantLdap", secondParticipantLdap);
+        matchExists.put("firstParticipantUsername", firstParticipantUsername);
+        matchExists.put("secondParticipantUsername", secondParticipantUsername);
         matchExists.put("duration", match.getDuration());
         matchDetails = matchExists.toString();
         break;

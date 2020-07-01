@@ -77,11 +77,7 @@ public class EmailNotifier extends Notifier {
     }
   }
 
-  /**
-   * Getter function that returns the string representing the email to be sent .
-   *
-   * @return String representing the email to be notified.
-   */
+  /** Returns string representing the email to be notified. */
   public String getToEmail() {
     return toEmail;
   }

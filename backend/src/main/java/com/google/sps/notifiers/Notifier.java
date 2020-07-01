@@ -14,7 +14,7 @@
 
 package main.java.com.google.sps.notifiers;
 
-abstract public class Notifier {
+public abstract class Notifier {
 
   private final String name;
 

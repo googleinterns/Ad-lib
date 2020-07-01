@@ -1,6 +1,6 @@
 package com.google.sps.data;
 
-/** A match of two users */
+/** A match of two participants */
 public final class Match {
 
   /** Datastore entity ID */
@@ -21,6 +21,10 @@ public final class Match {
       Participant secondParticipant,
       int duration,
       long timestamp) {
+    // Note: Match includes entire Participants instead of just usernames to distinguish between a
+    // user participating
+    // and finding a match multiple times. This wouldn't be an issue if we deleted matches from the
+    // datastore.
     this.id = id;
     this.firstParticipant = firstParticipant;
     this.secondParticipant = secondParticipant;

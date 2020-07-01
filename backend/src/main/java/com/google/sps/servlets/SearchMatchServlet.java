@@ -81,4 +81,4 @@ public class SearchMatchServlet extends HttpServlet {
         matchExists.put("secondParticipantUsername", secondParticipantUsername);
         matchExists.put("duration", match.getDuration());
         matchDetails = matchExists.toString();
-   g
+   

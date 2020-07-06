@@ -1,7 +1,12 @@
 #!/bin/bash
-
 set -e
+
 FILES=`find backend/ -name "*.java" -type f`
+if [[ -z $FILES ]]; then
+  echo "Failed to find any Java files in backend/"
+  exit 1
+fi
+
 echo "Found the following Java files:"
 for file in $FILES; do
   echo $file

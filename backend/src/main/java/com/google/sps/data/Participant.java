@@ -15,9 +15,15 @@ public final class Participant {
   private final int duration;
   /** Time of submitted form */
   private final long timestamp;
-  
+
   /** Initialize constructor fields */
-  public Participant(long id, String ldap, long timeAvailableUntil, String timezone, int duration, long timestamp) {
+  public Participant(
+      long id,
+      String ldap,
+      long timeAvailableUntil,
+      String timezone,
+      int duration,
+      long timestamp) {
     this.id = id;
     this.ldap = ldap;
     this.timeAvailableUntil = timeAvailableUntil;
@@ -33,7 +39,7 @@ public final class Participant {
   public String getLdap() {
     return ldap;
   }
-  
+
   public long getTimeAvailableUntil() {
     return timeAvailableUntil;
   }

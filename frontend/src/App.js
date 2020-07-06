@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import './App.css';
 import MenuBar from './menu-bar.js';
 import Form from './form.js';
+import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles(theme => ({
   contentStyle: {
@@ -25,7 +26,9 @@ export default function App() {
             you’ve been matched, and adds an event to your Calendar with a Meet link for you to 
             join immediately! It also provides a starter question to get the conversation flowing!</h4>
       </div>
-      <Form />
+      <Box m={4}>
+        <Form />  
+      </Box>
     </div>
   );
 }

@@ -21,7 +21,7 @@
     "eject": "react-scripts eject"
   },
   "engines": {
-    "node": "14.4.0"
+    "node": "10.x.x"
   },
   "eslintConfig": {
     "extends": "react-app"

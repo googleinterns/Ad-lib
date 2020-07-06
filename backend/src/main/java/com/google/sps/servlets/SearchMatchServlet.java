@@ -22,6 +22,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.gson.Gson;
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
 import java.io.IOException;
@@ -33,7 +34,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 
-/** Servlet that returns some example content. */
+/**
+* Servlet that returns some example content.
+*/
 @WebServlet("/search-match")
 public class SearchMatchServlet extends HttpServlet {
 
@@ -53,19 +56,19 @@ public class SearchMatchServlet extends HttpServlet {
     // Convert list of entities to list of matches
     List<Match> matches = new ArrayList<Match>();
     for (Entity entity : results.asIterable()) {
-      long id = (long) entity.getKey().getId();
-      Participant firstParticipant = (Participant) entity.getProperty("firstParticipant");
-      Participant secondParticipant = (Participant) entity.getProperty("secondParticipant");
-      int duration = (int) entity.getProperty("duration");
-      long timestamp = (long) entity.getProperty("timestamp");
-      Match match = new Match(id, firstParticipant, secondParticipant, duration, timestamp);
-      matches.add(match);
+        long id = (long) entity.getKey().getId();
+        Participant firstParticipant = (Participant) entity.getProperty("firstParticipant");
+        Participant secondParticipant = (Participant) entity.getProperty("secondParticipant");
+        int duration = (int) entity.getProperty("duration"); 
+        long timestamp = (long) entity.getProperty("timestamp");
+        Match match = new Match(id, firstParticipant, secondParticipant, duration, timestamp);
+        matches.add(match);
     }
 
     JSONObject matchDoesNotExist = new JSONObject();
     matchDoesNotExist.put("matchStatus", "false");
     String matchDetails = matchDoesNotExist.toString(); // default if no match found
-
+    
     // Brute force search for match
     for (Match match : matches) {
       String firstParticipantLdap = match.getFirstParticipant().getLdap();
@@ -80,7 +83,7 @@ public class SearchMatchServlet extends HttpServlet {
         break;
       }
     }
-
+    
     // Send the JSON back as the response
     response.setContentType("application/json");
     response.getWriter().println(matchDetails);

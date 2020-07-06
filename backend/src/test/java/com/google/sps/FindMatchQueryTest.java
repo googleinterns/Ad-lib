@@ -15,6 +15,7 @@
 package com.google.sps;
 
 import static com.google.common.truth.Truth.assertThat;
+
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
 import com.google.sps.data.Time;
@@ -22,8 +23,6 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Objects;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,11 +61,17 @@ public final class FindMatchQueryTest {
   public void setUp() {
     // Set "current" date to  1/1/2020 2:00pm GMT
     Calendar c = Calendar.getInstance();
-    c.set(/* year= */ 2020, /* month= */ 0, /* date= */ 1, /* hour= */ 14, /* minute= */ 0, /* second= */ 0);
+    c.set(
+        /* year= */ 2020,
+        /* month= */ 0,
+        /* date= */ 1,
+        /* hour= */ 14,
+        /* minute= */ 0,
+        /* second= */ 0);
     c.set(Calendar.MILLISECOND, 0);
     Date date = c.getTime();
 
-    clock = Clock.fixed(Instant.parse("2020-01-01T14:00:00Z"), ZoneOffset.UTC));
+    clock = Clock.fixed(Instant.parse("2020-01-01T14:00:00Z"), ZoneOffset.UTC);
 
     query = new FindMatchQuery(clock);
     time = new Time(date);
@@ -75,9 +80,23 @@ public final class FindMatchQueryTest {
   @Test
   public void compatibleTimeAndDuration() {
     // Two participants who are compatible in available time AND duration
-    Participant participantA = new Participant(ID_DEFAULT, PERSON_A, TIME_0400PM, TIMEZONE_DEFAULT, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
-    Participant participantB = new Participant(ID_DEFAULT, PERSON_B, TIME_0600PM, TIMEZONE_DEFAULT, DURATION_15_MINUTES, TIMESTAMP_DEFAULT);
-    
+    Participant participantA =
+        new Participant(
+            ID_DEFAULT,
+            PERSON_A,
+            TIME_0400PM,
+            TIMEZONE_DEFAULT,
+            DURATION_30_MINUTES,
+            TIMESTAMP_DEFAULT);
+    Participant participantB =
+        new Participant(
+            ID_DEFAULT,
+            PERSON_B,
+            TIME_0600PM,
+            TIMEZONE_DEFAULT,
+            DURATION_15_MINUTES,
+            TIMESTAMP_DEFAULT);
+
     Match match = query.findMatch(Arrays.asList(participantA), participantB);
 
     assertThat(match.getFirstParticipant().getLdap()).isEqualTo(PERSON_B);
@@ -88,9 +107,23 @@ public final class FindMatchQueryTest {
   @Test
   public void compatibleTime() {
     // Two participants who are compatible in available time but NOT duration
-    Participant participantA = new Participant(ID_DEFAULT, PERSON_A, TIME_0400PM, TIMEZONE_DEFAULT, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
-    Participant participantB = new Participant(ID_DEFAULT, PERSON_B, TIME_0600PM, TIMEZONE_DEFAULT, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
-    
+    Participant participantA =
+        new Participant(
+            ID_DEFAULT,
+            PERSON_A,
+            TIME_0400PM,
+            TIMEZONE_DEFAULT,
+            DURATION_30_MINUTES,
+            TIMESTAMP_DEFAULT);
+    Participant participantB =
+        new Participant(
+            ID_DEFAULT,
+            PERSON_B,
+            TIME_0600PM,
+            TIMEZONE_DEFAULT,
+            DURATION_60_MINUTES,
+            TIMESTAMP_DEFAULT);
+
     Match match = query.findMatch(Arrays.asList(participantA), participantB);
 
     assertThat(match).isNull();
@@ -99,23 +132,58 @@ public final class FindMatchQueryTest {
   @Test
   public void compatibleDuration() {
     // Two participants who are compatible in duration but NOT available time
-    Participant participantA = new Participant(ID_DEFAULT, PERSON_A, TIME_0250PM, TIMEZONE_DEFAULT, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
-    Participant participantB = new Participant(ID_DEFAULT, PERSON_B, TIME_0400PM, TIMEZONE_DEFAULT, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
-    
+    Participant participantA =
+        new Participant(
+            ID_DEFAULT,
+            PERSON_A,
+            TIME_0250PM,
+            TIMEZONE_DEFAULT,
+            DURATION_45_MINUTES,
+            TIMESTAMP_DEFAULT);
+    Participant participantB =
+        new Participant(
+            ID_DEFAULT,
+            PERSON_B,
+            TIME_0400PM,
+            TIMEZONE_DEFAULT,
+            DURATION_60_MINUTES,
+            TIMESTAMP_DEFAULT);
+
     Match match = query.findMatch(Arrays.asList(participantA), participantB);
-    
+
     assertThat(match).isNull();
   }
 
   @Test
   public void threeParticipants13() {
     // Three participants, 1st and 2nd aren't compatible, but 1st and 3rd are
-    Participant participantA = new Participant(ID_DEFAULT, PERSON_A, TIME_0400PM, TIMEZONE_DEFAULT, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
-    Participant participantB = new Participant(ID_DEFAULT, PERSON_B, TIME_0250PM, TIMEZONE_DEFAULT, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
-    Participant participantC = new Participant(ID_DEFAULT, PERSON_C, TIME_0600PM, TIMEZONE_DEFAULT, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
-    
+    Participant participantA =
+        new Participant(
+            ID_DEFAULT,
+            PERSON_A,
+            TIME_0400PM,
+            TIMEZONE_DEFAULT,
+            DURATION_60_MINUTES,
+            TIMESTAMP_DEFAULT);
+    Participant participantB =
+        new Participant(
+            ID_DEFAULT,
+            PERSON_B,
+            TIME_0250PM,
+            TIMEZONE_DEFAULT,
+            DURATION_45_MINUTES,
+            TIMESTAMP_DEFAULT);
+    Participant participantC =
+        new Participant(
+            ID_DEFAULT,
+            PERSON_C,
+            TIME_0600PM,
+            TIMEZONE_DEFAULT,
+            DURATION_60_MINUTES,
+            TIMESTAMP_DEFAULT);
+
     Match match = query.findMatch(Arrays.asList(participantA, participantB), participantC);
-    
+
     assertThat(match.getFirstParticipant().getLdap()).isEqualTo(PERSON_C);
     assertThat(match.getSecondParticipant().getLdap()).isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_60_MINUTES);
@@ -124,12 +192,33 @@ public final class FindMatchQueryTest {
   @Test
   public void threeParticipants23() {
     // Three participants, 1st and 2nd aren't compatible, but 2nd and 3rd are
-    Participant participantA = new Participant(ID_DEFAULT, PERSON_A, TIME_0250PM, TIMEZONE_DEFAULT, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
-    Participant participantB = new Participant(ID_DEFAULT, PERSON_B, TIME_0400PM, TIMEZONE_DEFAULT, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
-    Participant participantC = new Participant(ID_DEFAULT, PERSON_C, TIME_0600PM, TIMEZONE_DEFAULT, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
-    
+    Participant participantA =
+        new Participant(
+            ID_DEFAULT,
+            PERSON_A,
+            TIME_0250PM,
+            TIMEZONE_DEFAULT,
+            DURATION_30_MINUTES,
+            TIMESTAMP_DEFAULT);
+    Participant participantB =
+        new Participant(
+            ID_DEFAULT,
+            PERSON_B,
+            TIME_0400PM,
+            TIMEZONE_DEFAULT,
+            DURATION_60_MINUTES,
+            TIMESTAMP_DEFAULT);
+    Participant participantC =
+        new Participant(
+            ID_DEFAULT,
+            PERSON_C,
+            TIME_0600PM,
+            TIMEZONE_DEFAULT,
+            DURATION_60_MINUTES,
+            TIMESTAMP_DEFAULT);
+
     Match match = query.findMatch(Arrays.asList(participantA, participantB), participantC);
-    
+
     assertThat(match.getFirstParticipant().getLdap()).isEqualTo(PERSON_C);
     assertThat(match.getSecondParticipant().getLdap()).isEqualTo(PERSON_B);
     assertThat(match.getDuration()).isEqualTo(DURATION_60_MINUTES);
@@ -138,12 +227,33 @@ public final class FindMatchQueryTest {
   @Test
   public void threeParticipantsTwoMatches() {
     // Three participants, 1st & 2nd, 1st & 3rd are compatible but only return 1st & 3rd
-    Participant participantA = new Participant(ID_DEFAULT, PERSON_A, TIME_0400PM, TIMEZONE_DEFAULT, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
-    Participant participantB = new Participant(ID_DEFAULT, PERSON_B, TIME_0600PM, TIMEZONE_DEFAULT, DURATION_15_MINUTES, TIMESTAMP_DEFAULT);
-    Participant participantC = new Participant(ID_DEFAULT, PERSON_C, TIME_0800PM, TIMEZONE_DEFAULT, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
-    
+    Participant participantA =
+        new Participant(
+            ID_DEFAULT,
+            PERSON_A,
+            TIME_0400PM,
+            TIMEZONE_DEFAULT,
+            DURATION_30_MINUTES,
+            TIMESTAMP_DEFAULT);
+    Participant participantB =
+        new Participant(
+            ID_DEFAULT,
+            PERSON_B,
+            TIME_0600PM,
+            TIMEZONE_DEFAULT,
+            DURATION_15_MINUTES,
+            TIMESTAMP_DEFAULT);
+    Participant participantC =
+        new Participant(
+            ID_DEFAULT,
+            PERSON_C,
+            TIME_0800PM,
+            TIMEZONE_DEFAULT,
+            DURATION_45_MINUTES,
+            TIMESTAMP_DEFAULT);
+
     Match match = query.findMatch(Arrays.asList(participantA, participantB), participantC);
-    
+
     assertThat(match.getFirstParticipant().getLdap()).isEqualTo(PERSON_C);
     assertThat(match.getSecondParticipant().getLdap()).isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_30_MINUTES);

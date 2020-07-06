@@ -22,10 +22,6 @@ import com.google.sps.data.TimeHelper;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
-<<<<<<< HEAD
-import java.util.Calendar;
-=======
->>>>>>> Use ZonedDateTime in all
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

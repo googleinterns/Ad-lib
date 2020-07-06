@@ -123,8 +123,8 @@ public final class FindMatchQueryTest {
   }
 
   @Test
-  public void threeParticipants13() {
-    // Three participants, 1st and 2nd aren't compatible, but 1st and 3rd are
+  public void threeParticipantsAC() {
+    // Three participants, A & B aren't compatible, but A & C are
     Participant participantA =
         new Participant(
             ID_DEFAULT, PERSON_A, TIME_0200PM, TIME_0400PM, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
@@ -143,8 +143,8 @@ public final class FindMatchQueryTest {
   }
 
   @Test
-  public void threeParticipants23() {
-    // Three participants, 1st and 2nd aren't compatible, but 2nd and 3rd are
+  public void threeParticipantsBC() {
+    // Three participants, A & B aren't compatible, but B & C are
     Participant participantA =
         new Participant(
             ID_DEFAULT, PERSON_A, TIME_0200PM, TIME_0250PM, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
@@ -164,7 +164,7 @@ public final class FindMatchQueryTest {
 
   @Test
   public void threeParticipantsTwoMatches() {
-    // Three participants, 1st & 2nd, 1st & 3rd are compatible but only return 1st & 3rd
+    // Three participants, A & B, A & C are compatible but only return A & C
     Participant participantA =
         new Participant(
             ID_DEFAULT, PERSON_A, TIME_0200PM, TIME_0400PM, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);

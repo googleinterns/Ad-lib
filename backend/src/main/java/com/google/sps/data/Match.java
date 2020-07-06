@@ -2,7 +2,7 @@ package com.google.sps.data;
 
 /** A match of two users */
 public final class Match {
-  
+
   /** Datastore entity ID */
   private final long id;
   /** First participant */
@@ -13,17 +13,22 @@ public final class Match {
   private final int duration;
   /** Time match found */
   private final long timestamp;
-  
+
   /** Constructor */
-  public Match(long id, Participant firstParticipant, Participant secondParticipant, int duration, long timestamp) {
+  public Match(
+      long id,
+      Participant firstParticipant,
+      Participant secondParticipant,
+      int duration,
+      long timestamp) {
     this.id = id;
     this.firstParticipant = firstParticipant;
     this.secondParticipant = secondParticipant;
     this.duration = duration;
     this.timestamp = timestamp;
   }
-  
-  /** Constructor for empty match except timestamp*/
+
+  /** Constructor for empty match except timestamp */
   public Match(long timestamp) {
     this(0L, null, null, 0, timestamp);
   }
@@ -47,5 +52,4 @@ public final class Match {
   public long getTimestamp() {
     return timestamp;
   }
-
 }

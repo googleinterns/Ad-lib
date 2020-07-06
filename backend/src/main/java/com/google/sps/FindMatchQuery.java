@@ -14,27 +14,21 @@
 
 package com.google.sps;
 
-import com.google.gson.Gson;
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /** Class used to find a match in a list of Participants with the most recently added Participant */
 public final class FindMatchQuery {
 
   private Clock clock;
   private static int MAX_DURATION_DIFF = 15; // maximum difference in duration to be compatible
-  private static int PADDING_TIME = 15; // extra padding time to ensure large enough meeting time block
-  
+  private static int PADDING_TIME =
+      15; // extra padding time to ensure large enough meeting time block
+
   /** Constructor */
   public FindMatchQuery() {
     clock = new Clock();
@@ -45,11 +39,12 @@ public final class FindMatchQuery {
     this.clock = clock;
   }
 
-  /** Find match of new participant or add to list of participants, return whether or not match was found 
-    * right after being added
-    */
+  /**
+   * Find match of new participant or add to list of participants, return whether or not match was
+   * found right after being added
+   */
   public Match findMatch(List<Participant> participants, Participant newParticipant) {
-    
+
     // Compare new participant preferences with others in list to find match
     for (Participant currParticipant : participants) {
 
@@ -58,20 +53,28 @@ public final class FindMatchQuery {
       int currDuration = currParticipant.getDuration();
       boolean compatibleDuration = Math.abs(newDuration - currDuration) <= MAX_DURATION_DIFF;
       int duration = Math.min(newDuration, currDuration);
-      
+
       if (!compatibleDuration) {
         continue;
       }
-      
+
       // Check if participants are both free for that duration + extra
       long newTimeAvailableUntil = newParticipant.getTimeAvailableUntil();
       long currTimeAvailableUntil = currParticipant.getTimeAvailableUntil();
-      boolean compatibleTime = Instant.now(clock).plusMillis(Duration.ofMinutes(duration + PADDING_TIME).toMillis())
-          .isBefore(Instant.ofEpochMillis(Math.min(newTimeAvailableUntil, currTimeAvailableUntil)));
+      boolean compatibleTime =
+          Instant.now(clock)
+              .plusMillis(Duration.ofMinutes(duration + PADDING_TIME).toMillis())
+              .isBefore(
+                  Instant.ofEpochMillis(Math.min(newTimeAvailableUntil, currTimeAvailableUntil)));
 
       if (compatibleTime) {
         // TODO: change match ID (currently -1 for easy error checking)
-        return new Match(/* id= */ -1L, /* firstParticipant= */ newParticipant, /* secondParticipant= */ currParticipant, /* duration= */ duration, /* timestamp= */ date.getTime());
+        return new Match(
+            /* id= */ -1L,
+            /* firstParticipant= */ newParticipant,
+            /* secondParticipant= */ currParticipant,
+            /* duration= */ duration,
+            /* timestamp= */ date.getTime());
       }
     }
     // No inital match found

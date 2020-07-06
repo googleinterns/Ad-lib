@@ -1,10 +1,12 @@
 package com.google.sps.data;
 
-import java.util.Date;
 import java.util.Calendar;
-import java.time.LocalDateTime;
+import java.util.Date;
 
-/** Class used to set reference date/time for testing and convert input timeAvailableUntil to date timestamp */
+/**
+ * Class used to set reference date/time for testing and convert input timeAvailableUntil to date
+ * timestamp
+ */
 public final class TimeHelper {
 
   private static Date date;

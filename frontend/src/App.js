@@ -25,7 +25,7 @@ export default function App() {
             you’ve been matched, and adds an event to your Calendar with a Meet link for you to 
             join immediately! It also provides a starter question to get the conversation flowing!</h4>
       </div>
-      <Form />  
+      <Form />
     </div>
   );
 }

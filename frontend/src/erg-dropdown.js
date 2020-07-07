@@ -26,13 +26,8 @@ const ergs = [
   'Women@'
 ];
 
-export default function ERGDropdown() {
-  const [erg, setErg] = React.useState([]);
-
-  const handleChange = (event) => {
-    setErg(event.target.value);
-  };
-
+export default function ERGDropdown(props) {
+  const ergSelected = [];
   return (
     <div>
       <FormControl style={{width: 180}}>
@@ -40,15 +35,14 @@ export default function ERGDropdown() {
         <Select
           id="erg"
           multiple
-          value={erg}
-          onChange={handleChange}
+          onChange={event => props.onChange(event.target.value)}
           input={<Input />}
           renderValue={(selected) => selected.join(', ')}
           inputProps={{ "aria-label": "erg" }}
         >
           {ergs.map((currentErg) => (
             <MenuItem key={currentErg} value={currentErg}>
-              <Checkbox checked={erg.includes(currentErg)} />
+              <Checkbox checked={ergSelected.includes(currentErg)} />
               <ListItemText primary={currentErg} />
             </MenuItem>
           ))}

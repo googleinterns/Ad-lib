@@ -13,13 +13,7 @@ const yearRanges = [
   '20+ years'
 ];
 
-export default function YearDropdown() {
-  const [yearRange, setYearRange] = React.useState([]);
-
-  const handleChange = (event) => {
-    setYearRange(event.target.value);
-  };
-
+export default function YearDropdown(props) {
   return (
     <div>
       <FormControl style={{width: 180}}>
@@ -27,8 +21,7 @@ export default function YearDropdown() {
         <Select
           id="year-range-input"
           name="year-range"
-          value={yearRange}
-          onChange={handleChange}
+          onChange={event => props.onChange(event.target.value)}
           inputProps={{ "aria-label": "year-range" }}
         >
           {yearRanges.map((currentYearRange) => (

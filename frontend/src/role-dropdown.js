@@ -16,13 +16,7 @@ const roles = [
   'CEO'
 ];
 
-export default function RoleDropdown() {
-  const [role, setRole] = React.useState([]);
-
-  const handleChange = (event) => {
-    setRole(event.target.value);
-  };
-
+export default function RoleDropdown(props) {
   return (
     <div>
       <FormControl style={{width: 180}}>
@@ -30,8 +24,7 @@ export default function RoleDropdown() {
         <Select
           id="role-input"
           name="role"
-          value={role}
-          onChange={handleChange}
+          onChange={event => props.onChange(event.target.value)}
           inputProps={{ "aria-label": "role" }}
         >
           {roles.map((currentRole) => (

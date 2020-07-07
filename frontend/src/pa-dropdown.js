@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -13,29 +13,24 @@ const productAreas = [
   'Maps'
 ];
 
-export default class ProductAreaDropdown extends Component {
-  render() {
-    const { values, handleChange } = this.props; 
-
-    return (
-      <div>
-        <FormControl style={{width: 180}}>
-          <InputLabel id="productArea">Product Area</InputLabel>
-          <Select
-            id="productArea-input"
-            name="productArea"
-            defaultValue={values.productArea}
-            onChange={handleChange('productArea')}
-            inputProps={{ "aria-label": "productArea" }}
-          >
-            {productAreas.map((currentProductArea) => (
-              <MenuItem key={currentProductArea} value={currentProductArea}>
-                <ListItemText primary={currentProductArea} />
-              </MenuItem>
-            ))}  
-          </Select>
-        </FormControl>
-      </div>
-    );
-  }
+export default function ProductAreaDropdown(props) {
+  return (
+    <div>
+      <FormControl style={{width: 180}}>
+        <InputLabel id="productArea">Product Area</InputLabel>
+        <Select
+          id="productArea-input"
+          name="productArea"
+          onChange={event => props.onChange(event.target.value)}
+          inputProps={{ "aria-label": "productArea" }}
+        >
+          {productAreas.map((currentProductArea) => (
+            <MenuItem key={currentProductArea} value={currentProductArea}>
+              <ListItemText primary={currentProductArea} />
+            </MenuItem>
+          ))}  
+        </Select>
+      </FormControl>
+    </div>
+  );
 }

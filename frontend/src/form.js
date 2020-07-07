@@ -1,24 +1,23 @@
-import React, { Component } from "react";
-//import { makeStyles } from "@material-ui/core/styles";
-import FormControl from "@material-ui/core/FormControl";
-import NativeSelect from "@material-ui/core/NativeSelect";
-import TextField from "@material-ui/core/TextField";
+import React from "react";
+import 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
+import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import Switch from './switch.js';
-import Checkbox from './checkbox.js';
-import ERGDropdown from './erg-dropdown.js';
-import RoleDropdown from "./role-dropdown.js";
-import YearDropdown from "./years-dropdown.js";
-import ProductAreaDropdown from "./pa-dropdown.js";
+import Switch from './switch';
+import Checkbox from './checkbox';
+import RoleDropdown from './role-dropdown';
+import YearDropdown from './years-dropdown';
+import ProductAreaDropdown from './pa-dropdown';
+import DurationDropdown from './duration-dropdown'
 
-/*const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   inputField: {
-    margin: theme.spacing(2),
     width: 180
   },
   divStyle: {
     display: 'flex',
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
     margin: theme.spacing(2)
   },
@@ -30,79 +29,63 @@ import ProductAreaDropdown from "./pa-dropdown.js";
     margin: theme.spacing(4),
     width: 480
   }
-}));*/
+}));
 
-// Create basic form component with 
-export default class Form extends Component {
-  state = {
-    timeAvailableUntil: '',
-    duration: '',
-    role: '',
-    productArea: '',
-    years: '',
-    ergs: '',
-    similarityRating: '',
-    savePreferences: ''
-  };
+// Create basic form component with availability and personal input fields and submit button
+export default function Form() {
+  const classes = useStyles();
 
-  // Handle state changes to fields
-  handleChange = input => event => {
-    this.setState({ [input]: event.target.value });
-    console.log(input, " : ", event.target.value);
-  };
+  // Declare new state variables and set default states 
+  const [timeAvailableUntil, setTimeAvailableUntil] = React.useState(new Date());
+  const [duration, setDuration] = React.useState(15);
+  const [productArea, setProductArea] = React.useState('');
+  const [role, setRole] = React.useState('');
+  const [yearRange, setYearRange] = React.useState('');
 
-  render() {
-    //const classes = useStyles();
-    const { timeAvailableUntil, duration, role, productArea, years, ergs, similarityRating, savePreferences } = this.state;
-    const values = { timeAvailableUntil, duration, role, productArea, years, ergs, similarityRating, savePreferences };
-    return (
-      <div>
-        <div>
-          <div>
-            <p>I'm free until...</p>
-            <TextField
-              id="time"
-              type="time"
-              defaultValue="09:30"/>
-          </div>
-          <div>
-            <p>I want to talk for...</p>
-            <FormControl>
-              <NativeSelect
-                id="duration-input"
-                name="duration"
-                inputProps={{ "aria-label": "duration" }}
-              >
-                <option value={15}>15 minutes</option>
-                <option value={30}>30 minutes</option>
-                <option value={45}>45 minutes</option>
-                <option value={60}>60 minutes</option>
-              </NativeSelect>
-            </FormControl>
-          </div>
-        </div>  
-        <div>
-          <h4>About me:</h4>
-          <RoleDropdown handleChange={this.handleChange} values={values} />
-          <ProductAreaDropdown handleChange={this.handleChange} values={values} />
-          <YearDropdown handleChange={this.handleChange} values={values} />
-          <ERGDropdown handleChange={this.handleChange} values={values} />
-        </div>
-        <div>
-          <div>
-            <p>Match me with a similar Googler</p>
-            <Switch />
+  return (
+    <div>
+      <div className={classes.section}>
+        <div className={classes.divStyle}>
+          <p>I'm free until...</p>
+          <div className={classes.inputField}>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardTimePicker
+                id="time-field"
+                value={timeAvailableUntil}
+                onChange={value => setTimeAvailableUntil(value)}
+                KeyboardButtonProps={{ 'aria-label': 'time-field' }}
+              />
+            </MuiPickersUtilsProvider>
           </div>
         </div>
-        <div>
-          <Checkbox />
-          <div>
-            <Button variant="contained" color="primary">
-              Match me!
-            </Button>
-          </div>
+        <div className={classes.divStyle}>
+          <p>I want to talk for...</p>
+          <DurationDropdown onChange={value => setDuration(value)} />
+        </div>
+      </div>  
+      <div className={classes.about}>
+        <h4>About me:</h4>
+        <RoleDropdown className={classes.inputField} onChange={value => setRole(value)} />
+        <ProductAreaDropdown className={classes.inputField} onChange={value => setProductArea(value)} />
+        <YearDropdown className={classes.inputField} onChange={value => setYearRange(value)} />
+      </div>
+      <div className={classes.section}>
+        <div className={classes.divStyle}>
+          <p>Match me with a similar Googler</p>
+          <Switch className={classes.inputField}/>
         </div>
       </div>
-    )
-  }
+      <div>
+        <Checkbox className={classes.inputField}/>
+        <div className={classes.divStyle}>
+          { /* TO-DO: change alert to JSON object that is sent over to backend */ }
+          <Button variant="contained" color="primary" onClick={() => { 
+            alert('Availability: ' + timeAvailableUntil + '\nDuration: ' + duration + 
+            '\nRole: ' + role + '\nPA: ' + productArea + '\nYears: ' + yearRange)}}>
+            Submit
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
 }

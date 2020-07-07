@@ -4,12 +4,12 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import Switch from './switch';
-import Checkbox from './checkbox';
-import RoleDropdown from './role-dropdown';
-import YearDropdown from './years-dropdown';
-import ProductAreaDropdown from './pa-dropdown';
-import DurationDropdown from './duration-dropdown'
+import MatchPreference from './MatchPreference';
+import Checkbox from './PreferencesCheckbox';
+import RoleDropdown from './RoleDropdown';
+import YearDropdown from './YearsDropdown';
+import ProductAreaDropdown from './ProductAreaDropdown';
+import DurationDropdown from './DurationDropdown'
 
 const useStyles = makeStyles(theme => ({
   inputField: {
@@ -23,12 +23,12 @@ const useStyles = makeStyles(theme => ({
   },
   section: {
     margin: theme.spacing(2),
-    width: 480
+    width: 650
   },
   about: {
     margin: theme.spacing(4),
-    width: 480
   }
+
 }));
 
 // Create basic form component with availability and personal input fields and submit button
@@ -41,6 +41,8 @@ export default function Form() {
   const [productArea, setProductArea] = React.useState('');
   const [role, setRole] = React.useState('');
   const [yearRange, setYearRange] = React.useState('');
+  const [savePreference, setSavePreference] = React.useState(true);
+  const [matchPreference, setMatchPreference] = React.useState('none');
 
   return (
     <div>
@@ -64,24 +66,26 @@ export default function Form() {
         </div>
       </div>  
       <div className={classes.about}>
-        <h4>About me:</h4>
-        <RoleDropdown className={classes.inputField} onChange={value => setRole(value)} />
-        <ProductAreaDropdown className={classes.inputField} onChange={value => setProductArea(value)} />
-        <YearDropdown className={classes.inputField} onChange={value => setYearRange(value)} />
+        <h4>About me...</h4>
       </div>
       <div className={classes.section}>
         <div className={classes.divStyle}>
-          <p>Match me with a similar Googler</p>
-          <Switch className={classes.inputField}/>
+            <RoleDropdown className={classes.inputField} onChange={value => setRole(value)} />
+            <ProductAreaDropdown className={classes.inputField} onChange={value => setProductArea(value)} />
+            <YearDropdown className={classes.inputField} onChange={value => setYearRange(value)} />
+        </div>
+        <div className={classes.divStyle}>
+          <p>Match preference</p>
+          <MatchPreference onChange={value => setMatchPreference(value)} />
         </div>
       </div>
       <div>
-        <Checkbox className={classes.inputField}/>
+        <Checkbox className={classes.inputField} onChange={value => setSavePreference(value)} />
         <div className={classes.divStyle}>
           { /* TO-DO: change alert to JSON object that is sent over to backend */ }
           <Button variant="contained" color="primary" onClick={() => { 
-            alert('Availability: ' + timeAvailableUntil + '\nDuration: ' + duration + 
-            '\nRole: ' + role + '\nPA: ' + productArea + '\nYears: ' + yearRange)}}>
+            alert('Availability: ' + timeAvailableUntil + '\nDuration: ' + duration + '\nRole: ' + role +
+            '\nPA: ' + productArea + '\nYears: ' + yearRange + '\nSave: ' + savePreference + '\nMatch: ' + matchPreference)}}>
             Submit
           </Button>
         </div>

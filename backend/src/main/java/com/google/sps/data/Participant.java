@@ -29,7 +29,10 @@ public final class Participant {
       long timestamp) {
     this.id = id;
     this.username = username;
-    Preconditions.checkArgument(startTimeAvailable.isBefore(endTimeAvailable));
+
+    Preconditions.checkArgument(
+        startTimeAvailable.isBefore(endTimeAvailable),
+        "Start available time must be before end available time.");
     this.startTimeAvailable = startTimeAvailable;
     this.endTimeAvailable = endTimeAvailable;
     this.duration = duration;

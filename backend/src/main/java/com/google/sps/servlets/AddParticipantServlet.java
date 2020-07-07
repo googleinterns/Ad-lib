@@ -43,14 +43,10 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/add-participant")
 public class AddParticipantServlet extends HttpServlet {
 
-  /** Datastore Key constant strings */
+  // Datastore Key/Property constants
   private static final String KEY_PARTICIPANT = "Participant";
-
   private static final String KEY_MATCH = "Match";
-
-  /** Datastore Property constant strings */
   private static final String PROPERTY_USERNAME = "username";
-
   private static final String PROPERTY_STARTTIMEAVAILABLE = "startTimeAvailable";
   private static final String PROPERTY_ENDTIMEAVAILABLE = "endTimeAvailable";
   private static final String PROPERTY_DURATION = "duration";

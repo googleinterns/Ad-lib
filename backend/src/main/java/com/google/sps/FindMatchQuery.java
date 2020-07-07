@@ -22,12 +22,12 @@ import java.util.List;
 /** Class used to find a match in a list of Participants with the most recently added Participant */
 public final class FindMatchQuery {
 
-  /** Reference date time for "current" time */
-  private ZonedDateTime dateTime;
   /** Maximum difference in duration to be compatible */
   private static int MAX_DURATION_DIFF = 15;
   /** extra padding time to ensure large enough meeting time block */
   private static int PADDING_TIME = 15;
+  /** Reference date time for "current" time */
+  private ZonedDateTime dateTime;
 
   /** Set "current" date and time to calculate whether a match is possible in time */
   public FindMatchQuery(ZonedDateTime dateTime) {

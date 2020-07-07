@@ -1,5 +1,6 @@
 package com.google.sps.data;
 
+import com.google.common.base.Preconditions;
 import java.time.ZonedDateTime;
 
 /** A user who want to be matched. */
@@ -28,6 +29,7 @@ public final class Participant {
       long timestamp) {
     this.id = id;
     this.username = username;
+    Preconditions.checkArgument(startTimeAvailable.isBefore(endTimeAvailable));
     this.startTimeAvailable = startTimeAvailable;
     this.endTimeAvailable = endTimeAvailable;
     this.duration = duration;

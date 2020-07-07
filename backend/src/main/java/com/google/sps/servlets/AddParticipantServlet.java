@@ -50,7 +50,8 @@ public class AddParticipantServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     if (email == null) {
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Invalid email.");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid email.");
+      return;
     }
     String username = email.split("@")[0];
 
@@ -68,7 +69,8 @@ public class AddParticipantServlet extends HttpServlet {
 
     int duration = convertToPositiveInt(request.getParameter("duration"));
     if (duration == -1) {
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Invalid duration.");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
+      return;
     }
 
     long timestamp = System.currentTimeMillis();
@@ -81,7 +83,7 @@ public class AddParticipantServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     // Find immediate match if possible
-    FindMatchQuery query = new FindMatchQuery();
+    FindMatchQuery query = new FindMatchQuery(ZonedDateTime.now());
     Match match = query.findMatch(getParticipants(datastore), newParticipant);
 
     // Match found, add to datastore, delete matched participants from datastore

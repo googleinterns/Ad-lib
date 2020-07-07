@@ -22,14 +22,6 @@ public final class TimeHelper {
 
   /** Return today's date with time of hour:minute */
   public static ZonedDateTime getNewTimeToday(int hour, int minute) {
-    // Validate hour and minute
-    if (hour < 0 || hour >= 24) {
-      throw new IllegalArgumentException("Hours can only be 0 through 23 (inclusive).");
-    }
-    if (minute < 0 || minute >= 60) {
-      throw new IllegalArgumentException("Minutes can only be 0 through 59 (inclusive).");
-    }
-
     // Calculate current date but with hour:minute time
     // TODO: All times are currently today, wrap around times?
     return dateTime.withHour(hour).withMinute(minute).withNano(0);

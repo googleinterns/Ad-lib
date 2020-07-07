@@ -54,12 +54,12 @@ public final class FindMatchQueryTest {
   private static final int DURATION_60_MINUTES = 60;
 
   private FindMatchQuery query;
-  private TimeHelper timeHelper;
+  private ZonedDateTime dateTime;
 
   @Before
   public void setUp() {
     // Set "current" date to  1/1/2020 2:00pm ET
-    ZonedDateTime dateTime =
+    dateTime =
         ZonedDateTime.of(
             /* year= */ 2020,
             /* month= */ 1,
@@ -69,10 +69,8 @@ public final class FindMatchQueryTest {
             /* second= */ 0,
             /* nanosecond= */ 0,
             /* zone= */ ZoneId.of("US/Eastern"));
-    timeHelper = new TimeHelper(dateTime);
 
     query = new FindMatchQuery(dateTime);
-    timeHelper = new TimeHelper(dateTime);
   }
 
   @Test

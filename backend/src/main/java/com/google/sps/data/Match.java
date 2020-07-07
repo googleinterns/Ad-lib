@@ -1,6 +1,11 @@
 package com.google.sps.data;
 
-/** A match of two participants */
+/**
+ * A match of two participants. Note: Match includes entire Participants (with unique ID per
+ * submitted form) instead of just usernames because a username may be involved in multiple matches
+ * over time. This issue can be resolved if we delete matches from the datastore after the users are
+ * notified of the match.
+ */
 public final class Match {
 
   /** Datastore entity ID */
@@ -21,10 +26,6 @@ public final class Match {
       Participant secondParticipant,
       int duration,
       long timestamp) {
-    // Note: Match includes entire Participants instead of just usernames to distinguish between a
-    // user participating
-    // and finding a match multiple times. This wouldn't be an issue if we deleted matches from the
-    // datastore.
     this.id = id;
     this.firstParticipant = firstParticipant;
     this.secondParticipant = secondParticipant;

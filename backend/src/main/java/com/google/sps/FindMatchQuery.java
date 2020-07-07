@@ -22,17 +22,14 @@ import java.util.List;
 /** Class used to find a match in a list of Participants with the most recently added Participant */
 public final class FindMatchQuery {
 
+  /** Reference date time for "current" time */
   private ZonedDateTime dateTime;
-  private static int MAX_DURATION_DIFF = 15; // maximum difference in duration to be compatible
-  private static int PADDING_TIME =
-      15; // extra padding time to ensure large enough meeting time block
+  /** Maximum difference in duration to be compatible */
+  private static int MAX_DURATION_DIFF = 15;
+  /** extra padding time to ensure large enough meeting time block */
+  private static int PADDING_TIME = 15;
 
-  /** Constructor */
-  public FindMatchQuery() {
-    this(ZonedDateTime.now());
-  }
-
-  /** Constructor with manually set date */
+  /** Set "current" date and time to calculate whether a match is possible in time */
   public FindMatchQuery(ZonedDateTime dateTime) {
     this.dateTime = dateTime;
   }
@@ -68,10 +65,10 @@ public final class FindMatchQuery {
         // TODO: change match ID (currently -1 for easy error checking)
         return new Match(
             /* id= */ -1L,
-            /* firstParticipant= */ newParticipant,
-            /* secondParticipant= */ currParticipant,
-            /* duration= */ duration,
-            /* timestamp= */ dateTime.toInstant().toEpochMilli());
+            newParticipant,
+            currParticipant,
+            duration,
+            dateTime.toInstant().toEpochMilli());
       }
     }
     // No inital match found
@@ -80,10 +77,6 @@ public final class FindMatchQuery {
 
   /** Return earlier of two ZonedDateTime objects */
   private ZonedDateTime getEarlier(ZonedDateTime first, ZonedDateTime second) {
-    if (first.isBefore(second)) {
-      return first;
-    } else {
-      return second;
-    }
+    return first.isBefore(second) ? first : second;
   }
 }

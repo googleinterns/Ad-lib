@@ -43,7 +43,8 @@ public class SearchMatchServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     if (email == null) {
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Invalid email.");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid email.");
+      return;
     }
     String username = email.split("@")[0];
 

@@ -15,7 +15,7 @@ yarn local
 ### Back-end
 ```bash
 cd backend
-mvn appengine:run
+mvn package appengine:run
 ```
 or <br />
 ```bash
@@ -45,5 +45,5 @@ gcloud app deploy
 ### Java back-end
 ```bash
 cd backend
-mvn appengine:deploy
+mvn package appengine:deploy
 ```

@@ -93,11 +93,11 @@ public class AddParticipantServlet extends HttpServlet {
     } else {
       // Match not found, insert participant entity into datastore
       Entity participantEntity = new Entity("Participant");
-      participantEntity.setProperty("username", username);
-      participantEntity.setProperty("startTimeAvailable", startTimeAvailable);
-      participantEntity.setProperty("endTimeAvailable", endTimeAvailable);
-      participantEntity.setProperty("duration", duration);
-      participantEntity.setProperty("timestamp", timestamp);
+      participantEntity.setProperty("username", newParticipant.getUsername());
+      participantEntity.setProperty("startTimeAvailable", newParticipant.getStartTimeAvailable());
+      participantEntity.setProperty("endTimeAvailable", newParticipant.getEndTimeAvailable());
+      participantEntity.setProperty("duration", newParticipant.getDuration());
+      participantEntity.setProperty("timestamp", newParticipant.getTimestamp());
       datastore.put(participantEntity);
     }
 

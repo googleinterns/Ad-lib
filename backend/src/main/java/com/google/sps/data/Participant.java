@@ -58,4 +58,8 @@ public final class Participant {
   public int getDuration() {
     return duration;
   }
+
+  public long getTimestamp() {
+    return timestamp;
+  }
 }

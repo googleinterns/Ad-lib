@@ -41,12 +41,12 @@ public final class FindMatchQueryTest {
   private static final long TIMESTAMP_DEFAULT = 0;
 
   // Some times available until on 1/1/2020
-  private static final ZonedDateTime TIME_0200PM = TimeHelper.getNewDateTime(14, 0);
-  private static final ZonedDateTime TIME_0250PM = TimeHelper.getNewDateTime(14, 50);
-  private static final ZonedDateTime TIME_0330PM = TimeHelper.getNewDateTime(15, 30);
-  private static final ZonedDateTime TIME_0400PM = TimeHelper.getNewDateTime(16, 0);
-  private static final ZonedDateTime TIME_0600PM = TimeHelper.getNewDateTime(18, 0);
-  private static final ZonedDateTime TIME_0800PM = TimeHelper.getNewDateTime(20, 0);
+  private static final ZonedDateTime TIME_0200PM = TimeHelper.getNewTimeToday(14, 0);
+  private static final ZonedDateTime TIME_0250PM = TimeHelper.getNewTimeToday(14, 50);
+  private static final ZonedDateTime TIME_0330PM = TimeHelper.getNewTimeToday(15, 30);
+  private static final ZonedDateTime TIME_0400PM = TimeHelper.getNewTimeToday(16, 0);
+  private static final ZonedDateTime TIME_0600PM = TimeHelper.getNewTimeToday(18, 0);
+  private static final ZonedDateTime TIME_0800PM = TimeHelper.getNewTimeToday(20, 0);
 
   private static final int DURATION_15_MINUTES = 15;
   private static final int DURATION_30_MINUTES = 30;

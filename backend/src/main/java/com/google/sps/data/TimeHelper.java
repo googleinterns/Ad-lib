@@ -21,7 +21,7 @@ public final class TimeHelper {
   }
 
   /** Return today's date with time of hour:minute */
-  public static ZonedDateTime getNewDateTime(int hour, int minute) {
+  public static ZonedDateTime getNewTimeToday(int hour, int minute) {
     // Validate hour and minute
     if (hour < 0 || hour >= 24) {
       throw new IllegalArgumentException("Hours can only be 0 through 23 (inclusive).");

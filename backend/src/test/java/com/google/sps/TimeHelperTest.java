@@ -42,15 +42,15 @@ public final class TimeHelperTest {
             /* second= */ 0,
             /* nanosecond= */ 0,
             /* zone= */ ZoneId.of("US/Eastern"));
-    assertThat(dateTime).isEqualTo(TimeHelper.getNewTimeToday(14, 0));
+    assertThat(TimeHelper.getNewTimeToday(14, 0)).isEqualTo(dateTime);
 
     // 1/1/2020 10:30am ET
     dateTime = dateTime.withHour(10).withMinute(30);
-    assertThat(dateTime).isEqualTo(TimeHelper.getNewTimeToday(10, 30));
+    assertThat(TimeHelper.getNewTimeToday(10, 30)).isEqualTo(dateTime);
 
     // 1/1/2020 11:45pm ET
     dateTime = dateTime.withHour(23).withMinute(45);
-    assertThat(dateTime).isEqualTo(TimeHelper.getNewTimeToday(23, 45));
+    assertThat(TimeHelper.getNewTimeToday(23, 45)).isEqualTo(dateTime);
   }
 
   @Test(expected = DateTimeException.class)

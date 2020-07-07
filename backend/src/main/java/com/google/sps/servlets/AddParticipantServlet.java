@@ -43,6 +43,21 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/add-participant")
 public class AddParticipantServlet extends HttpServlet {
 
+  /** Datastore Key constant strings */
+  private static final String KEY_PARTICIPANT = "Participant";
+
+  private static final String KEY_MATCH = "Match";
+
+  /** Datastore Property constant strings */
+  private static final String PROPERTY_USERNAME = "username";
+
+  private static final String PROPERTY_STARTTIMEAVAILABLE = "startTimeAvailable";
+  private static final String PROPERTY_ENDTIMEAVAILABLE = "endTimeAvailable";
+  private static final String PROPERTY_DURATION = "duration";
+  private static final String PROPERTY_TIMESTAMP = "timestamp";
+  private static final String PROPERTY_FIRSTPARTICIPANT = "firstParticipant";
+  private static final String PROPERTY_SECONDPARTICIPANT = "secondParticipant";
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Request parameter values
@@ -92,12 +107,12 @@ public class AddParticipantServlet extends HttpServlet {
       deleteParticipantFromDatastore(match.getSecondParticipant(), datastore);
     } else {
       // Match not found, insert participant entity into datastore
-      Entity participantEntity = new Entity("Participant");
-      participantEntity.setProperty("username", newParticipant.getUsername());
-      participantEntity.setProperty("startTimeAvailable", newParticipant.getStartTimeAvailable());
-      participantEntity.setProperty("endTimeAvailable", newParticipant.getEndTimeAvailable());
-      participantEntity.setProperty("duration", newParticipant.getDuration());
-      participantEntity.setProperty("timestamp", newParticipant.getTimestamp());
+      Entity participantEntity = new Entity(KEY_PARTICIPANT);
+      participantEntity.setProperty(PROPERTY_USERNAME, username);
+      participantEntity.setProperty(PROPERTY_STARTTIMEAVAILABLE, startTimeAvailable);
+      participantEntity.setProperty(PROPERTY_ENDTIMEAVAILABLE, endTimeAvailable);
+      participantEntity.setProperty(PROPERTY_DURATION, duration);
+      participantEntity.setProperty(PROPERTY_TIMESTAMP, timestamp);
       datastore.put(participantEntity);
     }
 
@@ -109,18 +124,20 @@ public class AddParticipantServlet extends HttpServlet {
   private List<Participant> getParticipants(DatastoreService datastore) {
 
     // Create and sort participant queries by time
-    Query query = new Query("Participant").addSort("timestamp", SortDirection.DESCENDING);
+    Query query = new Query(KEY_PARTICIPANT).addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
 
     // Convert list of entities to list of participants
     List<Participant> participants = new ArrayList<Participant>();
     for (Entity entity : results.asIterable()) {
       long id = (long) entity.getKey().getId();
-      String username = (String) entity.getProperty("username");
-      ZonedDateTime startTimeAvailable = (ZonedDateTime) entity.getProperty("startTimeAvailable");
-      ZonedDateTime endTimeAvailable = (ZonedDateTime) entity.getProperty("endTimeAvailable");
-      int duration = (int) entity.getProperty("duration");
-      long timestamp = (long) entity.getProperty("timestamp");
+      String username = (String) entity.getProperty(PROPERTY_USERNAME);
+      ZonedDateTime startTimeAvailable =
+          (ZonedDateTime) entity.getProperty(PROPERTY_STARTTIMEAVAILABLE);
+      ZonedDateTime endTimeAvailable =
+          (ZonedDateTime) entity.getProperty(PROPERTY_ENDTIMEAVAILABLE);
+      int duration = (int) entity.getProperty(PROPERTY_DURATION);
+      long timestamp = (long) entity.getProperty(PROPERTY_TIMESTAMP);
       Participant currParticipant =
           new Participant(id, username, startTimeAvailable, endTimeAvailable, duration, timestamp);
       participants.add(currParticipant);
@@ -131,11 +148,11 @@ public class AddParticipantServlet extends HttpServlet {
   /** Add Match pair to datastore */
   private void addMatchToDatastore(Match match, DatastoreService datastore) {
     // Set properties of entity
-    Entity matchEntity = new Entity("Match");
-    matchEntity.setProperty("firstParticipant", match.getFirstParticipant());
-    matchEntity.setProperty("secondParticipant", match.getSecondParticipant());
-    matchEntity.setProperty("duration", match.getDuration());
-    matchEntity.setProperty("timestamp", match.getTimestamp());
+    Entity matchEntity = new Entity(KEY_MATCH);
+    matchEntity.setProperty(PROPERTY_FIRSTPARTICIPANT, match.getFirstParticipant());
+    matchEntity.setProperty(PROPERTY_SECONDPARTICIPANT, match.getSecondParticipant());
+    matchEntity.setProperty(PROPERTY_DURATION, match.getDuration());
+    matchEntity.setProperty(PROPERTY_TIMESTAMP, match.getTimestamp());
 
     // Insert entity into datastore
     datastore.put(matchEntity);
@@ -143,7 +160,7 @@ public class AddParticipantServlet extends HttpServlet {
 
   /** Delete matched participants from datastore */
   private void deleteParticipantFromDatastore(Participant participant, DatastoreService datastore) {
-    Key participantEntityKey = KeyFactory.createKey("Participant", participant.getId());
+    Key participantEntityKey = KeyFactory.createKey(KEY_PARTICIPANT, participant.getId());
     datastore.delete(participantEntityKey);
   }
 

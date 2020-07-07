@@ -37,6 +37,16 @@ import org.json.simple.JSONObject;
 @WebServlet("/search-match")
 public class SearchMatchServlet extends HttpServlet {
 
+  /** Datastore Key constant string */
+  private static final String KEY_MATCH = "Match";
+
+  /** Datastore Property constant strings */
+  private static final String PROPERTY_FIRSTPARTICIPANT = "firstParticipant";
+
+  private static final String PROPERTY_SECONDPARTICIPANT = "secondParticipant";
+  private static final String PROPERTY_DURATION = "duration";
+  private static final String PROPERTY_TIMESTAMP = "timestamp";
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get participant username
@@ -50,7 +60,7 @@ public class SearchMatchServlet extends HttpServlet {
 
     // Create and sort queries by time
     // TODO: eventually sort by startTimeAvailable
-    Query query = new Query("Match").addSort("timestamp", SortDirection.DESCENDING);
+    Query query = new Query(KEY_MATCH).addSort("timestamp", SortDirection.DESCENDING);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
@@ -59,10 +69,10 @@ public class SearchMatchServlet extends HttpServlet {
     List<Match> matches = new ArrayList<Match>();
     for (Entity entity : results.asIterable()) {
       long id = (long) entity.getKey().getId();
-      Participant firstParticipant = (Participant) entity.getProperty("firstParticipant");
-      Participant secondParticipant = (Participant) entity.getProperty("secondParticipant");
-      int duration = (int) entity.getProperty("duration");
-      long timestamp = (long) entity.getProperty("timestamp");
+      Participant firstParticipant = (Participant) entity.getProperty(PROPERTY_FIRSTPARTICIPANT);
+      Participant secondParticipant = (Participant) entity.getProperty(PROPERTY_SECONDPARTICIPANT);
+      int duration = (int) entity.getProperty(PROPERTY_DURATION);
+      long timestamp = (long) entity.getProperty(PROPERTY_TIMESTAMP);
       Match match = new Match(id, firstParticipant, secondParticipant, duration, timestamp);
       matches.add(match);
     }

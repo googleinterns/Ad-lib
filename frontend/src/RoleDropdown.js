@@ -13,7 +13,7 @@ const roles = [
   'Intern',
   'VP',
   'Director',
-  'CEO'
+  'CEO',
 ];
 
 export default function RoleDropdown(props) {
@@ -24,14 +24,14 @@ export default function RoleDropdown(props) {
         <Select
           id="role-input"
           name="role"
-          onChange={event => props.onChange(event.target.value)}
-          inputProps={{ "aria-label": "role" }}
+          onChange={(event) => props.onChange(event.target.value)}
+          inputProps={{'aria-label': 'role'}}
         >
           {roles.map((currentRole) => (
             <MenuItem key={currentRole} value={currentRole}>
               <ListItemText primary={currentRole} />
             </MenuItem>
-          ))}  
+          ))}
         </Select>
       </FormControl>
     </div>

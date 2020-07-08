@@ -10,7 +10,7 @@ const yearRanges = [
   '6-10 years',
   '11-15 years',
   '16-20 years',
-  '20+ years'
+  '20+ years',
 ];
 
 export default function YearDropdown(props) {
@@ -21,14 +21,14 @@ export default function YearDropdown(props) {
         <Select
           id="year-range-input"
           name="year-range"
-          onChange={event => props.onChange(event.target.value)}
-          inputProps={{ "aria-label": "year-range" }}
+          onChange={(event) => props.onChange(event.target.value)}
+          inputProps={{'aria-label': 'year-range'}}
         >
           {yearRanges.map((currentYearRange) => (
             <MenuItem key={currentYearRange} value={currentYearRange}>
               <ListItemText primary={currentYearRange} />
             </MenuItem>
-          ))}  
+          ))}
         </Select>
       </FormControl>
     </div>

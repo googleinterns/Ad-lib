@@ -9,7 +9,7 @@ export default function PreferencesCheckbox(props) {
       labelPlacement="start"
       control={
         <Checkbox
-          onChange={event => props.onChange(event.target.checked)}
+          onChange={(event) => props.onChange(event.target.checked)}
           name="checkbox"
           color="primary"
           defaultChecked="true"

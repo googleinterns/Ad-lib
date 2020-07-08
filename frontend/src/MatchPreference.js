@@ -7,12 +7,12 @@ import FormControl from '@material-ui/core/FormControl';
 export default function MatchPreference(props) {
   return (
     <FormControl component="fieldset">
-      <RadioGroup 
+      <RadioGroup
         row
         aria-label="matchPreference"
         name="matchPreference"
         defaultValue="none"
-        onChange={event => props.onChange(event.target.value)}
+        onChange={(event) => props.onChange(event.target.value)}
       >
         <FormControlLabel value="similar" control={<Radio color="primary" />} label="Similar Googler" />
         <FormControlLabel value="none" control={<Radio color="primary" />} label="No Preference" />

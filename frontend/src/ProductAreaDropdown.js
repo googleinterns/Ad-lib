@@ -10,7 +10,7 @@ const productAreas = [
   'Search',
   'Ads',
   'Youtube',
-  'Maps'
+  'Maps',
 ];
 
 export default function ProductAreaDropdown(props) {
@@ -21,14 +21,14 @@ export default function ProductAreaDropdown(props) {
         <Select
           id="productArea-input"
           name="productArea"
-          onChange={event => props.onChange(event.target.value)}
-          inputProps={{ "aria-label": "productArea" }}
+          onChange={(event) => props.onChange(event.target.value)}
+          inputProps={{'aria-label': 'productArea'}}
         >
           {productAreas.map((currentProductArea) => (
             <MenuItem key={currentProductArea} value={currentProductArea}>
               <ListItemText primary={currentProductArea} />
             </MenuItem>
-          ))}  
+          ))}
         </Select>
       </FormControl>
     </div>

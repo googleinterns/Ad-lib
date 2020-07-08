@@ -94,10 +94,8 @@ public class AddParticipantServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    // Find immediate match if possible
-    ZonedDateTime dateTime = ZonedDateTime.now();
-    Clock clock = Clock.fixed(dateTime.toInstant(), dateTime.getZone());
-    FindMatchQuery query = new FindMatchQuery(clock);
+    // Find immediate match if possibl;
+    FindMatchQuery query = new FindMatchQuery(Clock.systemUTC());
     Match match = query.findMatch(getParticipants(datastore), newParticipant);
 
     // Match found, add to datastore, delete matched participants from datastore

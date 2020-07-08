@@ -61,7 +61,7 @@ public final class FindMatchQueryTest {
       currentDateTimeET.withZoneSameInstant(ZoneId.of("US/Pacific"));
 
   // Some times available until on 1/1/2020
-  private static final ZonedDateTime TIME_1400ET = currentDateTimeET;;
+  private static final ZonedDateTime TIME_1400ET = currentDateTimeET;
   private static final ZonedDateTime TIME_1450ET = getNewTimeToday(currentDateTimeET, 14, 50);
   private static final ZonedDateTime TIME_1500ET = getNewTimeToday(currentDateTimeET, 15, 0);
   private static final ZonedDateTime TIME_1501ET = getNewTimeToday(currentDateTimeET, 15, 1);

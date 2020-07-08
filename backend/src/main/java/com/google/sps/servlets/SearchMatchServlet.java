@@ -37,15 +37,33 @@ import org.json.simple.JSONObject;
 @WebServlet("/search-match")
 public class SearchMatchServlet extends HttpServlet {
 
+  // Datastore Key/Property constants
+  private static final String KEY_MATCH = "Match";
+  private static final String PROPERTY_FIRSTPARTICIPANT = "firstParticipant";
+  private static final String PROPERTY_SECONDPARTICIPANT = "secondParticipant";
+  private static final String PROPERTY_DURATION = "duration";
+  private static final String PROPERTY_TIMESTAMP = "timestamp";
+
+  // JSON key constants
+  private static final String KEY_MATCHSTATUS = "matchStatus";
+  private static final String KEY_FIRSTPARTICIPANTUSERNAME = "firstParticipantUsername";
+  private static final String KEY_SECONDPARTICIPANTUSERNAME = "secondParticipantUsername";
+  private static final String KEY_DURATION = "duration";
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Get participant ldap
+    // Get participant username
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
-    String ldap = email.split("@")[0];
+    if (email == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid email.");
+      return;
+    }
+    String username = email.split("@")[0];
 
     // Create and sort queries by time
-    Query query = new Query("Match").addSort("timestamp", SortDirection.DESCENDING);
+    // TODO: eventually sort by startTimeAvailable
+    Query query = new Query(KEY_MATCH).addSort(PROPERTY_TIMESTAMP, SortDirection.DESCENDING);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
@@ -54,29 +72,30 @@ public class SearchMatchServlet extends HttpServlet {
     List<Match> matches = new ArrayList<Match>();
     for (Entity entity : results.asIterable()) {
       long id = (long) entity.getKey().getId();
-      Participant firstParticipant = (Participant) entity.getProperty("firstParticipant");
-      Participant secondParticipant = (Participant) entity.getProperty("secondParticipant");
-      int duration = (int) entity.getProperty("duration");
-      long timestamp = (long) entity.getProperty("timestamp");
+      Participant firstParticipant = (Participant) entity.getProperty(PROPERTY_FIRSTPARTICIPANT);
+      Participant secondParticipant = (Participant) entity.getProperty(PROPERTY_SECONDPARTICIPANT);
+      int duration = (int) entity.getProperty(PROPERTY_DURATION);
+      long timestamp = (long) entity.getProperty(PROPERTY_TIMESTAMP);
       Match match = new Match(id, firstParticipant, secondParticipant, duration, timestamp);
       matches.add(match);
     }
 
     JSONObject matchDoesNotExist = new JSONObject();
-    matchDoesNotExist.put("matchStatus", "false");
+    matchDoesNotExist.put(KEY_MATCHSTATUS, "false");
     String matchDetails = matchDoesNotExist.toString(); // default if no match found
 
     // Brute force search for match
     for (Match match : matches) {
-      String firstParticipantLdap = match.getFirstParticipant().getLdap();
-      String secondParticipantLdap = match.getSecondParticipant().getLdap();
-      if (ldap.equals(firstParticipantLdap) || ldap.equals(secondParticipantLdap)) {
+      String firstParticipantUsername = match.getFirstParticipant().getUsername();
+      String secondParticipantUsername = match.getSecondParticipant().getUsername();
+      if (username.equals(firstParticipantUsername) || username.equals(secondParticipantUsername)) {
         JSONObject matchExists = new JSONObject();
-        matchExists.put("matchStatus", "true");
-        matchExists.put("firstParticipantLdap", firstParticipantLdap);
-        matchExists.put("secondParticipantLdap", secondParticipantLdap);
-        matchExists.put("duration", match.getDuration());
+        matchExists.put(KEY_MATCHSTATUS, "true");
+        matchExists.put(KEY_FIRSTPARTICIPANTUSERNAME, firstParticipantUsername);
+        matchExists.put(KEY_SECONDPARTICIPANTUSERNAME, secondParticipantUsername);
+        matchExists.put(KEY_DURATION, match.getDuration());
         matchDetails = matchExists.toString();
+
         break;
       }
     }

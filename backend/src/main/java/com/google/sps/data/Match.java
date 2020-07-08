@@ -1,6 +1,11 @@
 package com.google.sps.data;
 
-/** A match of two users */
+/**
+ * A match of two participants. Note: Match includes entire Participants (with unique ID per
+ * submitted form) instead of just usernames because a username may be involved in multiple matches
+ * over time. This issue can be resolved if we delete matches from the datastore after the users are
+ * notified of the match.
+ */
 public final class Match {
 
   /** Datastore entity ID */
@@ -26,11 +31,6 @@ public final class Match {
     this.secondParticipant = secondParticipant;
     this.duration = duration;
     this.timestamp = timestamp;
-  }
-
-  /** Constructor for empty match except timestamp */
-  public Match(long timestamp) {
-    this(0L, null, null, 0, timestamp);
   }
 
   public long getId() {

@@ -1,16 +1,19 @@
 package com.google.sps.data;
 
+import com.google.common.base.Preconditions;
+import java.time.ZonedDateTime;
+
 /** A user who want to be matched. */
 public final class Participant {
 
   /** Datastore ID */
   private final long id;
-  /** Google username */
-  private final String ldap;
+  /** Google username (ldap) */
+  private final String username;
+  /** Time user is starts being available */
+  private final ZonedDateTime startTimeAvailable;
   /** Time user is available until */
-  private final long timeAvailableUntil;
-  /** User timezone */
-  private final String timezone;
+  private final ZonedDateTime endTimeAvailable;
   /** How long user wants to chat */
   private final int duration;
   /** Time of submitted form */
@@ -19,15 +22,19 @@ public final class Participant {
   /** Initialize constructor fields */
   public Participant(
       long id,
-      String ldap,
-      long timeAvailableUntil,
-      String timezone,
+      String username,
+      ZonedDateTime startTimeAvailable,
+      ZonedDateTime endTimeAvailable,
       int duration,
       long timestamp) {
     this.id = id;
-    this.ldap = ldap;
-    this.timeAvailableUntil = timeAvailableUntil;
-    this.timezone = timezone;
+    this.username = username;
+
+    Preconditions.checkArgument(
+        startTimeAvailable.isBefore(endTimeAvailable),
+        "Start available time must be before end available time.");
+    this.startTimeAvailable = startTimeAvailable;
+    this.endTimeAvailable = endTimeAvailable;
     this.duration = duration;
     this.timestamp = timestamp;
   }
@@ -36,19 +43,23 @@ public final class Participant {
     return id;
   }
 
-  public String getLdap() {
-    return ldap;
+  public String getUsername() {
+    return username;
   }
 
-  public long getTimeAvailableUntil() {
-    return timeAvailableUntil;
+  public ZonedDateTime getStartTimeAvailable() {
+    return startTimeAvailable;
   }
 
-  public String getTimezone() {
-    return timezone;
+  public ZonedDateTime getEndTimeAvailable() {
+    return endTimeAvailable;
   }
 
   public int getDuration() {
     return duration;
+  }
+
+  public long getTimestamp() {
+    return timestamp;
   }
 }

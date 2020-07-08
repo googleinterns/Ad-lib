@@ -28,6 +28,11 @@ import com.google.sps.FindMatchQuery;
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
 import java.io.IOException;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -39,29 +44,58 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/add-participant")
 public class AddParticipantServlet extends HttpServlet {
 
+  // Datastore Key/Property constants
+  private static final String KEY_PARTICIPANT = "Participant";
+  private static final String KEY_MATCH = "Match";
+  private static final String PROPERTY_USERNAME = "username";
+  private static final String PROPERTY_STARTTIMEAVAILABLE = "startTimeAvailable";
+  private static final String PROPERTY_ENDTIMEAVAILABLE = "endTimeAvailable";
+  private static final String PROPERTY_DURATION = "duration";
+  private static final String PROPERTY_TIMESTAMP = "timestamp";
+  private static final String PROPERTY_FIRSTPARTICIPANT = "firstParticipant";
+  private static final String PROPERTY_SECONDPARTICIPANT = "secondParticipant";
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Request parameter values
-    // TODO: Error check input values (before allowing to submit)
+    // TODO: Check input values are filled (before allowing to submit)
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
-    String ldap = email.split("@")[0];
-    long timeAvailableUntil = convertToPositiveLong(request.getParameter("timeAvailableUntil"));
-    String timezone = request.getParameter("timezone");
-    int duration = convertToPositiveInt(request.getParameter("duration"));
-    if (email == null || timeAvailableUntil == -1L || duration == -1) {
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Invalid input(s).");
+    if (email == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid email.");
+      return;
     }
+    String username = email.split("@")[0];
+
+    String timezone = request.getParameter("timezone");
+    ZoneId zoneId = ZoneId.of(timezone); // TODO: convert input timezone to valid ZoneId
+    ZonedDateTime startTimeAvailable =
+        LocalDateTime.now().atZone(zoneId); // TODO: set to future time if not available now
+    Instant endTimeAvailableInstant =
+        Instant.ofEpochMilli(
+            Long.parseLong(
+                request.getParameter("endTimeAvailable"))); // TODO: figure out input format
+    LocalDateTime endTimeAvailableLocal =
+        endTimeAvailableInstant.atZone(ZoneId.of("UTC")).toLocalDateTime();
+    ZonedDateTime endTimeAvailable = endTimeAvailableLocal.atZone(zoneId);
+
+    int duration = convertToPositiveInt(request.getParameter("duration"));
+    if (duration == -1) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
+      return;
+    }
+
     long timestamp = System.currentTimeMillis();
 
     // id is irrelevant, only relevant when getting from datastore
     Participant newParticipant =
-        new Participant(/* id= */ -1L, ldap, timeAvailableUntil, timezone, duration, timestamp);
+        new Participant(
+            /* id= */ -1L, username, startTimeAvailable, endTimeAvailable, duration, timestamp);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    // Find immediate match if possible
-    FindMatchQuery query = new FindMatchQuery();
+    // Find immediate match if possibl;
+    FindMatchQuery query = new FindMatchQuery(Clock.systemUTC());
     Match match = query.findMatch(getParticipants(datastore), newParticipant);
 
     // Match found, add to datastore, delete matched participants from datastore
@@ -70,12 +104,12 @@ public class AddParticipantServlet extends HttpServlet {
       deleteParticipantFromDatastore(match.getSecondParticipant(), datastore);
     } else {
       // Match not found, insert participant entity into datastore
-      Entity participantEntity = new Entity("Participant");
-      participantEntity.setProperty("ldap", ldap);
-      participantEntity.setProperty("timeAvailableUntil", timeAvailableUntil);
-      participantEntity.setProperty("timezone", timezone);
-      participantEntity.setProperty("duration", duration);
-      participantEntity.setProperty("timestamp", timestamp);
+      Entity participantEntity = new Entity(KEY_PARTICIPANT);
+      participantEntity.setProperty(PROPERTY_USERNAME, username);
+      participantEntity.setProperty(PROPERTY_STARTTIMEAVAILABLE, startTimeAvailable);
+      participantEntity.setProperty(PROPERTY_ENDTIMEAVAILABLE, endTimeAvailable);
+      participantEntity.setProperty(PROPERTY_DURATION, duration);
+      participantEntity.setProperty(PROPERTY_TIMESTAMP, timestamp);
       datastore.put(participantEntity);
     }
 
@@ -87,20 +121,22 @@ public class AddParticipantServlet extends HttpServlet {
   private List<Participant> getParticipants(DatastoreService datastore) {
 
     // Create and sort participant queries by time
-    Query query = new Query("Participant").addSort("timestamp", SortDirection.DESCENDING);
+    Query query = new Query(KEY_PARTICIPANT).addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
 
     // Convert list of entities to list of participants
     List<Participant> participants = new ArrayList<Participant>();
     for (Entity entity : results.asIterable()) {
       long id = (long) entity.getKey().getId();
-      String ldap = (String) entity.getProperty("ldap");
-      long timeAvailableUntil = (long) entity.getProperty("timeAvailableUntil");
-      String timezone = (String) entity.getProperty("timezone");
-      int duration = (int) entity.getProperty("duration");
-      long timestamp = (long) entity.getProperty("timestamp");
+      String username = (String) entity.getProperty(PROPERTY_USERNAME);
+      ZonedDateTime startTimeAvailable =
+          (ZonedDateTime) entity.getProperty(PROPERTY_STARTTIMEAVAILABLE);
+      ZonedDateTime endTimeAvailable =
+          (ZonedDateTime) entity.getProperty(PROPERTY_ENDTIMEAVAILABLE);
+      int duration = (int) entity.getProperty(PROPERTY_DURATION);
+      long timestamp = (long) entity.getProperty(PROPERTY_TIMESTAMP);
       Participant currParticipant =
-          new Participant(id, ldap, timeAvailableUntil, timezone, duration, timestamp);
+          new Participant(id, username, startTimeAvailable, endTimeAvailable, duration, timestamp);
       participants.add(currParticipant);
     }
     return participants;
@@ -109,11 +145,11 @@ public class AddParticipantServlet extends HttpServlet {
   /** Add Match pair to datastore */
   private void addMatchToDatastore(Match match, DatastoreService datastore) {
     // Set properties of entity
-    Entity matchEntity = new Entity("Match");
-    matchEntity.setProperty("firstParticipant", match.getFirstParticipant());
-    matchEntity.setProperty("secondParticipant", match.getSecondParticipant());
-    matchEntity.setProperty("duration", match.getDuration());
-    matchEntity.setProperty("timestamp", match.getTimestamp());
+    Entity matchEntity = new Entity(KEY_MATCH);
+    matchEntity.setProperty(PROPERTY_FIRSTPARTICIPANT, match.getFirstParticipant());
+    matchEntity.setProperty(PROPERTY_SECONDPARTICIPANT, match.getSecondParticipant());
+    matchEntity.setProperty(PROPERTY_DURATION, match.getDuration());
+    matchEntity.setProperty(PROPERTY_TIMESTAMP, match.getTimestamp());
 
     // Insert entity into datastore
     datastore.put(matchEntity);
@@ -121,21 +157,8 @@ public class AddParticipantServlet extends HttpServlet {
 
   /** Delete matched participants from datastore */
   private void deleteParticipantFromDatastore(Participant participant, DatastoreService datastore) {
-    Key participantEntityKey = KeyFactory.createKey("Participant", participant.getId());
+    Key participantEntityKey = KeyFactory.createKey(KEY_PARTICIPANT, participant.getId());
     datastore.delete(participantEntityKey);
-  }
-
-  /** Return positive long value, or -1L if invalid or negative */
-  private static long convertToPositiveLong(String s) {
-    if (s == null) {
-      return -1L;
-    }
-    try {
-      long parsed = Long.parseLong(s);
-      return (parsed >= 0L) ? parsed : -1L;
-    } catch (NumberFormatException e) {
-      return -1L;
-    }
   }
 
   /** Return positive integer value, or -1 if invalid or negative */

@@ -16,6 +16,7 @@ package com.google.sps;
 
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
+import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -26,12 +27,12 @@ public final class FindMatchQuery {
   private static int MAX_DURATION_DIFF = 15;
   /** extra padding time to ensure large enough meeting time block */
   private static int PADDING_TIME = 15;
-  /** Reference date time for "current" time */
-  private ZonedDateTime dateTime;
+  /** Reference clock for "current" time */
+  private Clock clock;
 
   /** Set "current" date and time to calculate whether a match is possible in time */
-  public FindMatchQuery(ZonedDateTime dateTime) {
-    this.dateTime = dateTime;
+  public FindMatchQuery(Clock clock) {
+    this.clock = clock;
   }
 
   /**
@@ -39,6 +40,8 @@ public final class FindMatchQuery {
    * found right after being added
    */
   public Match findMatch(List<Participant> participants, Participant newParticipant) {
+    // Set reference date time using clock
+    ZonedDateTime dateTime = ZonedDateTime.now(clock);
 
     // Compare new participant preferences with others in list to find match
     for (Participant currParticipant : participants) {

@@ -19,6 +19,7 @@ import static com.google.common.truth.Truth.assertThat;
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
 import com.google.sps.data.TimeHelper;
+import java.time.Clock;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -69,8 +70,9 @@ public final class FindMatchQueryTest {
             /* second= */ 0,
             /* nanosecond= */ 0,
             /* zone= */ ZoneId.of("US/Eastern"));
+    Clock clock = Clock.fixed(dateTime.toInstant(), dateTime.getZone());
 
-    query = new FindMatchQuery(dateTime);
+    query = new FindMatchQuery(clock);
   }
 
   @Test

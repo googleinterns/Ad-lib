@@ -28,6 +28,7 @@ import com.google.sps.FindMatchQuery;
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
 import java.io.IOException;
+import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -94,7 +95,9 @@ public class AddParticipantServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     // Find immediate match if possible
-    FindMatchQuery query = new FindMatchQuery(ZonedDateTime.now());
+    ZonedDateTime dateTime = ZonedDateTime.now();
+    Clock clock = Clock.fixed(dateTime.toInstant(), dateTime.getZone());
+    FindMatchQuery query = new FindMatchQuery(clock);
     Match match = query.findMatch(getParticipants(datastore), newParticipant);
 
     // Match found, add to datastore, delete matched participants from datastore

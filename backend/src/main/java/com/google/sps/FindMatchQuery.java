@@ -27,10 +27,10 @@ public final class FindMatchQuery {
   private static int MAX_DURATION_DIFF = 15;
   /** extra padding time to ensure large enough meeting time block */
   private static int PADDING_TIME = 15;
-  /** Reference clock for "current" time */
+  /** Reference clock */
   private Clock clock;
 
-  /** Set "current" date and time to calculate whether a match is possible in time */
+  /** Constructor */
   public FindMatchQuery(Clock clock) {
     this.clock = clock;
   }
@@ -50,11 +50,11 @@ public final class FindMatchQuery {
       int newDuration = newParticipant.getDuration();
       int currDuration = currParticipant.getDuration();
       boolean compatibleDuration = Math.abs(newDuration - currDuration) <= MAX_DURATION_DIFF;
-      int duration = Math.min(newDuration, currDuration);
 
       if (!compatibleDuration) {
         continue;
       }
+      int duration = Math.min(newDuration, currDuration);
 
       // Check if participants are both free for that duration + extra
       ZonedDateTime newEndTimeAvailable = newParticipant.getEndTimeAvailable();

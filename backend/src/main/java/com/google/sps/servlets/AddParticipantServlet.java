@@ -70,7 +70,7 @@ public class AddParticipantServlet extends HttpServlet {
     String timezone = request.getParameter("timezone");
     ZoneId zoneId = ZoneId.of(timezone); // TODO: convert input timezone to valid ZoneId
     ZonedDateTime startTimeAvailable =
-        LocalDateTime.now().atZone(zoneId); // TODO: set to future time if not available now
+        ZonedDateTime.now(zoneId); // TODO: set to future time if not available now
     Instant endTimeAvailableInstant =
         Instant.ofEpochMilli(
             Long.parseLong(
@@ -80,7 +80,7 @@ public class AddParticipantServlet extends HttpServlet {
     ZonedDateTime endTimeAvailable = endTimeAvailableLocal.atZone(zoneId);
 
     int duration = convertToPositiveInt(request.getParameter("duration"));
-    if (duration == -1) {
+    if (duration <= 0) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
       return;
     }

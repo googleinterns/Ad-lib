@@ -11,11 +11,6 @@ public final class TimeHelper {
   private static ZonedDateTime dateTime;
 
   /** Constructor */
-  public TimeHelper() {
-    this(ZonedDateTime.now());
-  }
-
-  /** Constructor with manually set date */
   public TimeHelper(ZonedDateTime dateTime) {
     this.dateTime = dateTime;
   }

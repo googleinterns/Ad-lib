@@ -14,9 +14,9 @@ export default function MatchPreference(props) {
         defaultValue="none"
         onChange={event => props.onChange(event.target.value)}
       >
-        <FormControlLabel value="similar" control={<Radio color="primary" />} label="Similar" />
+        <FormControlLabel value="similar" control={<Radio color="primary" />} label="Similar Googler" />
         <FormControlLabel value="none" control={<Radio color="primary" />} label="No Preference" />
-        <FormControlLabel value="different" control={<Radio color="primary" />} label="Different" />
+        <FormControlLabel value="different" control={<Radio color="primary" />} label="Different Googler" />
       </RadioGroup>
     </FormControl>
   );

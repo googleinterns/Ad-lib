@@ -12,30 +12,38 @@ import ProductAreaDropdown from './ProductAreaDropdown';
 import DurationDropdown from './DurationDropdown'
 
 const useStyles = makeStyles(theme => ({
-  inputField: {
-    width: 180
-  },
-  divStyle: {
+  flexStartDiv: {
     display: 'flex',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
     margin: theme.spacing(2)
   },
+  flexEndDiv: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(1),
+    marginRight: theme.spacing(1),
+  },
   section: {
     margin: theme.spacing(2),
     width: 650
   },
-  about: {
-    margin: theme.spacing(4),
+  heading: {
+    marginLeft: theme.spacing(2),
+  },
+  padding: {
+    marginTop: theme.spacing(4),
+    marginLeft: theme.spacing(2),
   }
-
 }));
 
 // Create basic form component with availability and personal input fields and submit button
 export default function Form() {
   const classes = useStyles();
 
-  // Declare new state variables and set default states 
+  // Declare state variables for each input field and set default states 
   const [timeAvailableUntil, setTimeAvailableUntil] = React.useState(new Date());
   const [duration, setDuration] = React.useState(15);
   const [productArea, setProductArea] = React.useState('');
@@ -46,10 +54,13 @@ export default function Form() {
 
   return (
     <div>
+      <div className={classes.heading}>
+        <h3>Choose your time preferences</h3>
+      </div>
       <div className={classes.section}>
-        <div className={classes.divStyle}>
+        <div className={classes.flexStartDiv}>
           <p>I'm free until...</p>
-          <div className={classes.inputField}>
+          <div style={{width:180}}>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardTimePicker
                 id="time-field"
@@ -60,28 +71,27 @@ export default function Form() {
             </MuiPickersUtilsProvider>
           </div>
         </div>
-        <div className={classes.divStyle}>
+        <div className={classes.flexStartDiv}>
           <p>I want to talk for...</p>
           <DurationDropdown onChange={value => setDuration(value)} />
         </div>
       </div>  
-      <div className={classes.about}>
-        <h4>About me...</h4>
+      <div className={classes.heading}>
+        <h3>Choose your match preferences</h3>
       </div>
       <div className={classes.section}>
-        <div className={classes.divStyle}>
-            <RoleDropdown className={classes.inputField} onChange={value => setRole(value)} />
-            <ProductAreaDropdown className={classes.inputField} onChange={value => setProductArea(value)} />
-            <YearDropdown className={classes.inputField} onChange={value => setYearRange(value)} />
+        <div className={classes.flexStartDiv}>
+            <RoleDropdown onChange={value => setRole(value)} />
+            <ProductAreaDropdown onChange={value => setProductArea(value)} />
+            <YearDropdown onChange={value => setYearRange(value)} />
         </div>
-        <div className={classes.divStyle}>
-          <p>Match preference</p>
+        <div className={classes.padding}>
           <MatchPreference onChange={value => setMatchPreference(value)} />
         </div>
       </div>
-      <div>
-        <Checkbox className={classes.inputField} onChange={value => setSavePreference(value)} />
-        <div className={classes.divStyle}>
+      <div className={classes.flexEndDiv}>
+        <Checkbox onChange={value => setSavePreference(value)} />
+        <div className={classes.flexEndDiv}>
           { /* TO-DO: change alert to JSON object that is sent over to backend */ }
           <Button variant="contained" color="primary" onClick={() => { 
             alert('Availability: ' + timeAvailableUntil + '\nDuration: ' + duration + '\nRole: ' + role +

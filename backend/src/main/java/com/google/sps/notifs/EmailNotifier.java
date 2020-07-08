@@ -28,11 +28,13 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
+import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -90,7 +92,7 @@ public class EmailNotifier {
             new GoogleAuthorizationCodeFlow.Builder(
                     HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
                     .setDataStoreFactory(
-                            new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+                            new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH)))
                     .setAccessType("offline")
                     .build();
     LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8000).build();
@@ -110,12 +112,12 @@ public class EmailNotifier {
           throws MessagingException {
 
     Properties props = new Properties();
-    Session session = Session.getDefaultInstance(props, null);
+    Session session = Session.getDefaultInstance(props, /* authenticator= */ null);
 
     MimeMessage email = new MimeMessage(session);
 
     email.setFrom(new InternetAddress("Adlib-Step@gmail.com"));
-    email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(toEmail));
+    email.addRecipient(RecipientType.TO, new InternetAddress(toEmail));
     email.setSubject(subject);
     email.setText(bodyText);
     return email;

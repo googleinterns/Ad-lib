@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that returns some example content. */
-@WebServlet("/add-participant")
+@WebServlet("/api/v1/add-participant")
 public class AddParticipantServlet extends HttpServlet {
 
   // Datastore Key/Property constants

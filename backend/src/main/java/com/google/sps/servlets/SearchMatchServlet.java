@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 
 /** Servlet that returns some example content. */
-@WebServlet("/search-match")
+@WebServlet("/api/v1/search-match")
 public class SearchMatchServlet extends HttpServlet {
 
   // Datastore Key/Property constants

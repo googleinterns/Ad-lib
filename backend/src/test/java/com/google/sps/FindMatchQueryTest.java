@@ -249,8 +249,8 @@ public final class FindMatchQueryTest {
 
   @Test
   public void compatibleWithoutConsideringTimezone() {
-    // Two participants, A in ET timezone and B in PT timezone, compatible if not considering
-    // timezones, compatible if considering their different timezones
+    // Two participants, A in ET timezone and B in PT timezone, only compatible if considering
+    // timezone differences
     Participant participantA =
         new Participant(
             ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1500ET, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);

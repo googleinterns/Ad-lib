@@ -22,7 +22,7 @@ const isLocalhost = Boolean(
 
 /**
  * Function that defines how to register a service worker
- * @param {*} config
+ * @param {Config} config
  */
 export function register(config) {
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
@@ -61,8 +61,8 @@ export function register(config) {
 
 /**
  * Function that defines how to a valid service worker is registered
- * @param {*} swUrl
- * @param {*} config
+ * @param {string} swUrl
+ * @param {Config} config
  */
 function registerValidSW(swUrl, config) {
   navigator.serviceWorker
@@ -110,8 +110,8 @@ function registerValidSW(swUrl, config) {
 
 /**
  * Function that verfies the validity of a service worker
- * @param {*} swUrl
- * @param {*} config
+ * @param {string} swUrl
+ * @param {Config} config
  */
 function checkValidServiceWorker(swUrl, config) {
   // Check if the service worker can be found. If it can't reload the page.

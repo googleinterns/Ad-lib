@@ -40,58 +40,54 @@ public final class FindMatchQueryTest {
   private static final long ID_DEFAULT = 0;
   private static final long TIMESTAMP_DEFAULT = 0;
 
-  // Some times available until on 1/1/2020
-  private ZonedDateTime TIME_1400ET;
-  private ZonedDateTime TIME_1450ET;
-  private ZonedDateTime TIME_1500ET;
-  private ZonedDateTime TIME_1501ET;
-  private ZonedDateTime TIME_1530ET;
-  private ZonedDateTime TIME_1600ET;
-  private ZonedDateTime TIME_1800ET;
-  private ZonedDateTime TIME_2000ET;
-  private ZonedDateTime TIME_1100PT;
-  private ZonedDateTime TIME_1200PT;
-  private ZonedDateTime TIME_1600PT;
-
+  // Duration constants
   private static final int DURATION_15_MINUTES = 15;
   private static final int DURATION_30_MINUTES = 30;
   private static final int DURATION_45_MINUTES = 45;
   private static final int DURATION_60_MINUTES = 60;
+
+  // Reference date time of 1/1/20 2pm ET, 11am PT
+  private static final ZonedDateTime currentDateTimeET =
+      ZonedDateTime.of(
+          /* year= */ 2020,
+          /* month= */ 1,
+          /* date= */ 1,
+          /* hour= */ 14,
+          /* minute= */ 0,
+          /* second= */ 0,
+          /* nanosecond= */ 0,
+          /* zone= */ ZoneId.of("US/Eastern"));
+  private static final ZonedDateTime currentDateTimePT =
+      currentDateTimeET.withZoneSameInstant(ZoneId.of("US/Pacific"));
+
+  // Some times available until on 1/1/2020
+  private static final ZonedDateTime TIME_1400ET = currentDateTimeET;;
+  private static final ZonedDateTime TIME_1450ET = getNewTimeToday(currentDateTimeET, 14, 50);
+  private static final ZonedDateTime TIME_1500ET = getNewTimeToday(currentDateTimeET, 15, 0);
+  private static final ZonedDateTime TIME_1501ET = getNewTimeToday(currentDateTimeET, 15, 1);
+  private static final ZonedDateTime TIME_1530ET = getNewTimeToday(currentDateTimeET, 15, 30);
+  private static final ZonedDateTime TIME_1600ET = getNewTimeToday(currentDateTimeET, 16, 0);
+  private static final ZonedDateTime TIME_1800ET = getNewTimeToday(currentDateTimeET, 18, 0);
+  private static final ZonedDateTime TIME_2000ET = getNewTimeToday(currentDateTimeET, 20, 0);
+  private static final ZonedDateTime TIME_1100PT = getNewTimeToday(currentDateTimePT, 11, 0);
+  private static final ZonedDateTime TIME_1200PT = getNewTimeToday(currentDateTimePT, 12, 0);
+  private static final ZonedDateTime TIME_1600PT = getNewTimeToday(currentDateTimePT, 16, 0);
 
   private FindMatchQuery query;
 
   @Before
   public void setUp() {
     // Set "current" date to  1/1/2020 2:00pm ET
-    ZonedDateTime currentDateTimeET =
-        ZonedDateTime.of(
-            /* year= */ 2020,
-            /* month= */ 1,
-            /* date= */ 1,
-            /* hour= */ 14,
-            /* minute= */ 0,
-            /* second= */ 0,
-            /* nanosecond= */ 0,
-            /* zone= */ ZoneId.of("US/Eastern"));
-    ZonedDateTime currentDateTimePT =
-        currentDateTimeET.withZoneSameInstant(ZoneId.of("US/Pacific"));
-
-    // Initialize time
-    TIME_1400ET = currentDateTimeET; // dummy start time
-    TIME_1450ET = getNewTimeToday(currentDateTimeET, 14, 50);
-    TIME_1500ET = getNewTimeToday(currentDateTimeET, 15, 0);
-    TIME_1501ET = getNewTimeToday(currentDateTimeET, 15, 1);
-    TIME_1530ET = getNewTimeToday(currentDateTimeET, 15, 30);
-    TIME_1600ET = getNewTimeToday(currentDateTimeET, 16, 0);
-    TIME_1800ET = getNewTimeToday(currentDateTimeET, 18, 0);
-    TIME_2000ET = getNewTimeToday(currentDateTimeET, 20, 0);
-    TIME_1100PT = getNewTimeToday(currentDateTimePT, 11, 0);
-    TIME_1200PT = getNewTimeToday(currentDateTimePT, 12, 0);
-    TIME_1600PT = getNewTimeToday(currentDateTimePT, 16, 0);
-
     Clock clock = Clock.fixed(currentDateTimeET.toInstant(), currentDateTimeET.getZone());
 
     query = new FindMatchQuery(clock);
+  }
+
+  /** Return today's date with time of hour:minute */
+  public static ZonedDateTime getNewTimeToday(ZonedDateTime dateTime, int hour, int minute) {
+    // Calculate current date but with hour:minute time
+    // TODO: All times are currently today, wrap around times?
+    return dateTime.withHour(hour).withMinute(minute).withNano(0);
   }
 
   @Test
@@ -109,13 +105,6 @@ public final class FindMatchQueryTest {
     assertThat(match.getFirstParticipant().getUsername()).isEqualTo(PERSON_B);
     assertThat(match.getSecondParticipant().getUsername()).isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_15_MINUTES);
-  }
-
-  /** Return today's date with time of hour:minute */
-  public ZonedDateTime getNewTimeToday(ZonedDateTime dateTime, int hour, int minute) {
-    // Calculate current date but with hour:minute time
-    // TODO: All times are currently today, wrap around times?
-    return dateTime.withHour(hour).withMinute(minute).withNano(0);
   }
 
   @Test

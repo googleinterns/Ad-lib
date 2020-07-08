@@ -48,6 +48,8 @@ import java.util.Properties;
 public class EmailNotifier {
 
   private static final String APPLICATION_NAME = "Ad-lib";
+  private static final String APPLICATION_EMAIL = "Adlib-Step@gmail.com";
+
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
   private static final String TOKENS_DIRECTORY_PATH = "tokens";
   /**
@@ -116,7 +118,7 @@ public class EmailNotifier {
 
     MimeMessage email = new MimeMessage(session);
 
-    email.setFrom(new InternetAddress("Adlib-Step@gmail.com"));
+    email.setFrom(new InternetAddress(APPLICATION_EMAIL));
     email.addRecipient(RecipientType.TO, new InternetAddress(toEmail));
     email.setSubject(subject);
     email.setText(bodyText);

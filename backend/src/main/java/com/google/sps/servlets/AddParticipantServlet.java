@@ -30,7 +30,6 @@ import com.google.sps.data.Participant;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -75,9 +74,7 @@ public class AddParticipantServlet extends HttpServlet {
         Instant.ofEpochMilli(
             Long.parseLong(
                 request.getParameter("endTimeAvailable"))); // TODO: figure out input format
-    LocalDateTime endTimeAvailableLocal =
-        endTimeAvailableInstant.atZone(ZoneId.of("UTC")).toLocalDateTime();
-    ZonedDateTime endTimeAvailable = endTimeAvailableLocal.atZone(zoneId);
+    ZonedDateTime endTimeAvailable = endTimeAvailableInstant.atZone(zoneId);
 
     int duration = convertToPositiveInt(request.getParameter("duration"));
     if (duration <= 0) {
@@ -119,6 +116,7 @@ public class AddParticipantServlet extends HttpServlet {
 
   /** Return list of current participants from datastore */
   private List<Participant> getParticipants(DatastoreService datastore) {
+    // TODO: only return participants who are available now (not sometime in future)
 
     // Create and sort participant queries by time
     Query query = new Query(KEY_PARTICIPANT).addSort("timestamp", SortDirection.DESCENDING);

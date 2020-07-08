@@ -18,7 +18,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
-import com.google.sps.data.TimeHelper;
 import java.time.Clock;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -42,12 +41,17 @@ public final class FindMatchQueryTest {
   private static final long TIMESTAMP_DEFAULT = 0;
 
   // Some times available until on 1/1/2020
-  private static final ZonedDateTime TIME_0200PM = TimeHelper.getNewTimeToday(14, 0);
-  private static final ZonedDateTime TIME_0250PM = TimeHelper.getNewTimeToday(14, 50);
-  private static final ZonedDateTime TIME_0330PM = TimeHelper.getNewTimeToday(15, 30);
-  private static final ZonedDateTime TIME_0400PM = TimeHelper.getNewTimeToday(16, 0);
-  private static final ZonedDateTime TIME_0600PM = TimeHelper.getNewTimeToday(18, 0);
-  private static final ZonedDateTime TIME_0800PM = TimeHelper.getNewTimeToday(20, 0);
+  private ZonedDateTime TIME_1400ET;
+  private ZonedDateTime TIME_1450ET;
+  private ZonedDateTime TIME_1500ET;
+  private ZonedDateTime TIME_1501ET;
+  private ZonedDateTime TIME_1530ET;
+  private ZonedDateTime TIME_1600ET;
+  private ZonedDateTime TIME_1800ET;
+  private ZonedDateTime TIME_2000ET;
+  private ZonedDateTime TIME_1100PT;
+  private ZonedDateTime TIME_1200PT;
+  private ZonedDateTime TIME_1600PT;
 
   private static final int DURATION_15_MINUTES = 15;
   private static final int DURATION_30_MINUTES = 30;
@@ -55,12 +59,11 @@ public final class FindMatchQueryTest {
   private static final int DURATION_60_MINUTES = 60;
 
   private FindMatchQuery query;
-  private ZonedDateTime dateTime;
 
   @Before
   public void setUp() {
     // Set "current" date to  1/1/2020 2:00pm ET
-    dateTime =
+    ZonedDateTime currentDateTimeET =
         ZonedDateTime.of(
             /* year= */ 2020,
             /* month= */ 1,
@@ -70,7 +73,23 @@ public final class FindMatchQueryTest {
             /* second= */ 0,
             /* nanosecond= */ 0,
             /* zone= */ ZoneId.of("US/Eastern"));
-    Clock clock = Clock.fixed(dateTime.toInstant(), dateTime.getZone());
+    ZonedDateTime currentDateTimePT =
+        currentDateTimeET.withZoneSameInstant(ZoneId.of("US/Pacific"));
+
+    // Initialize time
+    TIME_1400ET = currentDateTimeET; // dummy start time
+    TIME_1450ET = getNewTimeToday(currentDateTimeET, 14, 50);
+    TIME_1500ET = getNewTimeToday(currentDateTimeET, 15, 0);
+    TIME_1501ET = getNewTimeToday(currentDateTimeET, 15, 1);
+    TIME_1530ET = getNewTimeToday(currentDateTimeET, 15, 30);
+    TIME_1600ET = getNewTimeToday(currentDateTimeET, 16, 0);
+    TIME_1800ET = getNewTimeToday(currentDateTimeET, 18, 0);
+    TIME_2000ET = getNewTimeToday(currentDateTimeET, 20, 0);
+    TIME_1100PT = getNewTimeToday(currentDateTimePT, 11, 0);
+    TIME_1200PT = getNewTimeToday(currentDateTimePT, 12, 0);
+    TIME_1600PT = getNewTimeToday(currentDateTimePT, 16, 0);
+
+    Clock clock = Clock.fixed(currentDateTimeET.toInstant(), currentDateTimeET.getZone());
 
     query = new FindMatchQuery(clock);
   }
@@ -80,10 +99,10 @@ public final class FindMatchQueryTest {
     // Two participants who are compatible in available time AND duration
     Participant participantA =
         new Participant(
-            ID_DEFAULT, PERSON_A, TIME_0200PM, TIME_0400PM, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1600ET, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT, PERSON_B, TIME_0200PM, TIME_0600PM, DURATION_15_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT, PERSON_B, TIME_1400ET, TIME_1800ET, DURATION_15_MINUTES, TIMESTAMP_DEFAULT);
 
     Match match = query.findMatch(Arrays.asList(participantA), participantB);
 
@@ -92,15 +111,22 @@ public final class FindMatchQueryTest {
     assertThat(match.getDuration()).isEqualTo(DURATION_15_MINUTES);
   }
 
+  /** Return today's date with time of hour:minute */
+  public ZonedDateTime getNewTimeToday(ZonedDateTime dateTime, int hour, int minute) {
+    // Calculate current date but with hour:minute time
+    // TODO: All times are currently today, wrap around times?
+    return dateTime.withHour(hour).withMinute(minute).withNano(0);
+  }
+
   @Test
   public void compatibleTime() {
     // Two participants who are compatible in available time but NOT duration
     Participant participantA =
         new Participant(
-            ID_DEFAULT, PERSON_A, TIME_0200PM, TIME_0400PM, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1600ET, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT, PERSON_B, TIME_0200PM, TIME_0600PM, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT, PERSON_B, TIME_1400ET, TIME_1800ET, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
 
     Match match = query.findMatch(Arrays.asList(participantA), participantB);
 
@@ -112,10 +138,10 @@ public final class FindMatchQueryTest {
     // Two participants who are compatible in duration but NOT available time
     Participant participantA =
         new Participant(
-            ID_DEFAULT, PERSON_A, TIME_0200PM, TIME_0250PM, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1450ET, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT, PERSON_B, TIME_0200PM, TIME_0400PM, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT, PERSON_B, TIME_1400ET, TIME_1600ET, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
 
     Match match = query.findMatch(Arrays.asList(participantA), participantB);
 
@@ -127,13 +153,13 @@ public final class FindMatchQueryTest {
     // Three participants, A & B aren't compatible, but A & C are
     Participant participantA =
         new Participant(
-            ID_DEFAULT, PERSON_A, TIME_0200PM, TIME_0400PM, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1600ET, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT, PERSON_B, TIME_0200PM, TIME_0250PM, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT, PERSON_B, TIME_1400ET, TIME_1450ET, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
     Participant participantC =
         new Participant(
-            ID_DEFAULT, PERSON_C, TIME_0200PM, TIME_0600PM, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT, PERSON_C, TIME_1400ET, TIME_1800ET, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
 
     Match match = query.findMatch(Arrays.asList(participantA, participantB), participantC);
 
@@ -147,13 +173,13 @@ public final class FindMatchQueryTest {
     // Three participants, A & B aren't compatible, but B & C are
     Participant participantA =
         new Participant(
-            ID_DEFAULT, PERSON_A, TIME_0200PM, TIME_0250PM, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1450ET, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT, PERSON_B, TIME_0200PM, TIME_0400PM, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT, PERSON_B, TIME_1400ET, TIME_1600ET, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
     Participant participantC =
         new Participant(
-            ID_DEFAULT, PERSON_C, TIME_0200PM, TIME_0600PM, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT, PERSON_C, TIME_1400ET, TIME_1800ET, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
 
     Match match = query.findMatch(Arrays.asList(participantA, participantB), participantC);
 
@@ -167,17 +193,85 @@ public final class FindMatchQueryTest {
     // Three participants, A & B, A & C are compatible but only return A & C
     Participant participantA =
         new Participant(
-            ID_DEFAULT, PERSON_A, TIME_0200PM, TIME_0400PM, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1600ET, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT, PERSON_B, TIME_0200PM, TIME_0600PM, DURATION_15_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT, PERSON_B, TIME_1400ET, TIME_1800ET, DURATION_15_MINUTES, TIMESTAMP_DEFAULT);
     Participant participantC =
         new Participant(
-            ID_DEFAULT, PERSON_C, TIME_0200PM, TIME_0800PM, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT, PERSON_C, TIME_1400ET, TIME_2000ET, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
 
     Match match = query.findMatch(Arrays.asList(participantA, participantB), participantC);
 
     assertThat(match.getFirstParticipant().getUsername()).isEqualTo(PERSON_C);
+    assertThat(match.getSecondParticipant().getUsername()).isEqualTo(PERSON_A);
+    assertThat(match.getDuration()).isEqualTo(DURATION_30_MINUTES);
+  }
+
+  @Test
+  public void barelyNotCompatible() {
+    // Two participants barely NOT compatible availability (edge case, need >15 minutes padding)
+    Participant participantA =
+        new Participant(
+            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1500ET, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
+    Participant participantB =
+        new Participant(
+            ID_DEFAULT, PERSON_B, TIME_1400ET, TIME_1800ET, DURATION_15_MINUTES, TIMESTAMP_DEFAULT);
+
+    Match match = query.findMatch(Arrays.asList(participantA), participantB);
+
+    assertThat(match).isNull();
+  }
+
+  @Test
+  public void barelyCompatible() {
+    // Two participants barely compatible availability (edge case, need >15 minutes padding for
+    // compatibility)
+    Participant participantA =
+        new Participant(
+            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1501ET, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
+    Participant participantB =
+        new Participant(
+            ID_DEFAULT, PERSON_B, TIME_1400ET, TIME_1800ET, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
+
+    Match match = query.findMatch(Arrays.asList(participantA), participantB);
+
+    assertThat(match.getFirstParticipant().getUsername()).isEqualTo(PERSON_B);
+    assertThat(match.getSecondParticipant().getUsername()).isEqualTo(PERSON_A);
+    assertThat(match.getDuration()).isEqualTo(DURATION_45_MINUTES);
+  }
+
+  @Test
+  public void compatibleDiffTimezones() {
+    // Two participants, A in ET timezone and B in PT timezone and compatible
+    Participant participantA =
+        new Participant(
+            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1600ET, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
+    Participant participantB =
+        new Participant(
+            ID_DEFAULT, PERSON_B, TIME_1100PT, TIME_1600PT, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
+
+    Match match = query.findMatch(Arrays.asList(participantA), participantB);
+
+    assertThat(match.getFirstParticipant().getUsername()).isEqualTo(PERSON_B);
+    assertThat(match.getSecondParticipant().getUsername()).isEqualTo(PERSON_A);
+    assertThat(match.getDuration()).isEqualTo(DURATION_30_MINUTES);
+  }
+
+  @Test
+  public void compatibleWithoutConsideringTimezone() {
+    // Two participants, A in ET timezone and B in PT timezone, compatible if not considering
+    // timezones, compatible if considering their different timezones
+    Participant participantA =
+        new Participant(
+            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1500ET, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
+    Participant participantB =
+        new Participant(
+            ID_DEFAULT, PERSON_B, TIME_1100PT, TIME_1200PT, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
+
+    Match match = query.findMatch(Arrays.asList(participantA), participantB);
+
+    assertThat(match.getFirstParticipant().getUsername()).isEqualTo(PERSON_B);
     assertThat(match.getSecondParticipant().getUsername()).isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_30_MINUTES);
   }

@@ -42,6 +42,7 @@ public final class FindMatchQuery {
   public Match findMatch(List<Participant> participants, Participant newParticipant) {
     // Set reference date time using clock
     ZonedDateTime dateTime = ZonedDateTime.now(clock);
+    System.out.println(dateTime);
 
     // Compare new participant preferences with others in list to find match
     for (Participant currParticipant : participants) {

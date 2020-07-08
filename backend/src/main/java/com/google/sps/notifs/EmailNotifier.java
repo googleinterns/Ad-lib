@@ -145,7 +145,7 @@ public class EmailNotifier {
   }
 
   /** Getter function that returns the string representing the email recipients name . */
-  public String getRecipientName() {
+  private String getRecipientName() {
     return recipientName;
   }
 
@@ -172,7 +172,7 @@ public class EmailNotifier {
     service.users().messages().send("me", messageWithEmail).execute();
   }
 
-  public String getToEmail() {
+  private String getToEmail() {
     return toEmail;
   }
 }

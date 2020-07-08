@@ -1,29 +1,31 @@
 import React from 'react';
-import logo from './logo.svg';
+import { makeStyles } from "@material-ui/core/styles";
 import './App.css';
-import TextField from '@material-ui/core/TextField';
+import MenuBar from './menu-bar.js';
+import Form from './form.js'
 
+const useStyles = makeStyles(theme => ({
+  contentStyle: {
+    margin: theme.spacing(2)
+  }
+}));
+
+// Add components and content to UI
 function App() {
+  const classes = useStyles();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Hello World!
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <br></br>
-        <form noValidate autoComplete="off">
-          <TextField id="standard-basic" label="Standard" />
-        </form>
-      </header>
+    <div>
+        <MenuBar />
+        <div className={classes.contentStyle}>
+          <h1>Meet fellow Googlers <em>now</em>!</h1>
+          <h4>Miss bumping into new faces at the office? Want an easy, fun, spontaneous way of meeting 
+              Googlers virtually? Now you can!</h4>
+          <h4>Ad-lib matches you with a fellow Googler in the queue, notifies you through email when 
+              you’ve been matched, and adds an event to your Calendar with a Meet link for you to 
+              join immediately! It also provides a starter question to get the conversation flowing!</h4>
+        </div>
+        <Form />
     </div>
   );
 }

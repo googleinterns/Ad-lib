@@ -1,36 +1,39 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import FormControl from "@material-ui/core/FormControl";
-import NativeSelect from "@material-ui/core/NativeSelect";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+import React from 'react';
+import {makeStyles} from '@material-ui/core/styles';
+import FormControl from '@material-ui/core/FormControl';
+import NativeSelect from '@material-ui/core/NativeSelect';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    margin: theme.spacing(2)
+    margin: theme.spacing(2),
   },
   formControl: {
     margin: theme.spacing(2),
-    minWidth: 120
+    minWidth: 120,
   },
   textField: {
-    margin: theme.spacing(2)
+    margin: theme.spacing(2),
   },
   divStyle: {
     display: 'flex',
     alignItems: 'flex-end',
-    margin: theme.spacing(2)
-  }
+    margin: theme.spacing(2),
+  },
 }));
 
-// Create basic form component with two fields and submit button
+/**
+ * Create basic form component with two fields and submit button
+ * @return {Form} Form component
+ */
 export default function Form() {
   const classes = useStyles();
 
   return (
     <div>
       <div className={classes.divStyle}>
-        <p>I'm free until...</p>
+        <p>I am free until...</p>
         <TextField className={classes.textField}
           id="time"
           label="Select a time"
@@ -43,7 +46,7 @@ export default function Form() {
           <NativeSelect
             id="duration-input"
             name="duration"
-            inputProps={{ "aria-label": "duration" }}
+            inputProps={{'aria-label': 'duration'}}
           >
             <option value={15}>15 minutes</option>
             <option value={30}>30 minutes</option>

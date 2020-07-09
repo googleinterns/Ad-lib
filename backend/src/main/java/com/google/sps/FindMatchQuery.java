@@ -14,8 +14,8 @@
 
 package com.google.sps;
 
-import main.java.com.google.sps.data.Match;
-import main.java.com.google.sps.data.Participant;
+import com.google.sps.data.Match;
+import com.google.sps.data.Participant;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.List;

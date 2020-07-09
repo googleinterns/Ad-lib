@@ -12,12 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main.java.com.google.sps.servlets;
-
-import main.java.com.google.sps.data.Participant;
-import main.java.com.google.sps.FindMatchQuery;
-
-import main.java.com.google.sps.data.Match;
+package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -29,7 +24,9 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-
+import com.google.sps.FindMatchQuery;
+import com.google.sps.data.Match;
+import com.google.sps.data.Participant;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;

@@ -24,9 +24,7 @@ import java.util.List;
 /** Class used to find a match in a list of Participants with the most recently added Participant */
 public final class FindMatchQuery {
 
-  /** Maximum difference in duration to be compatible */
-  private static int MAX_DURATION_DIFF = 15;
-  /** extra padding time to ensure large enough meeting time block */
+  /** Extra padding time to ensure large enough meeting time block */
   private static int PADDING_TIME = 15;
   /** Reference clock */
   private Clock clock;
@@ -37,28 +35,24 @@ public final class FindMatchQuery {
   }
 
   /**
-   * Find match of new participant or add to list of participants, return whether or not match was
-   * found right after being added
+   * Find and return match of new participant with unmatched participants by comparing duration and
+   * availibility or return null if no match yet
    */
   public Match findMatch(ParticipantDatastore participantDatastore, Participant newParticipant) {
-    // TODO: filter participants here
-    List<Participant> participants = participantDatastore.getAllParticipants();
+    int newDuration = newParticipant.getDuration();
+    List<Participant> unmatchedParticipants =
+        participantDatastore.getUnmatchedParticipants(newDuration);
+
+    // Add newParticipant to datastore
+    participantDatastore.addParticipant(newParticipant);
 
     // Set reference date time using clock
     ZonedDateTime dateTime = ZonedDateTime.now(clock);
-    System.out.println(dateTime);
 
-    // Compare new participant preferences with others in list to find match
-    for (Participant currParticipant : participants) {
-
-      // Check if participants are looking for similar meeting duration
-      int newDuration = newParticipant.getDuration();
+    // Compare new participant preferences with other participants with similar duration to find
+    // match
+    for (Participant currParticipant : unmatchedParticipants) {
       int currDuration = currParticipant.getDuration();
-      boolean compatibleDuration = Math.abs(newDuration - currDuration) <= MAX_DURATION_DIFF;
-
-      if (!compatibleDuration) {
-        continue;
-      }
       int duration = Math.min(newDuration, currDuration);
 
       // Check if participants are both free for that duration + extra
@@ -70,11 +64,10 @@ public final class FindMatchQuery {
           dateTime.plusMinutes(duration + PADDING_TIME).isBefore(earliestEndTimeAvailable);
 
       if (compatibleTime) {
-        // TODO: change match ID (currently -1 for easy error checking)
         return new Match(
             /* id= */ -1L,
-            newParticipant,
-            currParticipant,
+            participantDatastore.getParticipantFromUsername(newParticipant.getUsername()).getId(),
+            currParticipant.getId(),
             duration,
             dateTime.toInstant().toEpochMilli());
       }

@@ -108,8 +108,15 @@ public class AddParticipantServlet extends HttpServlet {
     // id is irrelevant, only relevant when getting from datastore
     Participant newParticipant =
         new Participant(
-            /* id= */ -1L, username, startTimeAvailable, endTimeAvailable, duration, timestamp);
+            /* id= */ -1L,
+            username,
+            startTimeAvailable,
+            endTimeAvailable,
+            duration,
+            /* currentMatchId=*/ -1L,
+            timestamp);
 
+    // Get DatastoreService and instiate Match and Participant Datastores
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     MatchDatastore matchDatastore = new MatchDatastore(datastore);
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -118,13 +125,11 @@ public class AddParticipantServlet extends HttpServlet {
     FindMatchQuery query = new FindMatchQuery(Clock.systemUTC());
     Match match = query.findMatch(participantDatastore, newParticipant);
 
-    // Match found, add to datastore, delete matched participants from datastore
+    // Match found, add match to datastore, update recent match for Participants
     if (match != null) {
-      matchDatastore.addMatch(match);
-      participantDatastore.removeParticipant(match.getSecondParticipant());
-    } else {
-      // Match not found, insert participant entity into datastore
-      participantDatastore.addParticipant(newParticipant);
+      long matchId = matchDatastore.addMatch(match);
+      participantDatastore.updateNewMatch(match.getFirstParticipantId(), matchId);
+      participantDatastore.updateNewMatch(match.getSecondParticipantId(), matchId);
     }
 
     response.setContentType("text/plain;charset=UTF-8");

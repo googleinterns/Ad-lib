@@ -43,6 +43,7 @@ public final class FindMatchQueryTest {
 
   // Default parameters unused in query
   private static final long ID_DEFAULT = 0;
+  private static final long MATCHID_DEFAULT = 0;
   private static final long TIMESTAMP_DEFAULT = 0;
 
   // Duration constants
@@ -110,10 +111,22 @@ public final class FindMatchQueryTest {
     // Two participants who are compatible in available time AND duration
     Participant participantA =
         new Participant(
-            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1600ET, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_A,
+            TIME_1400ET,
+            TIME_1600ET,
+            DURATION_30_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT, PERSON_B, TIME_1400ET, TIME_1800ET, DURATION_15_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_B,
+            TIME_1400ET,
+            TIME_1800ET,
+            DURATION_15_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -121,8 +134,12 @@ public final class FindMatchQueryTest {
 
     Match match = query.findMatch(participantDatastore, participantB);
 
-    assertThat(match.getFirstParticipant().getUsername()).isEqualTo(PERSON_B);
-    assertThat(match.getSecondParticipant().getUsername()).isEqualTo(PERSON_A);
+    assertThat(
+            participantDatastore.getParticipantFromId(match.getFirstParticipantId()).getUsername())
+        .isEqualTo(PERSON_B);
+    assertThat(
+            participantDatastore.getParticipantFromId(match.getSecondParticipantId()).getUsername())
+        .isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_15_MINUTES);
   }
 
@@ -131,10 +148,22 @@ public final class FindMatchQueryTest {
     // Two participants who are compatible in available time but NOT duration
     Participant participantA =
         new Participant(
-            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1600ET, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_A,
+            TIME_1400ET,
+            TIME_1600ET,
+            DURATION_30_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT, PERSON_B, TIME_1400ET, TIME_1800ET, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_B,
+            TIME_1400ET,
+            TIME_1800ET,
+            DURATION_60_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -150,10 +179,22 @@ public final class FindMatchQueryTest {
     // Two participants who are compatible in duration but NOT available time
     Participant participantA =
         new Participant(
-            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1450ET, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_A,
+            TIME_1400ET,
+            TIME_1450ET,
+            DURATION_45_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT, PERSON_B, TIME_1400ET, TIME_1600ET, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_B,
+            TIME_1400ET,
+            TIME_1600ET,
+            DURATION_60_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -169,13 +210,31 @@ public final class FindMatchQueryTest {
     // Three participants, A & B aren't compatible, but A & C are
     Participant participantA =
         new Participant(
-            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1600ET, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_A,
+            TIME_1400ET,
+            TIME_1600ET,
+            DURATION_60_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT, PERSON_B, TIME_1400ET, TIME_1450ET, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_B,
+            TIME_1400ET,
+            TIME_1450ET,
+            DURATION_45_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
     Participant participantC =
         new Participant(
-            ID_DEFAULT, PERSON_C, TIME_1400ET, TIME_1800ET, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_C,
+            TIME_1400ET,
+            TIME_1800ET,
+            DURATION_60_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -184,8 +243,12 @@ public final class FindMatchQueryTest {
 
     Match match = query.findMatch(participantDatastore, participantC);
 
-    assertThat(match.getFirstParticipant().getUsername()).isEqualTo(PERSON_C);
-    assertThat(match.getSecondParticipant().getUsername()).isEqualTo(PERSON_A);
+    assertThat(
+            participantDatastore.getParticipantFromId(match.getFirstParticipantId()).getUsername())
+        .isEqualTo(PERSON_C);
+    assertThat(
+            participantDatastore.getParticipantFromId(match.getSecondParticipantId()).getUsername())
+        .isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_60_MINUTES);
   }
 
@@ -194,13 +257,31 @@ public final class FindMatchQueryTest {
     // Three participants, A & B aren't compatible, but B & C are
     Participant participantA =
         new Participant(
-            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1450ET, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_A,
+            TIME_1400ET,
+            TIME_1450ET,
+            DURATION_30_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT, PERSON_B, TIME_1400ET, TIME_1600ET, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_B,
+            TIME_1400ET,
+            TIME_1600ET,
+            DURATION_60_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
     Participant participantC =
         new Participant(
-            ID_DEFAULT, PERSON_C, TIME_1400ET, TIME_1800ET, DURATION_60_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_C,
+            TIME_1400ET,
+            TIME_1800ET,
+            DURATION_60_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -209,8 +290,12 @@ public final class FindMatchQueryTest {
 
     Match match = query.findMatch(participantDatastore, participantC);
 
-    assertThat(match.getFirstParticipant().getUsername()).isEqualTo(PERSON_C);
-    assertThat(match.getSecondParticipant().getUsername()).isEqualTo(PERSON_B);
+    assertThat(
+            participantDatastore.getParticipantFromId(match.getFirstParticipantId()).getUsername())
+        .isEqualTo(PERSON_C);
+    assertThat(
+            participantDatastore.getParticipantFromId(match.getSecondParticipantId()).getUsername())
+        .isEqualTo(PERSON_B);
     assertThat(match.getDuration()).isEqualTo(DURATION_60_MINUTES);
   }
 
@@ -219,13 +304,31 @@ public final class FindMatchQueryTest {
     // Three participants, A & B, A & C are compatible but only return A & C
     Participant participantA =
         new Participant(
-            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1600ET, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_A,
+            TIME_1400ET,
+            TIME_1600ET,
+            DURATION_30_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT, PERSON_B, TIME_1400ET, TIME_1800ET, DURATION_15_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_B,
+            TIME_1400ET,
+            TIME_1800ET,
+            DURATION_15_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
     Participant participantC =
         new Participant(
-            ID_DEFAULT, PERSON_C, TIME_1400ET, TIME_2000ET, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_C,
+            TIME_1400ET,
+            TIME_2000ET,
+            DURATION_45_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -234,8 +337,12 @@ public final class FindMatchQueryTest {
 
     Match match = query.findMatch(participantDatastore, participantC);
 
-    assertThat(match.getFirstParticipant().getUsername()).isEqualTo(PERSON_C);
-    assertThat(match.getSecondParticipant().getUsername()).isEqualTo(PERSON_A);
+    assertThat(
+            participantDatastore.getParticipantFromId(match.getFirstParticipantId()).getUsername())
+        .isEqualTo(PERSON_C);
+    assertThat(
+            participantDatastore.getParticipantFromId(match.getSecondParticipantId()).getUsername())
+        .isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_30_MINUTES);
   }
 
@@ -244,10 +351,22 @@ public final class FindMatchQueryTest {
     // Two participants barely NOT compatible availability (edge case, need >15 minutes padding)
     Participant participantA =
         new Participant(
-            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1500ET, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_A,
+            TIME_1400ET,
+            TIME_1500ET,
+            DURATION_45_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT, PERSON_B, TIME_1400ET, TIME_1800ET, DURATION_15_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_B,
+            TIME_1400ET,
+            TIME_1800ET,
+            DURATION_15_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -264,10 +383,22 @@ public final class FindMatchQueryTest {
     // compatibility)
     Participant participantA =
         new Participant(
-            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1501ET, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_A,
+            TIME_1400ET,
+            TIME_1501ET,
+            DURATION_45_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT, PERSON_B, TIME_1400ET, TIME_1800ET, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_B,
+            TIME_1400ET,
+            TIME_1800ET,
+            DURATION_45_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -275,8 +406,12 @@ public final class FindMatchQueryTest {
 
     Match match = query.findMatch(participantDatastore, participantB);
 
-    assertThat(match.getFirstParticipant().getUsername()).isEqualTo(PERSON_B);
-    assertThat(match.getSecondParticipant().getUsername()).isEqualTo(PERSON_A);
+    assertThat(
+            participantDatastore.getParticipantFromId(match.getFirstParticipantId()).getUsername())
+        .isEqualTo(PERSON_B);
+    assertThat(
+            participantDatastore.getParticipantFromId(match.getSecondParticipantId()).getUsername())
+        .isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_45_MINUTES);
   }
 
@@ -285,10 +420,22 @@ public final class FindMatchQueryTest {
     // Two participants, A in ET timezone and B in PT timezone and compatible
     Participant participantA =
         new Participant(
-            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1600ET, DURATION_45_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_A,
+            TIME_1400ET,
+            TIME_1600ET,
+            DURATION_45_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT, PERSON_B, TIME_1100PT, TIME_1600PT, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_B,
+            TIME_1100PT,
+            TIME_1600PT,
+            DURATION_30_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -296,8 +443,12 @@ public final class FindMatchQueryTest {
 
     Match match = query.findMatch(participantDatastore, participantB);
 
-    assertThat(match.getFirstParticipant().getUsername()).isEqualTo(PERSON_B);
-    assertThat(match.getSecondParticipant().getUsername()).isEqualTo(PERSON_A);
+    assertThat(
+            participantDatastore.getParticipantFromId(match.getFirstParticipantId()).getUsername())
+        .isEqualTo(PERSON_B);
+    assertThat(
+            participantDatastore.getParticipantFromId(match.getSecondParticipantId()).getUsername())
+        .isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_30_MINUTES);
   }
 
@@ -307,10 +458,22 @@ public final class FindMatchQueryTest {
     // timezone differences
     Participant participantA =
         new Participant(
-            ID_DEFAULT, PERSON_A, TIME_1400ET, TIME_1500ET, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_A,
+            TIME_1400ET,
+            TIME_1500ET,
+            DURATION_30_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT, PERSON_B, TIME_1100PT, TIME_1200PT, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
+            ID_DEFAULT,
+            PERSON_B,
+            TIME_1100PT,
+            TIME_1200PT,
+            DURATION_30_MINUTES,
+            MATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -318,8 +481,12 @@ public final class FindMatchQueryTest {
 
     Match match = query.findMatch(participantDatastore, participantB);
 
-    assertThat(match.getFirstParticipant().getUsername()).isEqualTo(PERSON_B);
-    assertThat(match.getSecondParticipant().getUsername()).isEqualTo(PERSON_A);
+    assertThat(
+            participantDatastore.getParticipantFromId(match.getFirstParticipantId()).getUsername())
+        .isEqualTo(PERSON_B);
+    assertThat(
+            participantDatastore.getParticipantFromId(match.getSecondParticipantId()).getUsername())
+        .isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_30_MINUTES);
   }
 }

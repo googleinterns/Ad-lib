@@ -28,6 +28,7 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
+import com.google.common.collect.ImmutableList;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -57,7 +58,7 @@ public class EmailNotifier {
    * your previously saved tokens/ folder.
    */
   private static final List<String> SCOPES =
-          Collections.singletonList(GmailScopes.MAIL_GOOGLE_COM);
+          ImmutableList.of(GmailScopes.MAIL_GOOGLE_COM);
 
   private static final String CREDENTIALS_FILE_PATH = "credentials.json";
 

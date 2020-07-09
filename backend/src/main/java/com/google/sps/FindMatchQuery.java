@@ -16,6 +16,7 @@ package com.google.sps;
 
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
+import com.google.sps.datastore.ParticipantDatastore;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -39,7 +40,10 @@ public final class FindMatchQuery {
    * Find match of new participant or add to list of participants, return whether or not match was
    * found right after being added
    */
-  public Match findMatch(List<Participant> participants, Participant newParticipant) {
+  public Match findMatch(ParticipantDatastore participantDatastore, Participant newParticipant) {
+    // TODO: filter participants here
+    List<Participant> participants = participantDatastore.getAllParticipants();
+
     // Set reference date time using clock
     ZonedDateTime dateTime = ZonedDateTime.now(clock);
     System.out.println(dateTime);

@@ -16,25 +16,19 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.FindMatchQuery;
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
 import java.io.BufferedReader;
+import com.google.sps.datastore.MatchDatastore;
+import com.google.sps.datastore.ParticipantDatastore;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -82,6 +76,17 @@ public class AddParticipantServlet extends HttpServlet {
         ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeAvailableUntil), zoneId);
 
     int duration = formDetails.getInt(REQUEST_DURATION);
+    String username = email.split("@")[0];
+
+    // Get and convert time availability parameters
+    String timezone = request.getParameter("timezone");
+    ZoneId zoneId = ZoneId.of(timezone); // TODO: convert input timezone to valid java ZoneId
+    ZonedDateTime startTimeAvailable =
+        ZonedDateTime.now(zoneId); // TODO: set to future time if not available now
+    ZonedDateTime endTimeAvailable = getEndTimeAvailableParameter(request, zoneId);
+
+    // Get duration parameter
+    int duration = getDurationParameter(request, response);
     if (duration <= 0) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
       return;
@@ -99,23 +104,27 @@ public class AddParticipantServlet extends HttpServlet {
       return;
     }
 
+    // Create new Participant from input parameters
     // id is irrelevant, only relevant when getting from datastore
     Participant newParticipant =
         new Participant(
             /* id= */ -1L, username, startTimeAvailable, endTimeAvailable, duration, timestamp);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    MatchDatastore matchDatastore = new MatchDatastore(datastore);
+    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
 
     // Find immediate match if possible
     FindMatchQuery query = new FindMatchQuery(Clock.systemUTC());
-    Match match = query.findMatch(getParticipants(datastore), newParticipant);
+    Match match = query.findMatch(participantDatastore, newParticipant);
 
     // Match found, add to datastore, delete matched participants from datastore
     if (match != null) {
-      addMatchToDatastore(match, datastore);
-      deleteParticipantFromDatastore(match.getSecondParticipant(), datastore);
+      matchDatastore.addMatch(match);
+      participantDatastore.removeParticipant(match.getSecondParticipant());
     } else {
-      datastore.put(addParticipantEntityToDatastore(newParticipant));
+      // Match not found, insert participant entity into datastore
+      participantDatastore.addParticipant(newParticipant);
     }
 
     response.setContentType("text/plain;charset=UTF-8");
@@ -155,51 +164,5 @@ public class AddParticipantServlet extends HttpServlet {
     participantEntity.setProperty(PROPERTY_DURATION, participant.getDuration());
     participantEntity.setProperty(PROPERTY_TIMESTAMP, participant.getTimestamp());
     return participantEntity;
-  }
-
-  /** Return list of current participants from datastore */
-  private List<Participant> getParticipants(DatastoreService datastore) {
-    // TODO: only return participants who are available now (not sometime in future)
-
-    // Create and sort participant queries by time
-    Query query = new Query(KEY_PARTICIPANT).addSort("timestamp", SortDirection.DESCENDING);
-    PreparedQuery results = datastore.prepare(query);
-
-    // Convert list of entities to list of participants
-    List<Participant> participants = new ArrayList<Participant>();
-    for (Entity entity : results.asIterable()) {
-      long id = (long) entity.getKey().getId();
-      String username = (String) entity.getProperty(PROPERTY_USERNAME);
-      String startTimeAvailableString = (String) entity.getProperty(PROPERTY_START_TIME_AVAILABLE);
-      ZonedDateTime startTimeAvailable =
-          (ZonedDateTime) ZonedDateTime.parse(startTimeAvailableString);
-      String endTimeAvailableString = (String) entity.getProperty(PROPERTY_END_TIME_AVAILABLE);
-      ZonedDateTime endTimeAvailable = (ZonedDateTime) ZonedDateTime.parse(endTimeAvailableString);
-      int duration = ((Long) entity.getProperty(PROPERTY_DURATION)).intValue();
-      long timestamp = (long) entity.getProperty(PROPERTY_TIMESTAMP);
-      Participant currParticipant =
-          new Participant(id, username, startTimeAvailable, endTimeAvailable, duration, timestamp);
-      participants.add(currParticipant);
-    }
-    return participants;
-  }
-
-  /** Add Match pair to datastore */
-  private void addMatchToDatastore(Match match, DatastoreService datastore) {
-    // Set properties of entity
-    Entity matchEntity = new Entity(KEY_MATCH);
-    matchEntity.setProperty(PROPERTY_FIRST_PARTICIPANT, match.getFirstParticipant());
-    matchEntity.setProperty(PROPERTY_SECOND_PARTICIPANT, match.getSecondParticipant());
-    matchEntity.setProperty(PROPERTY_DURATION, match.getDuration());
-    matchEntity.setProperty(PROPERTY_TIMESTAMP, match.getTimestamp());
-
-    // Insert entity into datastore
-    datastore.put(matchEntity);
-  }
-
-  /** Delete matched participants from datastore */
-  private void deleteParticipantFromDatastore(Participant participant, DatastoreService datastore) {
-    Key participantEntityKey = KeyFactory.createKey(KEY_PARTICIPANT, participant.getId());
-    datastore.delete(participantEntityKey);
   }
 }

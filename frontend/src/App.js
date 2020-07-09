@@ -3,8 +3,8 @@ import {makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import './App.css';
-import MenuBar from './MenuBar.js';
-import Form from './Form.js';
+import MenuBar from './components/MenuBar.js';
+import Form from './components/Form.js';
 
 /**
  * Establishes style to use on rendering components

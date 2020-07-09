@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package test.java.com.google.sps;
+package test.com.google.sps;
 
 import static com.google.common.truth.Truth.assertThat;
 

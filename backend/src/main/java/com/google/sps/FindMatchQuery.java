@@ -24,6 +24,8 @@ import java.util.List;
 /** Class used to find a match in a list of Participants with the most recently added Participant */
 public final class FindMatchQuery {
 
+  /** Maximum difference in duration to be compatible */
+  private static int MAX_DURATION_DIFF = 15;
   /** Extra padding time to ensure large enough meeting time block */
   private static int PADDING_TIME = 15;
   /** Reference clock */
@@ -39,9 +41,7 @@ public final class FindMatchQuery {
    * availibility or return null if no match yet
    */
   public Match findMatch(ParticipantDatastore participantDatastore, Participant newParticipant) {
-    int newDuration = newParticipant.getDuration();
-    List<Participant> unmatchedParticipants =
-        participantDatastore.getUnmatchedParticipants(newDuration);
+    List<Participant> unmatchedParticipants = participantDatastore.getUnmatchedParticipants();
 
     // Add newParticipant to datastore
     participantDatastore.addParticipant(newParticipant);
@@ -52,7 +52,15 @@ public final class FindMatchQuery {
     // Compare new participant preferences with other participants with similar duration to find
     // match
     for (Participant currParticipant : unmatchedParticipants) {
+      System.out.println(currParticipant.getUsername());
+      // Check if participants are looking for similar meeting duration
+      int newDuration = newParticipant.getDuration();
       int currDuration = currParticipant.getDuration();
+      boolean compatibleDuration = Math.abs(newDuration - currDuration) <= MAX_DURATION_DIFF;
+
+      if (!compatibleDuration) {
+        continue;
+      }
       int duration = Math.min(newDuration, currDuration);
 
       // Check if participants are both free for that duration + extra

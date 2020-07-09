@@ -111,7 +111,6 @@
             <version>1.12.0-beta</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.google.http-client/google-http-client -->
         <dependency>
             <groupId>com.google.http-client</groupId>
             <artifactId>google-http-client</artifactId>
@@ -119,7 +118,6 @@
         </dependency>
 
 
-        <!-- https://mvnrepository.com/artifact/com.google.http-client/google-http-client-jackson2 -->
         <dependency>
             <groupId>com.google.http-client</groupId>
             <artifactId>google-http-client-jackson2</artifactId>

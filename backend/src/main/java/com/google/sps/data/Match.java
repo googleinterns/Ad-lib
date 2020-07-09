@@ -8,12 +8,12 @@ package com.google.sps.data;
  */
 public final class Match {
 
-  /** Datastore entity ID */
+  /** Datastore key ID */
   private final long id;
-  /** First participant */
-  private final Participant firstParticipant;
-  /** Second participant */
-  private final Participant secondParticipant;
+  /** First participant datastore key ID */
+  private final long firstParticipantId;
+  /** Second participant datastore key ID */
+  private final long secondParticipantId;
   /** Duration of meeting */
   private final int duration;
   /** Time match found */
@@ -21,14 +21,10 @@ public final class Match {
 
   /** Constructor */
   public Match(
-      long id,
-      Participant firstParticipant,
-      Participant secondParticipant,
-      int duration,
-      long timestamp) {
+      long id, long firstParticipantId, long secondParticipantId, int duration, long timestamp) {
     this.id = id;
-    this.firstParticipant = firstParticipant;
-    this.secondParticipant = secondParticipant;
+    this.firstParticipantId = firstParticipantId;
+    this.secondParticipantId = secondParticipantId;
     this.duration = duration;
     this.timestamp = timestamp;
   }
@@ -37,12 +33,12 @@ public final class Match {
     return id;
   }
 
-  public Participant getFirstParticipant() {
-    return firstParticipant;
+  public long getFirstParticipantId() {
+    return firstParticipantId;
   }
 
-  public Participant getSecondParticipant() {
-    return secondParticipant;
+  public long getSecondParticipantId() {
+    return secondParticipantId;
   }
 
   public int getDuration() {

@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
 /** A user who want to be matched. */
 public final class Participant {
 
-  /** Datastore ID */
+  /** Datastore key ID */
   private final long id;
   /** Google username (ldap) */
   private final String username;
@@ -16,6 +16,8 @@ public final class Participant {
   private final ZonedDateTime endTimeAvailable;
   /** How long user wants to chat */
   private final int duration;
+  /** Current match in datastore, -1 if no match or already been returned */
+  private final long currentMatchId;
   /** Time of submitted form */
   private final long timestamp;
 
@@ -26,16 +28,17 @@ public final class Participant {
       ZonedDateTime startTimeAvailable,
       ZonedDateTime endTimeAvailable,
       int duration,
+      long currentMatchId,
       long timestamp) {
     this.id = id;
     this.username = username;
-
     Preconditions.checkArgument(
         startTimeAvailable.isBefore(endTimeAvailable),
         "Start available time must be before end available time.");
     this.startTimeAvailable = startTimeAvailable;
     this.endTimeAvailable = endTimeAvailable;
     this.duration = duration;
+    this.currentMatchId = currentMatchId;
     this.timestamp = timestamp;
   }
 
@@ -57,6 +60,10 @@ public final class Participant {
 
   public int getDuration() {
     return duration;
+  }
+
+  public long getCurrentMatchId() {
+    return currentMatchId;
   }
 
   public long getTimestamp() {

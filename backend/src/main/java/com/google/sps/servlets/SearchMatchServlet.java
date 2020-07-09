@@ -19,9 +19,10 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.Match;
+import com.google.sps.data.Participant;
 import com.google.sps.datastore.MatchDatastore;
+import com.google.sps.datastore.ParticipantDatastore;
 import java.io.IOException;
-import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -55,33 +56,34 @@ public class SearchMatchServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     MatchDatastore matchDatastore = new MatchDatastore(datastore);
+    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
 
-    // Convert list of entities to list of matches
-    List<Match> matches = matchDatastore.getAllMatches();
+    Participant participant = participantDatastore.getParticipantFromUsername(username);
+    long currentMatchId = participant.getCurrentMatchId();
+    // Match doesn't exist yet
+    if (currentMatchId < 0) {
+      JSONObject matchDoesNotExist = new JSONObject();
+      matchDoesNotExist.put(JSON_MATCHSTATUS, "false");
 
-    JSONObject matchDoesNotExist = new JSONObject();
-    matchDoesNotExist.put(JSON_MATCHSTATUS, "false");
-    String matchDetails = matchDoesNotExist.toString(); // default if no match found
+      // Send the JSON back as the response
+      response.setContentType("application/json");
+      response.getWriter().println(matchDoesNotExist.toString());
+    } else {
+      // Match exists
+      Match match = matchDatastore.getMatchFromId(participant.getCurrentMatchId());
 
-    // Replace with datastore functionality
-    // Brute force search for match
-    for (Match match : matches) {
-      String firstParticipantUsername = match.getFirstParticipant().getUsername();
-      String secondParticipantUsername = match.getSecondParticipant().getUsername();
-      if (username.equals(firstParticipantUsername) || username.equals(secondParticipantUsername)) {
-        JSONObject matchExists = new JSONObject();
-        matchExists.put(JSON_MATCHSTATUS, "true");
-        matchExists.put(JSON_FIRSTPARTICIPANTUSERNAME, firstParticipantUsername);
-        matchExists.put(JSON_SECONDPARTICIPANTUSERNAME, secondParticipantUsername);
-        matchExists.put(JSON_DURATION, match.getDuration());
-        matchDetails = matchExists.toString();
+      // Reset matchId to indicate returned match
+      participantDatastore.updateNewMatch(participant.getId(), /* matchId=*/ -1L);
 
-        break;
-      }
+      JSONObject matchExists = new JSONObject();
+      matchExists.put(JSON_MATCHSTATUS, "true");
+      matchExists.put(JSON_FIRSTPARTICIPANTUSERNAME, match.getFirstParticipantId());
+      matchExists.put(JSON_SECONDPARTICIPANTUSERNAME, match.getSecondParticipantId());
+      matchExists.put(JSON_DURATION, match.getDuration());
+
+      // Send the JSON back as the response
+      response.setContentType("application/json");
+      response.getWriter().println(matchExists.toString());
     }
-
-    // Send the JSON back as the response
-    response.setContentType("application/json");
-    response.getWriter().println(matchDetails);
   }
 }

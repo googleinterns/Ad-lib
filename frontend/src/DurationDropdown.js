@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import FormControl from '@material-ui/core/FormControl';
 import NativeSelect from '@material-ui/core/NativeSelect';
 
@@ -9,6 +10,16 @@ const durations = [
   {label: '60 minutes', value: 60},
 ];
 
+// Add onChange to props validation
+DurationDropdown.propTypes = {
+  onChange: PropTypes.func,
+};
+
+/**
+ * Create duration dropdown component using durations array
+ * @return {DurationDropdown} DurationDropdown component
+ * @param {Object} props
+ */
 export default function DurationDropdown(props) {
   return (
     <div>
@@ -20,7 +31,7 @@ export default function DurationDropdown(props) {
           inputProps={{'aria-label': 'duration'}}
         >
           {durations.map((currentDuration) => (
-            <option value={currentDuration.value}>
+            <option key={currentDuration.label} value={currentDuration.value}>
               {currentDuration.label}
             </option>
           ))}

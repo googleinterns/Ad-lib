@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -13,6 +14,16 @@ const yearRanges = [
   '20+ years',
 ];
 
+// Add onChange to props validation
+YearDropdown.propTypes = {
+  onChange: PropTypes.func,
+};
+
+/**
+ * Create year dropdown component using yearRanges array
+ * @return {YearDropdown} YearDropdown component
+ * @param {Object} props
+ */
 export default function YearDropdown(props) {
   return (
     <div>

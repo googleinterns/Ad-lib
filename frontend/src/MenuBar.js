@@ -6,6 +6,9 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import HelpIcon from '@material-ui/icons/Help';
 
+/**
+ * Establishes style to use on rendering menu bar component
+ */
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,

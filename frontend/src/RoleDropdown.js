@@ -1,10 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
 
+// TO-DO: Add more role options to this array
 const roles = [
   'Software Engineer',
   'Product Manager',
@@ -16,6 +18,16 @@ const roles = [
   'CEO',
 ];
 
+// Add onChange to props validation
+RoleDropdown.propTypes = {
+  onChange: PropTypes.func,
+};
+
+/**
+ * Create role dropdown component using roles array
+ * @return {RoleDropdown} RoleDropdown component
+ * @param {Object} props
+ */
 export default function RoleDropdown(props) {
   return (
     <div>

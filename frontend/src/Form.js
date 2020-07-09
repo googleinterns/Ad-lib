@@ -1,7 +1,8 @@
 import React from 'react';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
-import {MuiPickersUtilsProvider, KeyboardTimePicker} from '@material-ui/pickers';
+import {MuiPickersUtilsProvider,
+  KeyboardTimePicker} from '@material-ui/pickers';
 import {makeStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import MatchPreference from './MatchPreference';
@@ -11,6 +12,9 @@ import YearDropdown from './YearsDropdown';
 import ProductAreaDropdown from './ProductAreaDropdown';
 import DurationDropdown from './DurationDropdown';
 
+/**
+ * Establishes style to use on rendering form component
+ */
 const useStyles = makeStyles((theme) => ({
   flexStartDiv: {
     display: 'flex',
@@ -39,12 +43,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// Create basic form component with availability and personal input fields and submit button
+/**
+ * Create form component with time and match preference inputs
+ * @return {Form} Form component
+ */
 export default function Form() {
   const classes = useStyles();
 
   // Declare state variables for each input field and set default states
-  const [timeAvailableUntil, setTimeAvailableUntil] = React.useState(new Date());
+  const [timeAvailableUntil, setTimeAvailableUntil] =
+    React.useState(new Date());
   const [duration, setDuration] = React.useState(15);
   const [productArea, setProductArea] = React.useState('');
   const [role, setRole] = React.useState('');
@@ -59,7 +67,7 @@ export default function Form() {
       </div>
       <div className={classes.section}>
         <div className={classes.flexStartDiv}>
-          <p>I'm free until...</p>
+          <p>I am free until...</p>
           <div style={{width: 180}}>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardTimePicker
@@ -92,10 +100,12 @@ export default function Form() {
       <div className={classes.flexEndDiv}>
         <Checkbox onChange={(value) => setSavePreference(value)} />
         <div className={classes.flexEndDiv}>
-          { /* TO-DO: change alert to JSON object that is sent over to backend */ }
+          { /* TO-DO: change alert to JSON object and send to backend */ }
           <Button variant="contained" color="primary" onClick={() => {
-            alert('Availability: ' + timeAvailableUntil + '\nDuration: ' + duration + '\nRole: ' + role +
-            '\nPA: ' + productArea + '\nYears: ' + yearRange + '\nSave: ' + savePreference + '\nMatch: ' + matchPreference);
+            alert('Availability: ' + timeAvailableUntil + '\nDuration: ' +
+            duration + '\nRole: ' + role + '\nPA: ' + productArea +
+            '\nYears: ' + yearRange + '\nSave: ' + savePreference +
+            '\nMatch: ' + matchPreference);
           }}>
             Submit
           </Button>

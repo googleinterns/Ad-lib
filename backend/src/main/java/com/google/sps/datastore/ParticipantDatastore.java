@@ -3,6 +3,7 @@ package com.google.sps.datastore;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -71,7 +72,7 @@ public final class ParticipantDatastore {
       return null;
     }
   }
-
+  
   /** Return Participant from username, or null if participant with username not in datastore */
   @Nullable
   public Participant getParticipantFromUsername(String username) {

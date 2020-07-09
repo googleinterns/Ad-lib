@@ -54,7 +54,6 @@ public final class FindMatchQuery {
 
     // Set reference date time using clock
     ZonedDateTime dateTime = ZonedDateTime.now(clock);
-
     // Compare new participant preferences with other participants to find match
     for (Participant currParticipant : sameDurationParticipants) {
       // Check if participants are both free for that duration + extra

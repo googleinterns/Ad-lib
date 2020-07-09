@@ -15,8 +15,8 @@ public final class Participant {
   private ZonedDateTime endTimeAvailable;
   /** How long user wants to chat */
   private int duration;
-  /** Current match in datastore, null if never found a match or already been returned */
-  private long currentMatchId;
+  /** Current match in datastore, -1 if no match or already been returned */
+  private final long currentMatchId;
   /** Time of submitted form */
   private final long timestamp;
 
@@ -63,16 +63,8 @@ public final class Participant {
     return duration;
   }
 
-  public void setDuration(int duration) {
-    this.duration = duration;
-  }
-
   public long getCurrentMatchId() {
     return currentMatchId;
-  }
-
-  public void setCurrentMatchId(long ecurrentMatchId) {
-    this.currentMatchId = currentMatchId;
   }
 
   public long getTimestamp() {

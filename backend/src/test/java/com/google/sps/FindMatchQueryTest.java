@@ -43,6 +43,7 @@ public final class FindMatchQueryTest {
   private static final String PERSON_D = "Person D";
 
   // Default parameters unused in query
+  private static final long ID_DEFAULT = 0;
   private static final long MATCHID_DEFAULT = 0;
   private static final long TIMESTAMP_DEFAULT = 0;
 
@@ -268,7 +269,6 @@ public final class FindMatchQueryTest {
             DURATION_60_MINUTES,
             MATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
     participantDatastore.addParticipant(participantA);
@@ -334,7 +334,7 @@ public final class FindMatchQueryTest {
             MATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);
     Participant participantB =
-        new Participant(
+        new Participant
             PERSON_B,
             TIME_1400ET,
             TIME_1800ET,

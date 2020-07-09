@@ -23,7 +23,6 @@ import com.google.sps.data.Participant;
 import com.google.sps.datastore.MatchDatastore;
 import com.google.sps.datastore.ParticipantDatastore;
 import java.io.IOException;
-import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -60,6 +59,7 @@ public class SearchMatchServlet extends HttpServlet {
     MatchDatastore matchDatastore = new MatchDatastore(datastore);
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
 
+<<<<<<< HEAD
     // Find participant's current match, if exists and not returned yet
     Participant participant = participantDatastore.getParticipantFromUsername(username);
     if (participant == null) {

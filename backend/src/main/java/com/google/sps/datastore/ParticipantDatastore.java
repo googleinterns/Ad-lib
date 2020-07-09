@@ -135,4 +135,10 @@ public final class ParticipantDatastore {
     }
     return sb.toString();
   }
+
+  /** Remove Participant from datastore */
+  public void removeParticipant(Participant participant) {
+    Key participantEntityKey = KeyFactory.createKey(KEY_PARTICIPANT, participant.getId());
+    datastore.delete(participantEntityKey);
+  }
 }

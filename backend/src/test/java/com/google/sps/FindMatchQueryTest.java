@@ -84,12 +84,20 @@ public final class FindMatchQueryTest {
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
+  private final LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+
   @Before
   public void setUp() {
     helper.setUp();
 
     // Set "current" date to  1/1/2020 2:00pm ET
     clock = Clock.fixed(currentDateTimeET.toInstant(), currentDateTimeET.getZone());
+  }
+
+  @After
+  public void tearDown() {
+    helper.tearDown();
   }
 
   @After
@@ -123,19 +131,12 @@ public final class FindMatchQueryTest {
             DURATION_15_MINUTES,
             MATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
     participantDatastore.addParticipant(participantA);
 
     FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
     Match match = query.findMatch(participantB);
-
-    // Add newParticipant to datastore
-    participantDatastore.addParticipant(participantB);
-
-    MatchDatastore matchDatastore = new MatchDatastore(datastore);
-    matchDatastore.addMatch(match);
 
     assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_B);
     assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);
@@ -161,16 +162,12 @@ public final class FindMatchQueryTest {
             DURATION_60_MINUTES,
             MATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
     participantDatastore.addParticipant(participantA);
 
     FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
     Match match = query.findMatch(participantB);
-
-    // Add newParticipant to datastore
-    participantDatastore.addParticipant(participantB);
 
     assertThat(match).isNull();
   }
@@ -194,16 +191,12 @@ public final class FindMatchQueryTest {
             DURATION_60_MINUTES,
             MATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
     participantDatastore.addParticipant(participantA);
 
     FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
     Match match = query.findMatch(participantB);
-
-    // Add newParticipant to datastore
-    participantDatastore.addParticipant(participantB);
 
     assertThat(match).isNull();
   }
@@ -235,7 +228,6 @@ public final class FindMatchQueryTest {
             DURATION_60_MINUTES,
             MATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
     participantDatastore.addParticipant(participantA);
@@ -243,9 +235,6 @@ public final class FindMatchQueryTest {
 
     FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
     Match match = query.findMatch(participantC);
-
-    // Add newParticipant to datastore
-    participantDatastore.addParticipant(participantC);
 
     assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_C);
     assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);
@@ -288,9 +277,6 @@ public final class FindMatchQueryTest {
     FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
     Match match = query.findMatch(participantC);
 
-    // Add newParticipant to datastore
-    participantDatastore.addParticipant(participantC);
-
     assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_C);
     assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_B);
     assertThat(match.getDuration()).isEqualTo(DURATION_60_MINUTES);
@@ -323,7 +309,6 @@ public final class FindMatchQueryTest {
             DURATION_30_MINUTES,
             MATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
     participantDatastore.addParticipant(participantA);
@@ -331,9 +316,6 @@ public final class FindMatchQueryTest {
 
     FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
     Match match = query.findMatch(participantC);
-
-    // Add newParticipant to datastore
-    participantDatastore.addParticipant(participantC);
 
     assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_C);
     assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);
@@ -359,16 +341,12 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             MATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
     participantDatastore.addParticipant(participantA);
 
     FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
     Match match = query.findMatch(participantB);
-
-    // Add newParticipant to datastore
-    participantDatastore.addParticipant(participantB);
 
     assertThat(match).isNull();
   }
@@ -393,16 +371,12 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             MATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
     participantDatastore.addParticipant(participantA);
 
     FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
     Match match = query.findMatch(participantB);
-
-    // Add newParticipant to datastore
-    participantDatastore.addParticipant(participantB);
 
     assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_B);
     assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);
@@ -436,9 +410,6 @@ public final class FindMatchQueryTest {
     FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
     Match match = query.findMatch(participantB);
 
-    // Add newParticipant to datastore
-    participantDatastore.addParticipant(participantB);
-
     assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_B);
     assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_30_MINUTES);
@@ -471,9 +442,6 @@ public final class FindMatchQueryTest {
 
     FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
     Match match = query.findMatch(participantB);
-
-    // Add newParticipant to datastore
-    participantDatastore.addParticipant(participantB);
 
     assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_B);
     assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);

@@ -23,6 +23,7 @@ import com.google.sps.data.Participant;
 import com.google.sps.datastore.MatchDatastore;
 import com.google.sps.datastore.ParticipantDatastore;
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +33,10 @@ import org.json.simple.JSONObject;
 /** Servlet that returns some example content. */
 @WebServlet("/api/v1/search-match")
 public class SearchMatchServlet extends HttpServlet {
+
+  // Datastore Key/Property constants
+  private static final String KEY_MATCH = "Match";
+  private static final String PROPERTY_TIMESTAMP = "timestamp";
 
   // JSON key constants
   private static final String JSON_MATCHSTATUS = "matchStatus";

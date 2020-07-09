@@ -1,4 +1,7 @@
-package com.google.sps.data;
+package main.java.com.google.sps.data;
+
+import main.java.com.google.sps.data.Participant;
+
 
 /**
  * A match of two participants. Note: Match includes entire Participants (with unique ID per

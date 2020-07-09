@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps;
+package main.java.com.google.sps;
 
-import com.google.sps.data.Match;
-import com.google.sps.data.Participant;
+import main.java.com.google.sps.data.Match;
+import main.java.com.google.sps.data.Participant;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.List;

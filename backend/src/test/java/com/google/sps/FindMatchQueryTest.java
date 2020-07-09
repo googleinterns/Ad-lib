@@ -16,13 +16,13 @@ package test.java.com.google.sps;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.sps.FindMatchQuery;
+import com.google.sps.data.Match;
+import com.google.sps.data.Participant;
 import java.time.Clock;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
-import main.java.com.google.sps.FindMatchQuery;
-import main.java.com.google.sps.data.Match;
-import main.java.com.google.sps.data.Participant;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

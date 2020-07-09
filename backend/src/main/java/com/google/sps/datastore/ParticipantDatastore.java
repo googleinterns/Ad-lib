@@ -74,7 +74,7 @@ public final class ParticipantDatastore {
       String endTimeAvailableString = (String) entity.getProperty(PROPERTY_ENDTIMEAVAILABLE);
       ZonedDateTime endTimeAvailable = ZonedDateTime.parse(endTimeAvailableString, formatter);
 
-      int duration = (int) entity.getProperty(PROPERTY_DURATION);
+      int duration = ((Long) entity.getProperty(PROPERTY_DURATION)).intValue();
 
       long timestamp = (long) entity.getProperty(PROPERTY_TIMESTAMP);
 

@@ -34,9 +34,6 @@ public final class ParticipantDatastore {
 
   private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
 
-  /** Maximum difference in duration to be compatible */
-  private static int MAX_DURATION_DIFF = 15;
-
   public ParticipantDatastore(DatastoreService datastore) {
     this.datastore = datastore;
   }
@@ -113,7 +110,6 @@ public final class ParticipantDatastore {
     long id = (long) participantEntity.getKey().getId();
 
     String username = (String) participantEntity.getProperty(PROPERTY_USERNAME);
-    System.out.println(username);
 
     String startTimeAvailableString =
         (String) participantEntity.getProperty(PROPERTY_STARTTIMEAVAILABLE);
@@ -134,27 +130,13 @@ public final class ParticipantDatastore {
         id, username, startTimeAvailable, endTimeAvailable, duration, currentMatchId, timestamp);
   }
 
-  /** Return list of all unmatched participants with similar duration */
-  public List<Participant> getUnmatchedParticipants(int newDuration) {
-    Query query =
-        new Query(KEY_PARTICIPANT)
-            .addSort(PROPERTY_DURATION, SortDirection.ASCENDING)
-            .addSort(PROPERTY_TIMESTAMP, SortDirection.DESCENDING);
+  /** Return list of all unmatched participants */
+  public List<Participant> getUnmatchedParticipants() {
+    Query query = new Query(KEY_PARTICIPANT).addSort(PROPERTY_DURATION, SortDirection.DESCENDING);
 
     // Create filter to get all currently unmatched participants
     Filter unmatched = new FilterPredicate(PROPERTY_DURATION, FilterOperator.GREATER_THAN, 0);
     query.setFilter(unmatched);
-
-    // Filter by duration compatibility
-    Filter durationLower =
-        new FilterPredicate(
-            PROPERTY_DURATION,
-            FilterOperator.GREATER_THAN_OR_EQUAL,
-            newDuration - MAX_DURATION_DIFF);
-    Filter durationHigher =
-        new FilterPredicate(
-            PROPERTY_DURATION, FilterOperator.LESS_THAN_OR_EQUAL, newDuration + MAX_DURATION_DIFF);
-    query.setFilter(durationLower).setFilter(durationHigher);
 
     PreparedQuery results = datastore.prepare(query);
 

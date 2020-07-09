@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main.java.com.google.sps;
+package com.google.sps;
 
 import main.java.com.google.sps.data.Match;
 import main.java.com.google.sps.data.Participant;

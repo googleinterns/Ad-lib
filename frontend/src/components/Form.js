@@ -12,9 +12,7 @@ import YearDropdown from './YearsDropdown';
 import ProductAreaDropdown from './ProductAreaDropdown';
 import DurationDropdown from './DurationDropdown';
 
-/**
- * Establishes style to use on rendering form component
- */
+/** Establishes style to use on rendering form component */
 const useStyles = makeStyles((theme) => ({
   flexStartDiv: {
     display: 'flex',

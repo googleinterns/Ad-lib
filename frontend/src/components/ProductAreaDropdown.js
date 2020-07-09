@@ -6,13 +6,34 @@ import FormControl from '@material-ui/core/FormControl';
 import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
 
-// TO-DO: Add more product area options to this array
 const productAreas = [
-  'Play',
-  'Search',
   'Ads',
+  'Area 120',
+  'Cloud',
+  'Commerce',
+  'Community Efforts',
+  'Core',
+  'Corporate Engineering',
+  'Devices and Services',
+  'Geo',
+  'Global Affairs',
+  'Global Business & Operations',
+  'Global Communications & Public Affairs',
+  'Google - advisors',
+  'Google Finance',
+  'Health',
+  'Jigsaw',
+  'Learning & Education',
+  'Marketing',
+  'Next Billion Users',
+  'Payments',
+  'People Operations',
+  'Platforms & Ecosystems',
+  'REWS (Real Estate & Workplace Services)',
+  'Research',
+  'Search',
+  'Waze',
   'Youtube',
-  'Maps',
 ];
 
 // Add onChange to props validation

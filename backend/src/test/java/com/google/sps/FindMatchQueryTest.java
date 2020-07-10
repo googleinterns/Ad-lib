@@ -245,7 +245,7 @@ public final class FindMatchQueryTest {
     assertThat(match.getFirstParticipant().getUsername()).isEqualTo(PERSON_B);
     assertThat(match.getSecondParticipant().getUsername()).isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_30_MINUTES);
-    assertThat(true).isFalse()
+    assertThat(true).isFalse();
   }
 
   @Test

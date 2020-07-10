@@ -1,16 +1,14 @@
 package com.google.sps.data;
 
-import com.google.appengine.api.datastore.Key;
-
 /** A match between two participants. */
 public final class Match {
 
   /** Match datastore key ID */
   private final long id;
-  /** First participant datastore key */
-  private final Key firstParticipantKey;
-  /** Second participant datastore key */
-  private final Key secondParticipantKey;
+  /** First participant username (datastore key name) */
+  private final String firstParticipantUsername;
+  /** Second participant username (datastore key name) */
+  private final String secondParticipantUsername;
   /** Duration of meeting */
   private final int duration;
   /** Time match found */
@@ -18,10 +16,14 @@ public final class Match {
 
   /** Constructor */
   public Match(
-      long id, Key firstParticipantKey, Key secondParticipantKey, int duration, long timestamp) {
+      long id,
+      String firstParticipantUsername,
+      String secondParticipantUsername,
+      int duration,
+      long timestamp) {
     this.id = id;
-    this.firstParticipantKey = firstParticipantKey;
-    this.secondParticipantKey = secondParticipantKey;
+    this.firstParticipantUsername = firstParticipantUsername;
+    this.secondParticipantUsername = secondParticipantUsername;
     this.duration = duration;
     this.timestamp = timestamp;
   }
@@ -30,12 +32,12 @@ public final class Match {
     return id;
   }
 
-  public Key getFirstParticipantKey() {
-    return firstParticipantKey;
+  public String getFirstParticipantUsername() {
+    return firstParticipantUsername;
   }
 
-  public Key getSecondParticipantKey() {
-    return secondParticipantKey;
+  public String getSecondParticipantUsername() {
+    return secondParticipantUsername;
   }
 
   public int getDuration() {

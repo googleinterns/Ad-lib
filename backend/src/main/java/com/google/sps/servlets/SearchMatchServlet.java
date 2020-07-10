@@ -16,7 +16,6 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.Match;
@@ -58,9 +57,9 @@ public class SearchMatchServlet extends HttpServlet {
 
     // Find participant's current match, if exists and not returned yet
     Participant participant = participantDatastore.getParticipantFromUsername(username);
-    Key currentMatchKey = participant.getCurrentMatchKey();
+    long currentMatchId = participant.getCurrentMatchId();
     // Check if match exists and not returned yet
-    if (currentMatchKey == null) {
+    if (currentMatchId == 0) {
       // Match doesn't exist yet
       JSONObject matchDoesNotExist = new JSONObject();
       matchDoesNotExist.put(JSON_MATCHSTATUS, "false");
@@ -70,22 +69,15 @@ public class SearchMatchServlet extends HttpServlet {
       response.getWriter().println(matchDoesNotExist.toString());
     } else {
       // Match exists
-      Match match = matchDatastore.getMatchFromKey(currentMatchKey);
+      Match match = matchDatastore.getMatchFromId(currentMatchId);
 
-      // Reset matchKey to indicate returned match
-      participantDatastore.updateNewMatch(
-          participantDatastore.getKeyFromId(participant.getId()), /* matchKey=*/ null);
+      // Reset matchId to indicate returned match
+      participantDatastore.updateNewMatch(participant.getUsername(), /* matchId=*/ 0);
 
       JSONObject matchExists = new JSONObject();
       matchExists.put(JSON_MATCHSTATUS, "true");
-      matchExists.put(
-          JSON_FIRSTPARTICIPANTUSERNAME,
-          participantDatastore.getParticipantFromKey(match.getFirstParticipantKey()).getUsername());
-      matchExists.put(
-          JSON_SECONDPARTICIPANTUSERNAME,
-          participantDatastore
-              .getParticipantFromKey(match.getSecondParticipantKey())
-              .getUsername());
+      matchExists.put(JSON_FIRSTPARTICIPANTUSERNAME, match.getFirstParticipantUsername());
+      matchExists.put(JSON_SECONDPARTICIPANTUSERNAME, match.getSecondParticipantUsername());
       matchExists.put(JSON_DURATION, match.getDuration());
 
       // Send the JSON back as the response

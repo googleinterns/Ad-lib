@@ -3,7 +3,7 @@ name: Java Tests
 on: [push]
 
 jobs:
-  format:
+  javatests:
     runs-on: ubuntu-latest
 
     steps:

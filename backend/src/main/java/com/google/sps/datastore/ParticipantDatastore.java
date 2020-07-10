@@ -136,8 +136,8 @@ public final class ParticipantDatastore {
   }
 
   /** Remove Participant from datastore */
-  public void removeParticipant(Participant participant) {
-    Key participantKey = KeyFactory.createKey(KIND_PARTICIPANT, participant.getUsername());
+  public void removeParticipant(String username) {
+    Key participantKey = KeyFactory.createKey(KIND_PARTICIPANT, username);
     datastore.delete(participantKey);
   }
 

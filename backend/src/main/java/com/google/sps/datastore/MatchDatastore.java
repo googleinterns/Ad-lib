@@ -74,7 +74,7 @@ public final class MatchDatastore {
   }
 
   /** Return Match from Entity */
-  public Match getMatchFromEntity(Entity matchEntity) {
+  private Match getMatchFromEntity(Entity matchEntity) {
     long id = (long) matchEntity.getKey().getId();
     String firstParticipantUsername =
         (String) matchEntity.getProperty(PROPERTY_FIRSTPARTICIPANTUSERNAME);
@@ -87,8 +87,8 @@ public final class MatchDatastore {
   }
 
   /** Remove Match from datastore */
-  public void removeMatch(Match match) {
-    Key matchKey = KeyFactory.createKey(KIND_MATCH, match.getId());
+  public void removeMatch(long matchId) {
+    Key matchKey = KeyFactory.createKey(KIND_MATCH, matchId);
     datastore.delete(matchKey);
   }
 

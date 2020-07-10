@@ -121,7 +121,9 @@ public class EventSender {
   }
 
   /**
-   * TODO(): Currently assumes that the users will be within the same timezone. Main method of this
+   * TODO(): Currently assumes that the users will be within the same timezone.
+   *
+   * Main method of this
    * API, creates an Ad-lib event ideally the moment that a match is found. Upon receiving the two
    * participants as well as the meetingStart and meetingEndTime as well as their time zone
    * configures the event as well as ads hangout link.

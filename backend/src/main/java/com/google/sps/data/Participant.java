@@ -15,11 +15,8 @@ public final class Participant {
   /** Time user is available until */
   private ZonedDateTime endTimeAvailable;
   /** How long user wants to chat */
-  private int duration;
-  /**
-   * Current match in datastore, null if never found a match for this participant or already been
-   * returned
-   */
+  private final int duration;
+  /** Current match in datastore, null if never found a match or already been returned */
   private final Key currentMatchKey;
   /** Time of submitted form */
   private final long timestamp;

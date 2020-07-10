@@ -47,7 +47,7 @@ public final class FindMatchQuery {
   @Nullable
   public Match findMatch(Participant newParticipant) {
     int duration = newParticipant.getDuration();
-
+    
     // Get list of unmatched participants with same duration as newParticipant
     List<Participant> sameDurationParticipants =
         participantDatastore.getSameDurationParticipants(duration);

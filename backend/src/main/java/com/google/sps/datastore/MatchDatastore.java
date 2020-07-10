@@ -13,7 +13,7 @@ public final class MatchDatastore {
   private DatastoreService datastore;
 
   // Datastore Key/Property constants
-  private static final String KEY_MATCH = "Match";
+  private static final String KIND_MATCH = "Match";
   private static final String PROPERTY_FIRSTPARTICIPANTKEY = "firstParticipantKey";
   private static final String PROPERTY_SECONDPARTICIPANTKEY = "secondParticipantKey";
   private static final String PROPERTY_DURATION = "duration";
@@ -27,7 +27,7 @@ public final class MatchDatastore {
   /** Add Match to datastore and return the match Key */
   public Key addMatch(Match match) {
     // Set properties of entity
-    Entity matchEntity = new Entity(KEY_MATCH);
+    Entity matchEntity = new Entity(KIND_MATCH);
     matchEntity.setProperty(PROPERTY_FIRSTPARTICIPANTKEY, match.getFirstParticipantKey());
     matchEntity.setProperty(PROPERTY_SECONDPARTICIPANTKEY, match.getSecondParticipantKey());
     matchEntity.setProperty(PROPERTY_DURATION, match.getDuration());
@@ -64,7 +64,7 @@ public final class MatchDatastore {
 
   /** Remove Match from datastore */
   public void removeMatch(Match match) {
-    Key matchEntityKey = KeyFactory.createKey(KEY_MATCH, match.getId());
+    Key matchEntityKey = KeyFactory.createKey(KIND_MATCH, match.getId());
     datastore.delete(matchEntityKey);
   }
 }

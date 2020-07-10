@@ -34,10 +34,6 @@ import org.json.simple.JSONObject;
 @WebServlet("/api/v1/search-match")
 public class SearchMatchServlet extends HttpServlet {
 
-  // Datastore Key/Property constants
-  private static final String KEY_MATCH = "Match";
-  private static final String PROPERTY_TIMESTAMP = "timestamp";
-
   // JSON key constants
   private static final String JSON_MATCHSTATUS = "matchStatus";
   private static final String JSON_FIRSTPARTICIPANTUSERNAME = "firstParticipantUsername";

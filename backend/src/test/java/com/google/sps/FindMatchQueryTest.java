@@ -18,6 +18,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.sps.data.Match;
@@ -43,7 +44,7 @@ public final class FindMatchQueryTest {
 
   // Default parameters unused in query
   private static final long ID_DEFAULT = 0;
-  private static final long MATCHID_DEFAULT = 0;
+  private static final Key MATCHID_DEFAULT = null;
   private static final long TIMESTAMP_DEFAULT = 0;
 
   // Duration constants
@@ -135,10 +136,14 @@ public final class FindMatchQueryTest {
     Match match = query.findMatch(participantDatastore, participantB);
 
     assertThat(
-            participantDatastore.getParticipantFromId(match.getFirstParticipantId()).getUsername())
+            participantDatastore
+                .getParticipantFromId(match.getFirstParticipantKey().getId())
+                .getUsername())
         .isEqualTo(PERSON_B);
     assertThat(
-            participantDatastore.getParticipantFromId(match.getSecondParticipantId()).getUsername())
+            participantDatastore
+                .getParticipantFromId(match.getSecondParticipantKey().getId())
+                .getUsername())
         .isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_15_MINUTES);
   }
@@ -244,10 +249,14 @@ public final class FindMatchQueryTest {
     Match match = query.findMatch(participantDatastore, participantC);
 
     assertThat(
-            participantDatastore.getParticipantFromId(match.getFirstParticipantId()).getUsername())
+            participantDatastore
+                .getParticipantFromId(match.getFirstParticipantKey().getId())
+                .getUsername())
         .isEqualTo(PERSON_C);
     assertThat(
-            participantDatastore.getParticipantFromId(match.getSecondParticipantId()).getUsername())
+            participantDatastore
+                .getParticipantFromId(match.getSecondParticipantKey().getId())
+                .getUsername())
         .isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_60_MINUTES);
   }
@@ -291,10 +300,14 @@ public final class FindMatchQueryTest {
     Match match = query.findMatch(participantDatastore, participantC);
 
     assertThat(
-            participantDatastore.getParticipantFromId(match.getFirstParticipantId()).getUsername())
+            participantDatastore
+                .getParticipantFromId(match.getFirstParticipantKey().getId())
+                .getUsername())
         .isEqualTo(PERSON_C);
     assertThat(
-            participantDatastore.getParticipantFromId(match.getSecondParticipantId()).getUsername())
+            participantDatastore
+                .getParticipantFromId(match.getSecondParticipantKey().getId())
+                .getUsername())
         .isEqualTo(PERSON_B);
     assertThat(match.getDuration()).isEqualTo(DURATION_60_MINUTES);
   }
@@ -338,10 +351,14 @@ public final class FindMatchQueryTest {
     Match match = query.findMatch(participantDatastore, participantC);
 
     assertThat(
-            participantDatastore.getParticipantFromId(match.getFirstParticipantId()).getUsername())
+            participantDatastore
+                .getParticipantFromId(match.getFirstParticipantKey().getId())
+                .getUsername())
         .isEqualTo(PERSON_C);
     assertThat(
-            participantDatastore.getParticipantFromId(match.getSecondParticipantId()).getUsername())
+            participantDatastore
+                .getParticipantFromId(match.getSecondParticipantKey().getId())
+                .getUsername())
         .isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_30_MINUTES);
   }
@@ -407,10 +424,14 @@ public final class FindMatchQueryTest {
     Match match = query.findMatch(participantDatastore, participantB);
 
     assertThat(
-            participantDatastore.getParticipantFromId(match.getFirstParticipantId()).getUsername())
+            participantDatastore
+                .getParticipantFromId(match.getFirstParticipantKey().getId())
+                .getUsername())
         .isEqualTo(PERSON_B);
     assertThat(
-            participantDatastore.getParticipantFromId(match.getSecondParticipantId()).getUsername())
+            participantDatastore
+                .getParticipantFromId(match.getSecondParticipantKey().getId())
+                .getUsername())
         .isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_45_MINUTES);
   }
@@ -444,10 +465,14 @@ public final class FindMatchQueryTest {
     Match match = query.findMatch(participantDatastore, participantB);
 
     assertThat(
-            participantDatastore.getParticipantFromId(match.getFirstParticipantId()).getUsername())
+            participantDatastore
+                .getParticipantFromId(match.getFirstParticipantKey().getId())
+                .getUsername())
         .isEqualTo(PERSON_B);
     assertThat(
-            participantDatastore.getParticipantFromId(match.getSecondParticipantId()).getUsername())
+            participantDatastore
+                .getParticipantFromId(match.getSecondParticipantKey().getId())
+                .getUsername())
         .isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_30_MINUTES);
   }
@@ -482,10 +507,14 @@ public final class FindMatchQueryTest {
     Match match = query.findMatch(participantDatastore, participantB);
 
     assertThat(
-            participantDatastore.getParticipantFromId(match.getFirstParticipantId()).getUsername())
+            participantDatastore
+                .getParticipantFromId(match.getFirstParticipantKey().getId())
+                .getUsername())
         .isEqualTo(PERSON_B);
     assertThat(
-            participantDatastore.getParticipantFromId(match.getSecondParticipantId()).getUsername())
+            participantDatastore
+                .getParticipantFromId(match.getSecondParticipantKey().getId())
+                .getUsername())
         .isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_30_MINUTES);
   }

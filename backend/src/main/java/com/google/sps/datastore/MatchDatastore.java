@@ -14,8 +14,8 @@ public final class MatchDatastore {
 
   // Datastore Key/Property constants
   private static final String KEY_MATCH = "Match";
-  private static final String PROPERTY_FIRSTPARTICIPANTID = "firstParticipantId";
-  private static final String PROPERTY_SECONDPARTICIPANTID = "secondParticipantId";
+  private static final String PROPERTY_FIRSTPARTICIPANTKEY = "firstParticipantKey";
+  private static final String PROPERTY_SECONDPARTICIPANTKEY = "secondParticipantKey";
   private static final String PROPERTY_DURATION = "duration";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
 
@@ -23,41 +23,39 @@ public final class MatchDatastore {
     this.datastore = datastore;
   }
 
-  /** Add Match to datastore and return the match Id */
-  public long addMatch(Match match) {
+  /** Add Match to datastore and return the match Key */
+  public Key addMatch(Match match) {
     // Set properties of entity
     Entity matchEntity = new Entity(KEY_MATCH);
-    matchEntity.setProperty(PROPERTY_FIRSTPARTICIPANTID, match.getFirstParticipantId());
-    matchEntity.setProperty(PROPERTY_SECONDPARTICIPANTID, match.getSecondParticipantId());
+    matchEntity.setProperty(PROPERTY_FIRSTPARTICIPANTKEY, match.getFirstParticipantKey());
+    matchEntity.setProperty(PROPERTY_SECONDPARTICIPANTKEY, match.getSecondParticipantKey());
     matchEntity.setProperty(PROPERTY_DURATION, match.getDuration());
     matchEntity.setProperty(PROPERTY_TIMESTAMP, match.getTimestamp());
 
     // Insert entity into datastore
     datastore.put(matchEntity);
 
-    // Return matchId
-    return matchEntity.getKey().getId();
+    // Return matchKey
+    return matchEntity.getKey();
   }
 
   /** Return match based on match datastore key ID */
-  public Match getMatchFromId(long matchId) {
+  public Match getMatchFromKey(Key matchKey) {
     // Never found a match
-    if (matchId == 0) {
+    if (matchKey == null) {
       return null;
     }
 
     try {
       // Match has been found before
-      Key matchEntityKey = KeyFactory.createKey(KEY_MATCH, matchId);
-
-      Entity matchEntity = datastore.get(matchEntityKey);
+      Entity matchEntity = datastore.get(matchKey);
       long id = (long) matchEntity.getKey().getId();
-      long firstParticipantId = (long) matchEntity.getProperty(PROPERTY_FIRSTPARTICIPANTID);
-      long secondParticipantId = (long) matchEntity.getProperty(PROPERTY_SECONDPARTICIPANTID);
+      Key firstParticipantKey = (Key) matchEntity.getProperty(PROPERTY_FIRSTPARTICIPANTKEY);
+      Key secondParticipantKey = (Key) matchEntity.getProperty(PROPERTY_SECONDPARTICIPANTKEY);
       int duration = ((Long) matchEntity.getProperty(PROPERTY_DURATION)).intValue();
       long timestamp = (long) matchEntity.getProperty(PROPERTY_TIMESTAMP);
 
-      return new Match(id, firstParticipantId, secondParticipantId, duration, timestamp);
+      return new Match(id, firstParticipantKey, secondParticipantKey, duration, timestamp);
     } catch (EntityNotFoundException e) {
       return null;
     }

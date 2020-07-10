@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.Match;
@@ -59,9 +60,9 @@ public class SearchMatchServlet extends HttpServlet {
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
 
     Participant participant = participantDatastore.getParticipantFromUsername(username);
-    long currentMatchId = participant.getCurrentMatchId();
+    Key currentMatchKey = participant.getCurrentMatchKey();
     // Match doesn't exist yet
-    if (currentMatchId < 0) {
+    if (currentMatchKey == null) {
       JSONObject matchDoesNotExist = new JSONObject();
       matchDoesNotExist.put(JSON_MATCHSTATUS, "false");
 
@@ -70,15 +71,16 @@ public class SearchMatchServlet extends HttpServlet {
       response.getWriter().println(matchDoesNotExist.toString());
     } else {
       // Match exists
-      Match match = matchDatastore.getMatchFromId(participant.getCurrentMatchId());
+      Match match = matchDatastore.getMatchFromKey(currentMatchKey);
 
       // Reset matchId to indicate returned match
-      participantDatastore.updateNewMatch(participant.getId(), /* matchId=*/ -1L);
+      participantDatastore.updateNewMatch(
+          participantDatastore.getKeyFromId(participant.getId()), /* matchKey=*/ null);
 
       JSONObject matchExists = new JSONObject();
       matchExists.put(JSON_MATCHSTATUS, "true");
-      matchExists.put(JSON_FIRSTPARTICIPANTUSERNAME, match.getFirstParticipantId());
-      matchExists.put(JSON_SECONDPARTICIPANTUSERNAME, match.getSecondParticipantId());
+      matchExists.put(JSON_FIRSTPARTICIPANTUSERNAME, match.getFirstParticipantKey());
+      matchExists.put(JSON_SECONDPARTICIPANTUSERNAME, match.getSecondParticipantKey());
       matchExists.put(JSON_DURATION, match.getDuration());
 
       // Send the JSON back as the response

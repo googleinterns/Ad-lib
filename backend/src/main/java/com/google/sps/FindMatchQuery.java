@@ -74,8 +74,11 @@ public final class FindMatchQuery {
       if (compatibleTime) {
         return new Match(
             /* id= */ -1L,
-            participantDatastore.getParticipantFromUsername(newParticipant.getUsername()).getId(),
-            currParticipant.getId(),
+            participantDatastore.getKeyFromId(
+                participantDatastore
+                    .getParticipantFromUsername(newParticipant.getUsername())
+                    .getId()),
+            participantDatastore.getKeyFromId(currParticipant.getId()),
             duration,
             dateTime.toInstant().toEpochMilli());
       }

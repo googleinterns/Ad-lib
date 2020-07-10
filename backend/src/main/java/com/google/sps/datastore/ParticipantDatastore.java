@@ -29,7 +29,7 @@ public final class ParticipantDatastore {
   private static final String PROPERTY_STARTTIMEAVAILABLE = "startTimeAvailable";
   private static final String PROPERTY_ENDTIMEAVAILABLE = "endTimeAvailable";
   private static final String PROPERTY_DURATION = "duration";
-  private static final String PROPERTY_CURRENTMATCHID = "currentMatchId";
+  private static final String PROPERTY_CURRENTMATCHKEY = "currentMatchKey";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
 
   private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
@@ -48,7 +48,7 @@ public final class ParticipantDatastore {
     participantEntity.setProperty(
         PROPERTY_ENDTIMEAVAILABLE, participant.getEndTimeAvailable().format(formatter));
     participantEntity.setProperty(PROPERTY_DURATION, participant.getDuration());
-    participantEntity.setProperty(PROPERTY_CURRENTMATCHID, participant.getCurrentMatchId());
+    participantEntity.setProperty(PROPERTY_CURRENTMATCHKEY, participant.getCurrentMatchKey());
     participantEntity.setProperty(PROPERTY_TIMESTAMP, participant.getTimestamp());
 
     // Insert entity into datastore
@@ -57,17 +57,16 @@ public final class ParticipantDatastore {
 
   /** Remove Participant from datastore */
   public void removeParticipant(Participant participant) {
-    Key participantEntityKey = KeyFactory.createKey(KEY_PARTICIPANT, participant.getId());
-    datastore.delete(participantEntityKey);
+    Key participantKey = KeyFactory.createKey(KEY_PARTICIPANT, participant.getId());
+    datastore.delete(participantKey);
   }
 
   /** Update Participant with new matchId, null out availability to show currently matched */
-  public void updateNewMatch(long participantId, long matchId) {
-    Key participantEntityKey = KeyFactory.createKey(KEY_PARTICIPANT, participantId);
+  public void updateNewMatch(Key participantKey, Key matchKey) {
     try {
-      Entity participantEntity = datastore.get(participantEntityKey);
+      Entity participantEntity = datastore.get(participantKey);
 
-      participantEntity.setProperty(PROPERTY_CURRENTMATCHID, matchId);
+      participantEntity.setProperty(PROPERTY_CURRENTMATCHKEY, matchKey);
 
       // Null out availibility fields
       participantEntity.setProperty(PROPERTY_STARTTIMEAVAILABLE, "");
@@ -93,9 +92,14 @@ public final class ParticipantDatastore {
     return getParticipantFromEntity(results.get(0));
   }
 
+  /** Return Key of Participant from unique key ID */
+  public Key getKeyFromId(long participantId) {
+    return KeyFactory.createKey(KEY_PARTICIPANT, participantId);
+  }
+
   /** Return Participant from unique key ID */
   public Participant getParticipantFromId(long participantId) {
-    Key participantEntityKey = KeyFactory.createKey(KEY_PARTICIPANT, participantId);
+    Key participantEntityKey = getKeyFromId(participantId);
     try {
       Entity participantEntity = datastore.get(participantEntityKey);
       return getParticipantFromEntity(participantEntity);
@@ -121,13 +125,13 @@ public final class ParticipantDatastore {
 
     int duration = ((Long) participantEntity.getProperty(PROPERTY_DURATION)).intValue();
 
-    long currentMatchId = (long) participantEntity.getProperty(PROPERTY_CURRENTMATCHID);
+    Key currentMatchKey = (Key) participantEntity.getProperty(PROPERTY_CURRENTMATCHKEY);
 
     long timestamp = (long) participantEntity.getProperty(PROPERTY_TIMESTAMP);
 
     // Create and return new Participant
     return new Participant(
-        id, username, startTimeAvailable, endTimeAvailable, duration, currentMatchId, timestamp);
+        id, username, startTimeAvailable, endTimeAvailable, duration, currentMatchKey, timestamp);
   }
 
   /** Return list of all unmatched participants */

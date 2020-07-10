@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.FindMatchQuery;
@@ -113,7 +114,7 @@ public class AddParticipantServlet extends HttpServlet {
             startTimeAvailable,
             endTimeAvailable,
             duration,
-            /* currentMatchId=*/ -1L,
+            /* currentMatchKey=*/ null,
             timestamp);
 
     // Get DatastoreService and instiate Match and Participant Datastores
@@ -127,9 +128,9 @@ public class AddParticipantServlet extends HttpServlet {
 
     // Match found, add match to datastore, update recent match for Participants
     if (match != null) {
-      long matchId = matchDatastore.addMatch(match);
-      participantDatastore.updateNewMatch(match.getFirstParticipantId(), matchId);
-      participantDatastore.updateNewMatch(match.getSecondParticipantId(), matchId);
+      Key matchKey = matchDatastore.addMatch(match);
+      participantDatastore.updateNewMatch(match.getFirstParticipantKey(), matchKey);
+      participantDatastore.updateNewMatch(match.getSecondParticipantKey(), matchKey);
     }
 
     response.setContentType("text/plain;charset=UTF-8");

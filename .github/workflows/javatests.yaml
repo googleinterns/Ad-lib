@@ -1,4 +1,4 @@
-name: Java Format
+name: Java Tests
 
 on: [push]
 

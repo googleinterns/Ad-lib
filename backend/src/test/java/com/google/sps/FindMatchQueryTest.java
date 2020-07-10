@@ -86,9 +86,6 @@ public final class FindMatchQueryTest {
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
-  private final LocalServiceTestHelper helper =
-      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
-
   @Before
   public void setUp() {
     helper.setUp();

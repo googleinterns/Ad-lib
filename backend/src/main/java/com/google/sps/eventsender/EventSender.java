@@ -14,7 +14,6 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.*;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -123,10 +122,9 @@ public class EventSender {
   /**
    * TODO(): Currently assumes that the users will be within the same timezone.
    *
-   * Main method of this
-   * API, creates an Ad-lib event ideally the moment that a match is found. Upon receiving the two
-   * participants as well as the meetingStart and meetingEndTime as well as their time zone
-   * configures the event as well as ads hangout link.
+   * <p>Main method of this API, creates an Ad-lib event ideally the moment that a match is found.
+   * Upon receiving the two participants as well as the meetingStart and meetingEndTime as well as
+   * their time zone configures the event as well as ads hangout link.
    *
    * @param participant1 First Participant that has been matched to someone
    * @param participant2 Second Participant that has been matched to someone

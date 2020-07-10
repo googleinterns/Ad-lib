@@ -73,7 +73,26 @@ public final class MatchDatastore {
     }
   }
 
-  /** Return String representation of matches for logging purposes */
+  /** Return Match from Entity */
+  public Match getMatchFromEntity(Entity matchEntity) {
+    long id = (long) matchEntity.getKey().getId();
+    String firstParticipantUsername =
+        (String) matchEntity.getProperty(PROPERTY_FIRSTPARTICIPANTUSERNAME);
+    String secondParticipantUsername =
+        (String) matchEntity.getProperty(PROPERTY_SECONDPARTICIPANTUSERNAME);
+    int duration = ((Long) matchEntity.getProperty(PROPERTY_DURATION)).intValue();
+    long timestamp = (long) matchEntity.getProperty(PROPERTY_TIMESTAMP);
+
+    return new Match(id, firstParticipantUsername, secondParticipantUsername, duration, timestamp);
+  }
+
+  /** Remove Match from datastore */
+  public void removeMatch(Match match) {
+    Key matchKey = KeyFactory.createKey(KIND_MATCH, match.getId());
+    datastore.delete(matchKey);
+  }
+
+  /** Return String representation of matches */
   public String toString() {
     StringBuilder sb = new StringBuilder();
     Query query = new Query(KIND_MATCH);

@@ -16,7 +16,6 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.Match;
@@ -64,11 +63,11 @@ public class SearchMatchServlet extends HttpServlet {
           "Participant with username " + username + "does not exist.");
       return;
     }
-    long currentMatchId = participant.getCurrentMatchId();
 
+    long currentMatchId = participant.getCurrentMatchId();
     // Check if match exists and not returned yet
     if (currentMatchId == 0) {
-      // No match yet
+      // Match doesn't exist yet
       JSONObject matchDoesNotExist = new JSONObject();
       matchDoesNotExist.put(JSON_MATCHSTATUS, "false");
 

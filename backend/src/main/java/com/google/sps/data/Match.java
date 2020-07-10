@@ -1,7 +1,5 @@
 package com.google.sps.data;
 
-import com.google.appengine.api.datastore.Key;
-
 /** A match between two participants. */
 public final class Match {
 
@@ -34,7 +32,6 @@ public final class Match {
     return id;
   }
 
-<<<<<<< HEAD
   public String getFirstParticipantUsername() {
     return firstParticipantUsername;
   }

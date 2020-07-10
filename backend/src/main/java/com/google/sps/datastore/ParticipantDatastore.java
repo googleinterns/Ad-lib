@@ -3,7 +3,6 @@ package com.google.sps.datastore;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -28,7 +27,7 @@ public final class ParticipantDatastore {
   private static final String PROPERTY_STARTTIMEAVAILABLE = "startTimeAvailable";
   private static final String PROPERTY_ENDTIMEAVAILABLE = "endTimeAvailable";
   private static final String PROPERTY_DURATION = "duration";
-  private static final String PROPERTY_CURRENTMATCHKEY = "currentMatchKey";
+  private static final String PROPERTY_CURRENTMATCHID = "currentMatchId";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
 
   /** Formatter for converting between String and ZonedDateTime */
@@ -55,7 +54,7 @@ public final class ParticipantDatastore {
     participantEntity.setProperty(
         PROPERTY_ENDTIMEAVAILABLE, participant.getEndTimeAvailable().format(formatter));
     participantEntity.setProperty(PROPERTY_DURATION, participant.getDuration());
-    participantEntity.setProperty(PROPERTY_CURRENTMATCHKEY, participant.getCurrentMatchKey());
+    participantEntity.setProperty(PROPERTY_CURRENTMATCHID, participant.getCurrentMatchId());
     participantEntity.setProperty(PROPERTY_TIMESTAMP, participant.getTimestamp());
 
     // Insert entity into datastore
@@ -138,7 +137,25 @@ public final class ParticipantDatastore {
 
   /** Remove Participant from datastore */
   public void removeParticipant(Participant participant) {
-    Key participantEntityKey = KeyFactory.createKey(KEY_PARTICIPANT, participant.getId());
-    datastore.delete(participantEntityKey);
+    Key participantKey = KeyFactory.createKey(KIND_PARTICIPANT, participant.getUsername());
+    datastore.delete(participantKey);
+  }
+
+  /** Return String representation of participants */
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    Query query = new Query(KIND_PARTICIPANT);
+    PreparedQuery results = datastore.prepare(query);
+    for (Entity entity : results.asIterable()) {
+      Participant participant = getParticipantFromEntity(entity);
+      sb.append(
+          "username="
+              + participant.getUsername()
+              + ", endTimeAvailable="
+              + participant.getEndTimeAvailable()
+              + ", duration="
+              + participant.getDuration());
+    }
+    return sb.toString();
   }
 }

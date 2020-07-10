@@ -1,6 +1,5 @@
 package com.google.sps.data;
 
-import com.google.appengine.api.datastore.Key;
 import com.google.common.base.Preconditions;
 import java.time.ZonedDateTime;
 
@@ -17,7 +16,7 @@ public final class Participant {
   /** How long user wants to chat */
   private final int duration;
   /** Current match in datastore, null if never found a match or already been returned */
-  private final Key currentMatchKey;
+  private final long currentMatchId;
   /** Time of submitted form */
   private final long timestamp;
 
@@ -27,7 +26,7 @@ public final class Participant {
       ZonedDateTime startTimeAvailable,
       ZonedDateTime endTimeAvailable,
       int duration,
-      Key currentMatchKey,
+      long currentMatchId,
       long timestamp) {
     this.username = username;
     Preconditions.checkArgument(
@@ -36,7 +35,7 @@ public final class Participant {
     this.startTimeAvailable = startTimeAvailable;
     this.endTimeAvailable = endTimeAvailable;
     this.duration = duration;
-    this.currentMatchKey = currentMatchKey;
+    this.currentMatchId = currentMatchId;
     this.timestamp = timestamp;
   }
 
@@ -64,8 +63,8 @@ public final class Participant {
     return duration;
   }
 
-  public Key getCurrentMatchKey() {
-    return currentMatchKey;
+  public long getCurrentMatchId() {
+    return currentMatchId;
   }
 
   public long getTimestamp() {

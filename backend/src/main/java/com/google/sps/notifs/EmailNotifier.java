@@ -44,7 +44,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.apache.commons.codec.binary.Base64;
 
-/** Class representing the notification system capable of sending mails to the user. */
+/** Class representing the notification system capable of sending mail to the user. */
 public class EmailNotifier {
 
   private static final String APPLICATION_NAME = "Ad-lib";
@@ -60,14 +60,15 @@ public class EmailNotifier {
 
   private static final String CREDENTIALS_FILE_PATH = "credentials.json";
 
-  /** Variable representing the email to be notified */
+  /** The email to be notified */
   private final String toEmail;
 
+  /** The notification recipient */
   private final String recipientName;
 
   /**
    * @param recipientName Name of the recipient of the user
-   * @param toEmail Email that this email is going to sent to.
+   * @param toEmail The email addressed  that this email is going to be sent to.
    */
   public EmailNotifier(String recipientName, String toEmail) {
     this.recipientName = recipientName;

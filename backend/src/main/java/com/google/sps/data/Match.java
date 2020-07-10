@@ -11,9 +11,9 @@ public final class Match {
   /** Datastore entity ID */
   private final long id;
   /** First participant */
-  private final com.google.sps.data.Participant firstParticipant;
+  private final Participant firstParticipant;
   /** Second participant */
-  private final com.google.sps.data.Participant secondParticipant;
+  private final Participant secondParticipant;
   /** Duration of meeting */
   private final int duration;
   /** Time match found */
@@ -22,8 +22,8 @@ public final class Match {
   /** Constructor */
   public Match(
       long id,
-      com.google.sps.data.Participant firstParticipant,
-      com.google.sps.data.Participant secondParticipant,
+      Participant firstParticipant,
+      Participant secondParticipant,
       int duration,
       long timestamp) {
     this.id = id;

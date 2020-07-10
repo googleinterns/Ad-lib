@@ -24,7 +24,7 @@ public final class ParticipantDatastore {
   private DatastoreService datastore;
 
   // Datastore Key/Property constants
-  private static final String KEY_PARTICIPANT = "Participant";
+  private static final String KIND_PARTICIPANT = "Participant";
   private static final String PROPERTY_USERNAME = "username";
   private static final String PROPERTY_STARTTIMEAVAILABLE = "startTimeAvailable";
   private static final String PROPERTY_ENDTIMEAVAILABLE = "endTimeAvailable";
@@ -43,7 +43,7 @@ public final class ParticipantDatastore {
   /** Add Participant to datastore */
   public void addParticipant(Participant participant) {
     // Set properties of entity
-    Entity participantEntity = new Entity(KEY_PARTICIPANT);
+    Entity participantEntity = new Entity(KIND_PARTICIPANT);
     participantEntity.setProperty(PROPERTY_USERNAME, participant.getUsername());
     participantEntity.setProperty(
         PROPERTY_STARTTIMEAVAILABLE, participant.getStartTimeAvailable().format(formatter));
@@ -79,7 +79,7 @@ public final class ParticipantDatastore {
 
   /** Return Participant from username */
   public Participant getParticipantFromUsername(String username) {
-    Query query = new Query(KEY_PARTICIPANT);
+    Query query = new Query(KIND_PARTICIPANT);
 
     // Create filter to get participant with username
     Filter thisParticipant = new FilterPredicate(PROPERTY_USERNAME, FilterOperator.EQUAL, username);
@@ -92,7 +92,7 @@ public final class ParticipantDatastore {
 
   /** Return Key of Participant from unique key ID */
   public Key getKeyFromId(long participantId) {
-    return KeyFactory.createKey(KEY_PARTICIPANT, participantId);
+    return KeyFactory.createKey(KIND_PARTICIPANT, participantId);
   }
 
   /** Return participant object from datastore participant entity */
@@ -137,7 +137,7 @@ public final class ParticipantDatastore {
 
   /** Return list of all unmatched participants */
   public List<Participant> getUnmatchedParticipants() {
-    Query query = new Query(KEY_PARTICIPANT).addSort(PROPERTY_DURATION, SortDirection.DESCENDING);
+    Query query = new Query(KIND_PARTICIPANT).addSort(PROPERTY_DURATION, SortDirection.DESCENDING);
 
     // Create filter to get all currently unmatched participants
     Filter unmatched = new FilterPredicate(PROPERTY_DURATION, FilterOperator.GREATER_THAN, 0);
@@ -155,7 +155,7 @@ public final class ParticipantDatastore {
 
   /** Remove Participant from datastore */
   public void removeParticipant(Participant participant) {
-    Key participantKey = KeyFactory.createKey(KEY_PARTICIPANT, participant.getId());
+    Key participantKey = KeyFactory.createKey(KIND_PARTICIPANT, participant.getId());
     datastore.delete(participantKey);
   }
 }

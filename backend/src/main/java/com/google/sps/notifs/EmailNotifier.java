@@ -68,7 +68,7 @@ public class EmailNotifier {
 
   /**
    * @param recipientName Name of the recipient of the user
-   * @param toEmail The email addressed  that this email is going to be sent to.
+   * @param toEmail The email addressed that this email is going to be sent to.
    */
   public EmailNotifier(String recipientName, String toEmail) {
     this.recipientName = recipientName;

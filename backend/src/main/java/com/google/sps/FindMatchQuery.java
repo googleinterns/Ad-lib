@@ -55,8 +55,7 @@ public final class FindMatchQuery {
     // Set reference date time using clock
     ZonedDateTime dateTime = ZonedDateTime.now(clock);
 
-    // Compare new participant preferences with other participants with similar duration to find
-    // match
+    // Compare new participant preferences with other participants to find match
     for (Participant currParticipant : unmatchedParticipants) {
       // Check if participants are looking for similar meeting duration
       int newDuration = newParticipant.getDuration();
@@ -80,11 +79,8 @@ public final class FindMatchQuery {
       if (compatibleTime) {
         return new Match(
             /* id= */ -1L,
-            participantDatastore.getKeyFromId(
-                participantDatastore
-                    .getParticipantFromUsername(newParticipant.getUsername())
-                    .getId()),
-            participantDatastore.getKeyFromId(currParticipant.getId()),
+            newParticipant.getUsername(),
+            currParticipant.getUsername(),
             duration,
             dateTime.toInstant().toEpochMilli());
       }

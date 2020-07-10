@@ -18,11 +18,11 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
+import com.google.sps.datastore.MatchDatastore;
 import com.google.sps.datastore.ParticipantDatastore;
 import java.time.Clock;
 import java.time.ZoneId;
@@ -43,8 +43,7 @@ public final class FindMatchQueryTest {
   private static final String PERSON_D = "Person D";
 
   // Default parameters unused in query
-  private static final long ID_DEFAULT = 0;
-  private static final Key MATCHID_DEFAULT = null;
+  private static final long MATCHID_DEFAULT = 0;
   private static final long TIMESTAMP_DEFAULT = 0;
 
   // Duration constants
@@ -110,7 +109,6 @@ public final class FindMatchQueryTest {
     // Two participants who are compatible in available time AND duration
     Participant participantA =
         new Participant(
-            ID_DEFAULT,
             PERSON_A,
             TIME_1400ET,
             TIME_1600ET,
@@ -119,7 +117,6 @@ public final class FindMatchQueryTest {
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT,
             PERSON_B,
             TIME_1400ET,
             TIME_1800ET,
@@ -137,16 +134,11 @@ public final class FindMatchQueryTest {
     // Add newParticipant to datastore
     participantDatastore.addParticipant(participantB);
 
-    assertThat(
-            participantDatastore
-                .getParticipantFromId(match.getFirstParticipantKey().getId())
-                .getUsername())
-        .isEqualTo(PERSON_B);
-    assertThat(
-            participantDatastore
-                .getParticipantFromId(match.getSecondParticipantKey().getId())
-                .getUsername())
-        .isEqualTo(PERSON_A);
+    MatchDatastore matchDatastore = new MatchDatastore(datastore);
+    matchDatastore.addMatch(match);
+
+    assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_B);
+    assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_15_MINUTES);
   }
 
@@ -155,7 +147,6 @@ public final class FindMatchQueryTest {
     // Two participants who are compatible in available time but NOT duration
     Participant participantA =
         new Participant(
-            ID_DEFAULT,
             PERSON_A,
             TIME_1400ET,
             TIME_1600ET,
@@ -164,7 +155,6 @@ public final class FindMatchQueryTest {
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT,
             PERSON_B,
             TIME_1400ET,
             TIME_1800ET,
@@ -190,7 +180,6 @@ public final class FindMatchQueryTest {
     // Two participants who are compatible in duration but NOT available time
     Participant participantA =
         new Participant(
-            ID_DEFAULT,
             PERSON_A,
             TIME_1400ET,
             TIME_1450ET,
@@ -199,7 +188,6 @@ public final class FindMatchQueryTest {
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT,
             PERSON_B,
             TIME_1400ET,
             TIME_1600ET,
@@ -225,7 +213,6 @@ public final class FindMatchQueryTest {
     // Three participants, A & B aren't compatible, but A & C are
     Participant participantA =
         new Participant(
-            ID_DEFAULT,
             PERSON_A,
             TIME_1400ET,
             TIME_1600ET,
@@ -234,7 +221,6 @@ public final class FindMatchQueryTest {
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT,
             PERSON_B,
             TIME_1400ET,
             TIME_1450ET,
@@ -243,7 +229,6 @@ public final class FindMatchQueryTest {
             TIMESTAMP_DEFAULT);
     Participant participantC =
         new Participant(
-            ID_DEFAULT,
             PERSON_C,
             TIME_1400ET,
             TIME_1800ET,
@@ -262,16 +247,8 @@ public final class FindMatchQueryTest {
     // Add newParticipant to datastore
     participantDatastore.addParticipant(participantC);
 
-    assertThat(
-            participantDatastore
-                .getParticipantFromId(match.getFirstParticipantKey().getId())
-                .getUsername())
-        .isEqualTo(PERSON_C);
-    assertThat(
-            participantDatastore
-                .getParticipantFromId(match.getSecondParticipantKey().getId())
-                .getUsername())
-        .isEqualTo(PERSON_A);
+    assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_C);
+    assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_60_MINUTES);
   }
 
@@ -280,7 +257,6 @@ public final class FindMatchQueryTest {
     // Three participants, A & B aren't compatible, but B & C are
     Participant participantA =
         new Participant(
-            ID_DEFAULT,
             PERSON_A,
             TIME_1400ET,
             TIME_1450ET,
@@ -289,7 +265,6 @@ public final class FindMatchQueryTest {
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT,
             PERSON_B,
             TIME_1400ET,
             TIME_1600ET,
@@ -298,7 +273,6 @@ public final class FindMatchQueryTest {
             TIMESTAMP_DEFAULT);
     Participant participantC =
         new Participant(
-            ID_DEFAULT,
             PERSON_C,
             TIME_1400ET,
             TIME_1800ET,
@@ -317,16 +291,8 @@ public final class FindMatchQueryTest {
     // Add newParticipant to datastore
     participantDatastore.addParticipant(participantC);
 
-    assertThat(
-            participantDatastore
-                .getParticipantFromId(match.getFirstParticipantKey().getId())
-                .getUsername())
-        .isEqualTo(PERSON_C);
-    assertThat(
-            participantDatastore
-                .getParticipantFromId(match.getSecondParticipantKey().getId())
-                .getUsername())
-        .isEqualTo(PERSON_B);
+    assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_C);
+    assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_B);
     assertThat(match.getDuration()).isEqualTo(DURATION_60_MINUTES);
   }
 
@@ -335,7 +301,6 @@ public final class FindMatchQueryTest {
     // Three participants, A & B, A & C are compatible but only return A & C
     Participant participantA =
         new Participant(
-            ID_DEFAULT,
             PERSON_A,
             TIME_1400ET,
             TIME_1600ET,
@@ -344,7 +309,6 @@ public final class FindMatchQueryTest {
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT,
             PERSON_B,
             TIME_1400ET,
             TIME_1800ET,
@@ -353,7 +317,6 @@ public final class FindMatchQueryTest {
             TIMESTAMP_DEFAULT);
     Participant participantC =
         new Participant(
-            ID_DEFAULT,
             PERSON_C,
             TIME_1400ET,
             TIME_2000ET,
@@ -372,16 +335,8 @@ public final class FindMatchQueryTest {
     // Add newParticipant to datastore
     participantDatastore.addParticipant(participantC);
 
-    assertThat(
-            participantDatastore
-                .getParticipantFromId(match.getFirstParticipantKey().getId())
-                .getUsername())
-        .isEqualTo(PERSON_C);
-    assertThat(
-            participantDatastore
-                .getParticipantFromId(match.getSecondParticipantKey().getId())
-                .getUsername())
-        .isEqualTo(PERSON_A);
+    assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_C);
+    assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_30_MINUTES);
   }
 
@@ -390,7 +345,6 @@ public final class FindMatchQueryTest {
     // Two participants barely NOT compatible availability (edge case, need >15 minutes padding)
     Participant participantA =
         new Participant(
-            ID_DEFAULT,
             PERSON_A,
             TIME_1400ET,
             TIME_1500ET,
@@ -399,7 +353,6 @@ public final class FindMatchQueryTest {
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT,
             PERSON_B,
             TIME_1400ET,
             TIME_1800ET,
@@ -426,7 +379,6 @@ public final class FindMatchQueryTest {
     // compatibility)
     Participant participantA =
         new Participant(
-            ID_DEFAULT,
             PERSON_A,
             TIME_1400ET,
             TIME_1501ET,
@@ -435,7 +387,6 @@ public final class FindMatchQueryTest {
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT,
             PERSON_B,
             TIME_1400ET,
             TIME_1800ET,
@@ -453,16 +404,8 @@ public final class FindMatchQueryTest {
     // Add newParticipant to datastore
     participantDatastore.addParticipant(participantB);
 
-    assertThat(
-            participantDatastore
-                .getParticipantFromId(match.getFirstParticipantKey().getId())
-                .getUsername())
-        .isEqualTo(PERSON_B);
-    assertThat(
-            participantDatastore
-                .getParticipantFromId(match.getSecondParticipantKey().getId())
-                .getUsername())
-        .isEqualTo(PERSON_A);
+    assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_B);
+    assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_45_MINUTES);
   }
 
@@ -471,7 +414,6 @@ public final class FindMatchQueryTest {
     // Two participants, A in ET timezone and B in PT timezone and compatible
     Participant participantA =
         new Participant(
-            ID_DEFAULT,
             PERSON_A,
             TIME_1400ET,
             TIME_1600ET,
@@ -480,7 +422,6 @@ public final class FindMatchQueryTest {
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT,
             PERSON_B,
             TIME_1100PT,
             TIME_1600PT,
@@ -498,16 +439,8 @@ public final class FindMatchQueryTest {
     // Add newParticipant to datastore
     participantDatastore.addParticipant(participantB);
 
-    assertThat(
-            participantDatastore
-                .getParticipantFromId(match.getFirstParticipantKey().getId())
-                .getUsername())
-        .isEqualTo(PERSON_B);
-    assertThat(
-            participantDatastore
-                .getParticipantFromId(match.getSecondParticipantKey().getId())
-                .getUsername())
-        .isEqualTo(PERSON_A);
+    assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_B);
+    assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_30_MINUTES);
   }
 
@@ -517,7 +450,6 @@ public final class FindMatchQueryTest {
     // timezone differences
     Participant participantA =
         new Participant(
-            ID_DEFAULT,
             PERSON_A,
             TIME_1400ET,
             TIME_1500ET,
@@ -526,7 +458,6 @@ public final class FindMatchQueryTest {
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
-            ID_DEFAULT,
             PERSON_B,
             TIME_1100PT,
             TIME_1200PT,
@@ -544,16 +475,8 @@ public final class FindMatchQueryTest {
     // Add newParticipant to datastore
     participantDatastore.addParticipant(participantB);
 
-    assertThat(
-            participantDatastore
-                .getParticipantFromId(match.getFirstParticipantKey().getId())
-                .getUsername())
-        .isEqualTo(PERSON_B);
-    assertThat(
-            participantDatastore
-                .getParticipantFromId(match.getSecondParticipantKey().getId())
-                .getUsername())
-        .isEqualTo(PERSON_A);
+    assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_B);
+    assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_30_MINUTES);
   }
 }

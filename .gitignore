@@ -13,6 +13,7 @@
 # misc
 .idea
 lib
+google-java-format-1.8-all-deps.jar
 credentials.json
 .DS_Store
 .env.local

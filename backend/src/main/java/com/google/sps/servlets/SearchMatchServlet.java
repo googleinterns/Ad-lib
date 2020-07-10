@@ -55,14 +55,17 @@ public class SearchMatchServlet extends HttpServlet {
     }
     String username = email.split("@")[0];
 
+    // Get DatastoreService and instiate Match and Participant Datastores
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     MatchDatastore matchDatastore = new MatchDatastore(datastore);
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
 
+    // Find participant's current match, if exists and not returned yet
     Participant participant = participantDatastore.getParticipantFromUsername(username);
     Key currentMatchKey = participant.getCurrentMatchKey();
-    // Match doesn't exist yet
+    // Check if match exists and not returned yet
     if (currentMatchKey == null) {
+      // Match doesn't exist yet
       JSONObject matchDoesNotExist = new JSONObject();
       matchDoesNotExist.put(JSON_MATCHSTATUS, "false");
 
@@ -73,14 +76,20 @@ public class SearchMatchServlet extends HttpServlet {
       // Match exists
       Match match = matchDatastore.getMatchFromKey(currentMatchKey);
 
-      // Reset matchId to indicate returned match
+      // Reset matchKey to indicate returned match
       participantDatastore.updateNewMatch(
           participantDatastore.getKeyFromId(participant.getId()), /* matchKey=*/ null);
 
       JSONObject matchExists = new JSONObject();
       matchExists.put(JSON_MATCHSTATUS, "true");
-      matchExists.put(JSON_FIRSTPARTICIPANTUSERNAME, match.getFirstParticipantKey());
-      matchExists.put(JSON_SECONDPARTICIPANTUSERNAME, match.getSecondParticipantKey());
+      matchExists.put(
+          JSON_FIRSTPARTICIPANTUSERNAME,
+          participantDatastore.getParticipantFromKey(match.getFirstParticipantKey()).getUsername());
+      matchExists.put(
+          JSON_SECONDPARTICIPANTUSERNAME,
+          participantDatastore
+              .getParticipantFromKey(match.getSecondParticipantKey())
+              .getUsername());
       matchExists.put(JSON_DURATION, match.getDuration());
 
       // Send the JSON back as the response

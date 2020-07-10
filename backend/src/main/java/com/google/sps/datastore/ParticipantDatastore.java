@@ -32,8 +32,10 @@ public final class ParticipantDatastore {
   private static final String PROPERTY_CURRENTMATCHKEY = "currentMatchKey";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
 
+  /** Formatter for converting between String and ZonedDateTime */
   private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
 
+  /** Constructor */
   public ParticipantDatastore(DatastoreService datastore) {
     this.datastore = datastore;
   }
@@ -55,27 +57,22 @@ public final class ParticipantDatastore {
     datastore.put(participantEntity);
   }
 
-  /** Remove Participant from datastore */
-  public void removeParticipant(Participant participant) {
-    Key participantKey = KeyFactory.createKey(KEY_PARTICIPANT, participant.getId());
-    datastore.delete(participantKey);
-  }
-
-  /** Update Participant with new matchId, null out availability to show currently matched */
+  /** Update Participant with new matchKey, null out availability to show currently matched */
   public void updateNewMatch(Key participantKey, Key matchKey) {
     try {
       Entity participantEntity = datastore.get(participantKey);
 
       participantEntity.setProperty(PROPERTY_CURRENTMATCHKEY, matchKey);
 
-      // Null out availibility fields
-      participantEntity.setProperty(PROPERTY_STARTTIMEAVAILABLE, "");
-      participantEntity.setProperty(PROPERTY_ENDTIMEAVAILABLE, "");
+      // Null out availibility fields if not already
+      participantEntity.setProperty(PROPERTY_STARTTIMEAVAILABLE, null);
+      participantEntity.setProperty(PROPERTY_ENDTIMEAVAILABLE, null);
       participantEntity.setProperty(PROPERTY_DURATION, 0);
 
       // Overwrite existing entity in datastore
       datastore.put(participantEntity);
     } catch (EntityNotFoundException e) {
+      // TODO: what error to send
       return;
     }
   }
@@ -88,6 +85,7 @@ public final class ParticipantDatastore {
     Filter thisParticipant = new FilterPredicate(PROPERTY_USERNAME, FilterOperator.EQUAL, username);
     query.setFilter(thisParticipant);
 
+    // Return Participant with matching username from list of size 1
     List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(1));
     return getParticipantFromEntity(results.get(0));
   }
@@ -97,41 +95,44 @@ public final class ParticipantDatastore {
     return KeyFactory.createKey(KEY_PARTICIPANT, participantId);
   }
 
-  /** Return Participant from unique key ID */
-  public Participant getParticipantFromId(long participantId) {
-    Key participantEntityKey = getKeyFromId(participantId);
+  /** Return participant object from datastore participant entity */
+  private Participant getParticipantFromEntity(Entity entity) {
+    // Get entity properties
+    long id = (long) entity.getKey().getId();
+
+    String username = (String) entity.getProperty(PROPERTY_USERNAME);
+
+    String startTimeAvailableString = (String) entity.getProperty(PROPERTY_STARTTIMEAVAILABLE);
+    ZonedDateTime startTimeAvailable = ZonedDateTime.parse(startTimeAvailableString, formatter);
+
+    String endTimeAvailableString = (String) entity.getProperty(PROPERTY_ENDTIMEAVAILABLE);
+    ZonedDateTime endTimeAvailable = ZonedDateTime.parse(endTimeAvailableString, formatter);
+
+    int duration = ((Long) entity.getProperty(PROPERTY_DURATION)).intValue();
+
+    Key currentMatchKey = (Key) entity.getProperty(PROPERTY_CURRENTMATCHKEY);
+
+    long timestamp = (long) entity.getProperty(PROPERTY_TIMESTAMP);
+
+    // Create and return new Participant
+    return new Participant(
+        id, username, startTimeAvailable, endTimeAvailable, duration, currentMatchKey, timestamp);
+  }
+
+  /** Return Participant from unique Key */
+  public Participant getParticipantFromKey(Key participantKey) {
     try {
-      Entity participantEntity = datastore.get(participantEntityKey);
+      Entity participantEntity = datastore.get(participantKey);
       return getParticipantFromEntity(participantEntity);
     } catch (EntityNotFoundException e) {
       return null;
     }
   }
 
-  /** Return participant object from datastore participant entity */
-  private Participant getParticipantFromEntity(Entity participantEntity) {
-    // Get entity properties
-    long id = (long) participantEntity.getKey().getId();
-
-    String username = (String) participantEntity.getProperty(PROPERTY_USERNAME);
-
-    String startTimeAvailableString =
-        (String) participantEntity.getProperty(PROPERTY_STARTTIMEAVAILABLE);
-    ZonedDateTime startTimeAvailable = ZonedDateTime.parse(startTimeAvailableString, formatter);
-
-    String endTimeAvailableString =
-        (String) participantEntity.getProperty(PROPERTY_ENDTIMEAVAILABLE);
-    ZonedDateTime endTimeAvailable = ZonedDateTime.parse(endTimeAvailableString, formatter);
-
-    int duration = ((Long) participantEntity.getProperty(PROPERTY_DURATION)).intValue();
-
-    Key currentMatchKey = (Key) participantEntity.getProperty(PROPERTY_CURRENTMATCHKEY);
-
-    long timestamp = (long) participantEntity.getProperty(PROPERTY_TIMESTAMP);
-
-    // Create and return new Participant
-    return new Participant(
-        id, username, startTimeAvailable, endTimeAvailable, duration, currentMatchKey, timestamp);
+  /** Return Participant from unique key ID */
+  public Participant getParticipantFromId(long participantId) {
+    Key participantKey = getKeyFromId(participantId);
+    return getParticipantFromKey(participantKey);
   }
 
   /** Return list of all unmatched participants */
@@ -144,11 +145,17 @@ public final class ParticipantDatastore {
 
     PreparedQuery results = datastore.prepare(query);
 
-    // Convert list of entities to list of participants
+    // Convert entities to list of participants
     List<Participant> participants = new ArrayList<Participant>();
     for (Entity entity : results.asIterable()) {
       participants.add(getParticipantFromEntity(entity));
     }
     return participants;
+  }
+
+  /** Remove Participant from datastore */
+  public void removeParticipant(Participant participant) {
+    Key participantKey = KeyFactory.createKey(KEY_PARTICIPANT, participant.getId());
+    datastore.delete(participantKey);
   }
 }

@@ -21,7 +21,7 @@ import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-/** Class used to find a match in a list of Participants with the most recently added Participant */
+/** Class used to find a match for new Participant with unmatched Participants in datastore */
 public final class FindMatchQuery {
 
   /** Maximum difference in duration to be compatible */
@@ -41,6 +41,7 @@ public final class FindMatchQuery {
    * availibility or return null if no match yet
    */
   public Match findMatch(ParticipantDatastore participantDatastore, Participant newParticipant) {
+    // Get list of unmatched participants in datastore
     List<Participant> unmatchedParticipants = participantDatastore.getUnmatchedParticipants();
 
     // Add newParticipant to datastore
@@ -52,13 +53,13 @@ public final class FindMatchQuery {
     // Compare new participant preferences with other participants with similar duration to find
     // match
     for (Participant currParticipant : unmatchedParticipants) {
-      System.out.println(currParticipant.getUsername());
       // Check if participants are looking for similar meeting duration
       int newDuration = newParticipant.getDuration();
       int currDuration = currParticipant.getDuration();
       boolean compatibleDuration = Math.abs(newDuration - currDuration) <= MAX_DURATION_DIFF;
 
       if (!compatibleDuration) {
+        // Not a match
         continue;
       }
       int duration = Math.min(newDuration, currDuration);

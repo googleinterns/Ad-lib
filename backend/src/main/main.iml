@@ -4,6 +4,9 @@
     <facet type="app-engine-standard" name="Google App Engine Standard">
       <configuration />
     </facet>
+    <facet type="app-engine-standard" name="Google App Engine Standard2">
+      <configuration />
+    </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />

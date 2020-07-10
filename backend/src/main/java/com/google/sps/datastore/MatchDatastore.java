@@ -6,11 +6,9 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.sps.data.Match;
+import javax.annotation.Nullable;
 
 public final class MatchDatastore {
-
-  /** Datastore */
-  private DatastoreService datastore;
 
   // Datastore Key/Property constants
   private static final String KIND_MATCH = "Match";
@@ -18,6 +16,9 @@ public final class MatchDatastore {
   private static final String PROPERTY_SECONDPARTICIPANTKEY = "secondParticipantKey";
   private static final String PROPERTY_DURATION = "duration";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
+
+  /** Datastore */
+  private DatastoreService datastore;
 
   /** Constructor */
   public MatchDatastore(DatastoreService datastore) {
@@ -41,12 +42,8 @@ public final class MatchDatastore {
   }
 
   /** Return match based on match datastore key */
+  @Nullable
   public Match getMatchFromKey(Key matchKey) {
-    // No match
-    if (matchKey == null) {
-      return null;
-    }
-
     try {
       // Match exists
       Entity matchEntity = datastore.get(matchKey);

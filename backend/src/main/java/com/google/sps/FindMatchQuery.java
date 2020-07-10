@@ -20,6 +20,7 @@ import com.google.sps.datastore.ParticipantDatastore;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /** Class used to find a match for new Participant with unmatched Participants in datastore */
 public final class FindMatchQuery {
@@ -30,17 +31,21 @@ public final class FindMatchQuery {
   private static int PADDING_TIME = 15;
   /** Reference clock */
   private Clock clock;
+  /** Datastore of Participants */
+  private ParticipantDatastore participantDatastore;
 
   /** Constructor */
-  public FindMatchQuery(Clock clock) {
+  public FindMatchQuery(Clock clock, ParticipantDatastore participantDatastore) {
     this.clock = clock;
+    this.participantDatastore = participantDatastore;
   }
 
   /**
    * Find and return match of new participant with unmatched participants by comparing duration and
    * availibility or return null if no match yet
    */
-  public Match findMatch(ParticipantDatastore participantDatastore, Participant newParticipant) {
+  @Nullable
+  public Match findMatch(Participant newParticipant) {
     // Get list of unmatched participants in datastore
     List<Participant> unmatchedParticipants = participantDatastore.getUnmatchedParticipants();
 

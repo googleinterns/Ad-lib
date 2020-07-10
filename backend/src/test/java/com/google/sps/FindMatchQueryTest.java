@@ -18,6 +18,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.sps.data.Match;
@@ -44,7 +45,7 @@ public final class FindMatchQueryTest {
 
   // Default parameters unused in query
   private static final long ID_DEFAULT = 0;
-  private static final long MATCHID_DEFAULT = 0;
+  private static final Key MATCHID_DEFAULT = null;
   private static final long TIMESTAMP_DEFAULT = 0;
 
   // Duration constants

@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.Match;
@@ -59,7 +60,6 @@ public class SearchMatchServlet extends HttpServlet {
     MatchDatastore matchDatastore = new MatchDatastore(datastore);
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
 
-<<<<<<< HEAD
     // Find participant's current match, if exists and not returned yet
     Participant participant = participantDatastore.getParticipantFromUsername(username);
     if (participant == null) {

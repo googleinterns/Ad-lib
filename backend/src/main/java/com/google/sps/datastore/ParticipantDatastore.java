@@ -28,7 +28,7 @@ public final class ParticipantDatastore {
   private static final String PROPERTY_STARTTIMEAVAILABLE = "startTimeAvailable";
   private static final String PROPERTY_ENDTIMEAVAILABLE = "endTimeAvailable";
   private static final String PROPERTY_DURATION = "duration";
-  private static final String PROPERTY_CURRENTMATCHID = "currentMatchId";
+  private static final String PROPERTY_CURRENTMATCHKEY = "currentMatchKey";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
 
   /** Formatter for converting between String and ZonedDateTime */
@@ -55,7 +55,7 @@ public final class ParticipantDatastore {
     participantEntity.setProperty(
         PROPERTY_ENDTIMEAVAILABLE, participant.getEndTimeAvailable().format(formatter));
     participantEntity.setProperty(PROPERTY_DURATION, participant.getDuration());
-    participantEntity.setProperty(PROPERTY_CURRENTMATCHID, participant.getCurrentMatchId());
+    participantEntity.setProperty(PROPERTY_CURRENTMATCHKEY, participant.getCurrentMatchKey());
     participantEntity.setProperty(PROPERTY_TIMESTAMP, participant.getTimestamp());
 
     // Insert entity into datastore

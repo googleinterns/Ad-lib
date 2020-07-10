@@ -19,6 +19,7 @@ public final class MatchDatastore {
   private static final String PROPERTY_DURATION = "duration";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
 
+  /** Constructor */
   public MatchDatastore(DatastoreService datastore) {
     this.datastore = datastore;
   }
@@ -39,15 +40,15 @@ public final class MatchDatastore {
     return matchEntity.getKey();
   }
 
-  /** Return match based on match datastore key ID */
+  /** Return match based on match datastore key */
   public Match getMatchFromKey(Key matchKey) {
-    // Never found a match
+    // No match
     if (matchKey == null) {
       return null;
     }
 
     try {
-      // Match has been found before
+      // Match exists
       Entity matchEntity = datastore.get(matchKey);
       long id = (long) matchEntity.getKey().getId();
       Key firstParticipantKey = (Key) matchEntity.getProperty(PROPERTY_FIRSTPARTICIPANTKEY);

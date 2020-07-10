@@ -59,7 +59,7 @@ public class EventSender {
     // Build flow and trigger user authorization request.
     GoogleAuthorizationCodeFlow flow =
         new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-            .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+            .setDataStoreFactory(new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH)))
             .setAccessType("offline")
             .build();
     LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
@@ -182,6 +182,10 @@ public class EventSender {
   }
 
   /**
+   * Main fucntion that wll be utilzied in implemntation. Makes os the the previously defined
+   * methods in order to , once given a recive, adds the events with to the calendar of the event
+   * attendees.
+   *
    * @param event Event representing the Ad-lib session to be attended
    * @throws IOException If the credentials folder is wrong
    * @throws GeneralSecurityException In case of any other exceptions

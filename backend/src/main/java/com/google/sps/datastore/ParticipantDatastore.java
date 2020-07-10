@@ -33,7 +33,7 @@ public final class ParticipantDatastore {
   private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
 
   /** Datastore */
-  private DatastoreService datastore;
+  private final DatastoreService datastore;
 
   /** Constructor */
   public ParticipantDatastore(DatastoreService datastore) {
@@ -125,8 +125,8 @@ public final class ParticipantDatastore {
   }
 
   /** Remove Participant from datastore */
-  public void removeParticipant(Participant participant) {
-    Key participantKey = KeyFactory.createKey(KIND_PARTICIPANT, participant.getUsername());
+  public void removeParticipant(String username) {
+    Key participantKey = KeyFactory.createKey(KIND_PARTICIPANT, username);
     datastore.delete(participantKey);
   }
 

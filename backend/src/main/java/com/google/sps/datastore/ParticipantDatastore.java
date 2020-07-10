@@ -17,11 +17,9 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 
 public final class ParticipantDatastore {
-
-  /** Datastore */
-  private DatastoreService datastore;
 
   // Datastore Key/Property constants
   private static final String KIND_PARTICIPANT = "Participant";
@@ -34,6 +32,9 @@ public final class ParticipantDatastore {
 
   /** Formatter for converting between String and ZonedDateTime */
   private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
+
+  /** Datastore */
+  private DatastoreService datastore;
 
   /** Constructor */
   public ParticipantDatastore(DatastoreService datastore) {
@@ -120,6 +121,7 @@ public final class ParticipantDatastore {
   }
 
   /** Return Participant from unique Key */
+  @Nullable
   public Participant getParticipantFromKey(Key participantKey) {
     try {
       Entity participantEntity = datastore.get(participantKey);

@@ -80,7 +80,7 @@ public final class FindMatchQueryTest {
   private static final ZonedDateTime TIME_1200PT = getNewTimeToday(currentDateTimePT, 12, 0);
   private static final ZonedDateTime TIME_1600PT = getNewTimeToday(currentDateTimePT, 16, 0);
 
-  private FindMatchQuery query;
+  private Clock clock;
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -90,9 +90,7 @@ public final class FindMatchQueryTest {
     helper.setUp();
 
     // Set "current" date to  1/1/2020 2:00pm ET
-    Clock clock = Clock.fixed(currentDateTimeET.toInstant(), currentDateTimeET.getZone());
-
-    query = new FindMatchQuery(clock);
+    clock = Clock.fixed(currentDateTimeET.toInstant(), currentDateTimeET.getZone());
   }
 
   @After
@@ -133,7 +131,11 @@ public final class FindMatchQueryTest {
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
     participantDatastore.addParticipant(participantA);
 
-    Match match = query.findMatch(participantDatastore, participantB);
+    FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
+    Match match = query.findMatch(participantB);
+
+    // Add newParticipant to datastore
+    participantDatastore.addParticipant(participantB);
 
     assertThat(
             participantDatastore
@@ -174,7 +176,11 @@ public final class FindMatchQueryTest {
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
     participantDatastore.addParticipant(participantA);
 
-    Match match = query.findMatch(participantDatastore, participantB);
+    FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
+    Match match = query.findMatch(participantB);
+
+    // Add newParticipant to datastore
+    participantDatastore.addParticipant(participantB);
 
     assertThat(match).isNull();
   }
@@ -205,7 +211,11 @@ public final class FindMatchQueryTest {
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
     participantDatastore.addParticipant(participantA);
 
-    Match match = query.findMatch(participantDatastore, participantB);
+    FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
+    Match match = query.findMatch(participantB);
+
+    // Add newParticipant to datastore
+    participantDatastore.addParticipant(participantB);
 
     assertThat(match).isNull();
   }
@@ -246,7 +256,11 @@ public final class FindMatchQueryTest {
     participantDatastore.addParticipant(participantA);
     participantDatastore.addParticipant(participantB);
 
-    Match match = query.findMatch(participantDatastore, participantC);
+    FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
+    Match match = query.findMatch(participantC);
+
+    // Add newParticipant to datastore
+    participantDatastore.addParticipant(participantC);
 
     assertThat(
             participantDatastore
@@ -297,7 +311,11 @@ public final class FindMatchQueryTest {
     participantDatastore.addParticipant(participantA);
     participantDatastore.addParticipant(participantB);
 
-    Match match = query.findMatch(participantDatastore, participantC);
+    FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
+    Match match = query.findMatch(participantC);
+
+    // Add newParticipant to datastore
+    participantDatastore.addParticipant(participantC);
 
     assertThat(
             participantDatastore
@@ -348,7 +366,11 @@ public final class FindMatchQueryTest {
     participantDatastore.addParticipant(participantA);
     participantDatastore.addParticipant(participantB);
 
-    Match match = query.findMatch(participantDatastore, participantC);
+    FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
+    Match match = query.findMatch(participantC);
+
+    // Add newParticipant to datastore
+    participantDatastore.addParticipant(participantC);
 
     assertThat(
             participantDatastore
@@ -389,7 +411,11 @@ public final class FindMatchQueryTest {
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
     participantDatastore.addParticipant(participantA);
 
-    Match match = query.findMatch(participantDatastore, participantB);
+    FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
+    Match match = query.findMatch(participantB);
+
+    // Add newParticipant to datastore
+    participantDatastore.addParticipant(participantB);
 
     assertThat(match).isNull();
   }
@@ -421,7 +447,11 @@ public final class FindMatchQueryTest {
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
     participantDatastore.addParticipant(participantA);
 
-    Match match = query.findMatch(participantDatastore, participantB);
+    FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
+    Match match = query.findMatch(participantB);
+
+    // Add newParticipant to datastore
+    participantDatastore.addParticipant(participantB);
 
     assertThat(
             participantDatastore
@@ -462,7 +492,11 @@ public final class FindMatchQueryTest {
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
     participantDatastore.addParticipant(participantA);
 
-    Match match = query.findMatch(participantDatastore, participantB);
+    FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
+    Match match = query.findMatch(participantB);
+
+    // Add newParticipant to datastore
+    participantDatastore.addParticipant(participantB);
 
     assertThat(
             participantDatastore
@@ -504,7 +538,11 @@ public final class FindMatchQueryTest {
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
     participantDatastore.addParticipant(participantA);
 
-    Match match = query.findMatch(participantDatastore, participantB);
+    FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
+    Match match = query.findMatch(participantB);
+
+    // Add newParticipant to datastore
+    participantDatastore.addParticipant(participantB);
 
     assertThat(
             participantDatastore

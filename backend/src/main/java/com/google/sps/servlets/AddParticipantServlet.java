@@ -123,8 +123,11 @@ public class AddParticipantServlet extends HttpServlet {
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
 
     // Find immediate match if possible
-    FindMatchQuery query = new FindMatchQuery(Clock.systemUTC());
-    Match match = query.findMatch(participantDatastore, newParticipant);
+    FindMatchQuery query = new FindMatchQuery(Clock.systemUTC(), participantDatastore);
+    Match match = query.findMatch(newParticipant);
+
+    // Add newParticipant to datastore
+    participantDatastore.addParticipant(newParticipant);
 
     // Match found, add match to datastore, update recent match for Participants
     if (match != null) {

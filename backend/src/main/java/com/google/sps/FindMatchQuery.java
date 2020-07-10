@@ -26,13 +26,13 @@ import javax.annotation.Nullable;
 public final class FindMatchQuery {
 
   /** Maximum difference in duration to be compatible */
-  private static int MAX_DURATION_DIFF = 15;
+  private static final int MAX_DURATION_DIFF = 15;
   /** Extra padding time to ensure large enough meeting time block */
-  private static int PADDING_TIME = 15;
+  private static final int PADDING_TIME = 15;
   /** Reference clock */
-  private Clock clock;
+  private final Clock clock;
   /** Datastore of Participants */
-  private ParticipantDatastore participantDatastore;
+  private final ParticipantDatastore participantDatastore;
 
   /** Constructor */
   public FindMatchQuery(Clock clock, ParticipantDatastore participantDatastore) {
@@ -41,8 +41,8 @@ public final class FindMatchQuery {
   }
 
   /**
-   * Find and return match of new participant with unmatched participants by comparing duration and
-   * availibility or return null if no match yet
+   * @return Match of new participant with unmatched participants by comparing duration and
+   *     availibility, or null if no match yet
    */
   @Nullable
   public Match findMatch(Participant newParticipant) {

@@ -15,22 +15,16 @@
 package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
-import com.google.sps.FindMatchQuery;
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +32,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONObject;
 
 /** Servlet that returns some example content. */
 @WebServlet("/api/v1/add-participant")
@@ -58,15 +53,55 @@ public class AddParticipantServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Request parameter values
     // TODO: Check input values are filled (before allowing to submit)
-    UserService userService = UserServiceFactory.getUserService();
+
+    /*UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     if (email == null) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid email.");
       return;
     }
-    String username = email.split("@")[0];
+    String username = email.split("@")[0];*/
 
-    String timezone = request.getParameter("timezone");
+    StringBuffer requestBuffer = new StringBuffer();
+    String line = null;
+    try {
+      BufferedReader reader = request.getReader();
+      while ((line = reader.readLine()) != null) requestBuffer.append(line);
+    } catch (Exception e) {
+      /*report an error*/
+    }
+
+    System.out.println(requestBuffer);
+
+    JSONObject obj = new JSONObject(requestBuffer.toString());
+    String duration = obj.getJSONObject("formDetails").getString("duration");
+    String role = obj.getJSONObject("formDetails").getString("role");
+
+    System.out.println("Duration: " + duration);
+    System.out.println("Role: " + role);
+
+    /*try {
+     JSONObject jsonObject =  HTTP.toJSONObject(jb.toString());
+    } catch (JSONException e) {
+      throw new IOException("Error parsing JSON request string");
+    }*/
+
+    // int duration = convertToPositiveInt(request.getParameter("duration"));
+    /*if (duration <= 0) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
+      return;
+    }*/
+
+    /*String productArea = request.getParameter("productArea");
+    String role = request.getParameter("role");
+    String yearRange = request.getParameter("years");
+    String savePreference = request.getParameter("savePreference");
+    String matchPreference = request.getParameter("matchPreference");
+
+    System.out.println("Duration: " + duration);
+    System.out.println("Role: " + role);*/
+
+    /*String timezone = request.getParameter("timezone");
     ZoneId zoneId = ZoneId.of(timezone); // TODO: convert input timezone to valid ZoneId
     ZonedDateTime startTimeAvailable =
         ZonedDateTime.now(zoneId); // TODO: set to future time if not available now
@@ -82,17 +117,17 @@ public class AddParticipantServlet extends HttpServlet {
       return;
     }
 
-    long timestamp = System.currentTimeMillis();
+    long timestamp = System.currentTimeMillis();*/
 
     // id is irrelevant, only relevant when getting from datastore
-    Participant newParticipant =
-        new Participant(
-            /* id= */ -1L, username, startTimeAvailable, endTimeAvailable, duration, timestamp);
+    // Participant newParticipant =
+    // new Participant(
+    //  /* id= */ -1L, username, startTimeAvailable, endTimeAvailable, duration, timestamp);
 
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    // DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     // Find immediate match if possibl;
-    FindMatchQuery query = new FindMatchQuery(Clock.systemUTC());
+    /*FindMatchQuery query = new FindMatchQuery(Clock.systemUTC());
     Match match = query.findMatch(getParticipants(datastore), newParticipant);
 
     // Match found, add to datastore, delete matched participants from datastore
@@ -111,7 +146,10 @@ public class AddParticipantServlet extends HttpServlet {
     }
 
     // Redirect back to the HTML page
-    response.sendRedirect("/index.html");
+    response.sendRedirect("/index.html");*/
+
+    response.setContentType("text/plain;charset=UTF-8");
+    response.getWriter().println("Recieved the object!");
   }
 
   /** Return list of current participants from datastore */

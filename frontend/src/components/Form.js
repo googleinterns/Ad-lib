@@ -67,22 +67,40 @@ export default function Form() {
     event.preventDefault();
 
     const formDetails = {
-      'timeAvailableUntil': timeAvailableUntil,
-      'duration': duration,
-      'role': role,
-      'productArea': productArea,
-      'years': yearRange,
-      'matchPreference': matchPreference,
-      'savePreference': savePreference,
+      timeAvailableUntil: timeAvailableUntil,
+      duration: duration,
+      role: role,
+      productArea: productArea,
+      years: yearRange,
+      matchPreference: matchPreference,
+      savePreference: savePreference,
     };
 
     console.log(formDetails);
 
-    axios.post('/api/v1/add-participant', {formDetails})
-        .then((res) => {
-          console.log(res);
-          console.log(res.data);
+    const options = {
+      method: 'POST',
+      headers: {
+        'Accept': 'text/plain;charset=UTF-8',
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+      body: JSON.stringify({formDetails}),
+    };
+
+    fetch('/api/v1/add-participant', options)
+        .then((response) => {
+          if (response.data != null) {
+            alert('Successful');
+          }
         });
+
+    /*axios.post('/api/v1/add-participant', {formDetails})
+        .then((response) => {
+          if (response.data != null) {
+            alert("Successful");
+          }
+
+        });*/
   }
 
   return (

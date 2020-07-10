@@ -1,14 +1,11 @@
 package com.google.sps.data;
 
-import com.google.appengine.api.datastore.Key;
 import com.google.common.base.Preconditions;
 import java.time.ZonedDateTime;
 
 /** A user who wants to be matched. */
 public final class Participant {
 
-  /** Datastore key ID */
-  private final long id;
   /** Google username (ldap) */
   private final String username;
   /** Time user starts being available */
@@ -18,20 +15,18 @@ public final class Participant {
   /** How long user wants to chat */
   private final int duration;
   /** Current match in datastore, null if never found a match or already been returned */
-  private final Key currentMatchKey;
+  private final long currentMatchId;
   /** Time of submitted form */
   private final long timestamp;
 
   /** Initialize constructor fields */
   public Participant(
-      long id,
       String username,
       ZonedDateTime startTimeAvailable,
       ZonedDateTime endTimeAvailable,
       int duration,
-      Key currentMatchKey,
+      long currentMatchId,
       long timestamp) {
-    this.id = id;
     this.username = username;
     Preconditions.checkArgument(
         startTimeAvailable.isBefore(endTimeAvailable),
@@ -39,12 +34,8 @@ public final class Participant {
     this.startTimeAvailable = startTimeAvailable;
     this.endTimeAvailable = endTimeAvailable;
     this.duration = duration;
-    this.currentMatchKey = currentMatchKey;
+    this.currentMatchId = currentMatchId;
     this.timestamp = timestamp;
-  }
-
-  public long getId() {
-    return id;
   }
 
   public String getUsername() {
@@ -63,8 +54,8 @@ public final class Participant {
     return duration;
   }
 
-  public Key getCurrentMatchKey() {
-    return currentMatchKey;
+  public long getCurrentMatchId() {
+    return currentMatchId;
   }
 
   public long getTimestamp() {

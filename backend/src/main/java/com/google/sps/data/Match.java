@@ -37,11 +37,11 @@ public final class Match {
     return id;
   }
 
-  public com.google.sps.data.Participant getFirstParticipant() {
+  public Participant getFirstParticipant() {
     return firstParticipant;
   }
 
-  public com.google.sps.data.Participant getSecondParticipant() {
+  public Participant getSecondParticipant() {
     return secondParticipant;
   }
 

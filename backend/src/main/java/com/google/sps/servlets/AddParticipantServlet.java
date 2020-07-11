@@ -54,19 +54,6 @@ public class AddParticipantServlet extends HttpServlet {
   private static final String PROPERTY_FIRSTPARTICIPANT = "firstParticipant";
   private static final String PROPERTY_SECONDPARTICIPANT = "secondParticipant";
 
-  /** Return positive integer value, or -1 if invalid or negative */
-  private static int convertToPositiveInt(String s) {
-    if (s == null) {
-      return -1;
-    }
-    try {
-      int parsed = Integer.parseInt(s);
-      return (parsed >= 0) ? parsed : -1;
-    } catch (NumberFormatException e) {
-      return -1;
-    }
-  }
-
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Request parameter values
@@ -170,5 +157,18 @@ public class AddParticipantServlet extends HttpServlet {
   private void deleteParticipantFromDatastore(Participant participant, DatastoreService datastore) {
     Key participantEntityKey = KeyFactory.createKey(KEY_PARTICIPANT, participant.getId());
     datastore.delete(participantEntityKey);
+  }
+
+  /** Return positive integer value, or -1 if invalid or negative */
+  private static int convertToPositiveInt(String s) {
+    if (s == null) {
+      return -1;
+    }
+    try {
+      int parsed = Integer.parseInt(s);
+      return (parsed >= 0) ? parsed : -1;
+    } catch (NumberFormatException e) {
+      return -1;
+    }
   }
 }

@@ -69,8 +69,8 @@ public final class FindMatchQueryTest {
   // Some times available until on 1/1/2020
   private static final ZonedDateTime TIME_1400ET = currentDateTimeET;
   private static final ZonedDateTime TIME_1450ET = getNewTimeToday(currentDateTimeET, 14, 50);
+  private static final ZonedDateTime TIME_1456ET = getNewTimeToday(currentDateTimeET, 14, 56);
   private static final ZonedDateTime TIME_1500ET = getNewTimeToday(currentDateTimeET, 15, 0);
-  private static final ZonedDateTime TIME_1501ET = getNewTimeToday(currentDateTimeET, 15, 1);
   private static final ZonedDateTime TIME_1530ET = getNewTimeToday(currentDateTimeET, 15, 30);
   private static final ZonedDateTime TIME_1600ET = getNewTimeToday(currentDateTimeET, 16, 0);
   private static final ZonedDateTime TIME_1800ET = getNewTimeToday(currentDateTimeET, 18, 0);
@@ -342,12 +342,12 @@ public final class FindMatchQueryTest {
 
   @Test
   public void barelyNotCompatible() {
-    // Two participants barely NOT compatible availability (edge case, need >15 minutes padding)
+    // Two participants barely NOT compatible availability (edge case, need >10 minutes padding)
     Participant participantA =
         new Participant(
             PERSON_A,
             TIME_1400ET,
-            TIME_1500ET,
+            TIME_1450ET,
             DURATION_45_MINUTES,
             MATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);
@@ -375,13 +375,13 @@ public final class FindMatchQueryTest {
 
   @Test
   public void barelyCompatible() {
-    // Two participants barely compatible availability (edge case, need >15 minutes padding for
+    // Two participants barely compatible availability (edge case, need >10 minutes padding for
     // compatibility)
     Participant participantA =
         new Participant(
             PERSON_A,
             TIME_1400ET,
-            TIME_1501ET,
+            TIME_1456ET,
             DURATION_45_MINUTES,
             MATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);

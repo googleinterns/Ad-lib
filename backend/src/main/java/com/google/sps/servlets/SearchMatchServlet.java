@@ -60,7 +60,7 @@ public class SearchMatchServlet extends HttpServlet {
     if (participant == null) {
       response.sendError(
           HttpServletResponse.SC_BAD_REQUEST,
-          "Participant with username " + username + "is invalid.");
+          "Participant with username " + username + "does not exist.");
       return;
     }
     long currentMatchId = participant.getCurrentMatchId();

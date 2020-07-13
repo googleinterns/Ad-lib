@@ -93,9 +93,13 @@ public class SearchMatchServlet extends HttpServlet {
 
       // Reset matchId to indicate returned match
 <<<<<<< HEAD
+<<<<<<< HEAD
       participant.setCurrentMatchId(0);
       participantDatastore.addParticipant(participant);
 =======
+=======
+      // TODO: return true or false?
+>>>>>>> Deal with null returns
       participantDatastore.updateMatchId(participant.getUsername(), /* matchId=*/ 0);
 >>>>>>> Add null return types
 

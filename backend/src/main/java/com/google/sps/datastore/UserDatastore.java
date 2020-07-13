@@ -3,6 +3,7 @@ package com.google.sps.datastore;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.sps.data.User;
+import javax.annotation.Nullable;
 
 /** Separates datastore method calls involving User type from caller */
 public final class UserDatastore {

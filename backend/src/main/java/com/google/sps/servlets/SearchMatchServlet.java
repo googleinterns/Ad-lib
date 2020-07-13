@@ -61,12 +61,16 @@ public class SearchMatchServlet extends HttpServlet {
       response.sendError(
           HttpServletResponse.SC_BAD_REQUEST,
 <<<<<<< HEAD
+<<<<<<< HEAD
           "Participant with username " + username + "does not exist.");
       return;
     }
 
 =======
           "Participant with username " + username + "is invalid.");
+=======
+          "Participant with username " + username + "does not exist.");
+>>>>>>> Change wording
       return;
     }
 >>>>>>> Add null return types

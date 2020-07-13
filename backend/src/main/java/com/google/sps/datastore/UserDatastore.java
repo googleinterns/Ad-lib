@@ -60,6 +60,7 @@ public final class UserDatastore {
     }
 
     // Get entity properties
+    long id = (long) entity.getKey().getId();
     String username = (String) entity.getProperty(PROPERTY_USERNAME);
 
     // Create and return new User

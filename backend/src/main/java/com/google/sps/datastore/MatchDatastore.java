@@ -46,8 +46,34 @@ public final class MatchDatastore {
   }
 
   /** Return Match from entity, or null if entity is null */
+<<<<<<< HEAD
   private static Match getMatchFromEntity(Entity entity) {
     if (entity == null) {
+      return null;
+    }
+
+    long id = (long) entity.getKey().getId();
+    String firstParticipantUsername =
+        (String) entity.getProperty(PROPERTY_FIRSTPARTICIPANTUSERNAME);
+    String secondParticipantUsername =
+        (String) entity.getProperty(PROPERTY_SECONDPARTICIPANTUSERNAME);
+    int duration = ((Long) entity.getProperty(PROPERTY_DURATION)).intValue();
+    long timestamp = (long) entity.getProperty(PROPERTY_TIMESTAMP);
+
+    return new Match(id, firstParticipantUsername, secondParticipantUsername, duration, timestamp);
+  }
+
+  /** Return match based on match datastore key id, or null if entity not found */
+  @Nullable
+  public Match getMatchFromId(long matchId) {
+    Key matchKey = KeyFactory.createKey(KIND_MATCH, matchId);
+    try {
+      return getMatchFromEntity(datastore.get(matchKey));
+    } catch (EntityNotFoundException e) {
+=======
+  private Match getMatchFromEntity(Entity entity) {
+    if (entity == null) {
+>>>>>>> Add null return types
       return null;
     }
 
@@ -73,26 +99,7 @@ public final class MatchDatastore {
     }
   }
 
-  /** Return Match from Entity */
-  private Match getMatchFromEntity(Entity matchEntity) {
-    long id = (long) matchEntity.getKey().getId();
-    String firstParticipantUsername =
-        (String) matchEntity.getProperty(PROPERTY_FIRSTPARTICIPANTUSERNAME);
-    String secondParticipantUsername =
-        (String) matchEntity.getProperty(PROPERTY_SECONDPARTICIPANTUSERNAME);
-    int duration = ((Long) matchEntity.getProperty(PROPERTY_DURATION)).intValue();
-    long timestamp = (long) matchEntity.getProperty(PROPERTY_TIMESTAMP);
-
-    return new Match(id, firstParticipantUsername, secondParticipantUsername, duration, timestamp);
-  }
-
-  /** Remove Match from datastore */
-  public void removeMatch(long matchId) {
-    Key matchKey = KeyFactory.createKey(KIND_MATCH, matchId);
-    datastore.delete(matchKey);
-  }
-
-  /** Return String representation of matches */
+  /** Return String representation of matches for logging purposes */
   public String toString() {
     StringBuilder sb = new StringBuilder();
     Query query = new Query(KIND_MATCH);

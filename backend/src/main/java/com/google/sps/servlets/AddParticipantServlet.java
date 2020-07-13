@@ -131,6 +131,16 @@ public class AddParticipantServlet extends HttpServlet {
     if (match != null) {
       // Match found, add to match datastore, update participant datastore
       long matchId = matchDatastore.addMatch(match);
+<<<<<<< HEAD
+=======
+      String firstParticipantUsername = match.getFirstParticipantUsername();
+      String secondParticipantUsername = match.getSecondParticipantUsername();
+      participantDatastore.updateMatchId(firstParticipantUsername, matchId);
+      participantDatastore.nullAvailability(firstParticipantUsername);
+      participantDatastore.updateMatchId(secondParticipantUsername, matchId);
+      participantDatastore.nullAvailability(secondParticipantUsername);
+    }
+>>>>>>> Add null return types
 
       // Update currParticipant entity with new currentMatchId and null availability
       Participant currParticipant =

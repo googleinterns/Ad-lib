@@ -60,14 +60,21 @@ public class SearchMatchServlet extends HttpServlet {
     if (participant == null) {
       response.sendError(
           HttpServletResponse.SC_BAD_REQUEST,
+<<<<<<< HEAD
           "Participant with username " + username + "does not exist.");
       return;
     }
 
+=======
+          "Participant with username " + username + "is invalid.");
+      return;
+    }
+>>>>>>> Add null return types
     long currentMatchId = participant.getCurrentMatchId();
+
     // Check if match exists and not returned yet
     if (currentMatchId == 0) {
-      // Match doesn't exist yet
+      // No match yet
       JSONObject matchDoesNotExist = new JSONObject();
       matchDoesNotExist.put(JSON_MATCHSTATUS, "false");
 
@@ -85,8 +92,12 @@ public class SearchMatchServlet extends HttpServlet {
       }
 
       // Reset matchId to indicate returned match
+<<<<<<< HEAD
       participant.setCurrentMatchId(0);
       participantDatastore.addParticipant(participant);
+=======
+      participantDatastore.updateMatchId(participant.getUsername(), /* matchId=*/ 0);
+>>>>>>> Add null return types
 
       JSONObject matchExists = new JSONObject();
       matchExists.put(JSON_MATCHSTATUS, "true");

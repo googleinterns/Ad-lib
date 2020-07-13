@@ -24,6 +24,7 @@ COMMENT_STYLES = {
     '.xml': [('<!--', '-->')],
 }
 
+IGNORE_DIRECTORIES = ['node_modules', 'build']
 
 def count_comments_from_contents(contents, style):
     lines = 0
@@ -74,6 +75,9 @@ def collect_programs(threshold_lines):
             os.path.join(directory, '../backend')
     ]:
         for root, _, files in os.walk(top):
+            # Ignore all ignored directories
+            if [x for x in IGNORE_DIRECTORIES if x in root]:
+                continue
             for f in files:
                 if f.endswith(tuple(COMMENT_STYLES.keys())):
                     total_lines += count_comments(os.path.join(root, f))

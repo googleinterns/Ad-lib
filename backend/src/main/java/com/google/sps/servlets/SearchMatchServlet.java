@@ -77,8 +77,15 @@ public class SearchMatchServlet extends HttpServlet {
     } else {
       // Match found
       Match match = matchDatastore.getMatchFromId(currentMatchId);
+      if (match == null) {
+        response.sendError(
+            HttpServletResponse.SC_BAD_REQUEST,
+            "No match entity in datastore with match id " + currentMatchId + ".");
+        return;
+      }
 
       // Reset matchId to indicate returned match
+      // TODO: return true or false?
       participantDatastore.updateMatchId(participant.getUsername(), /* matchId=*/ 0);
 
       JSONObject matchExists = new JSONObject();

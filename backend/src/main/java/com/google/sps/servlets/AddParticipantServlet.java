@@ -132,6 +132,7 @@ public class AddParticipantServlet extends HttpServlet {
       long matchId = matchDatastore.addMatch(match);
       String firstParticipantUsername = match.getFirstParticipantUsername();
       String secondParticipantUsername = match.getSecondParticipantUsername();
+      // TODO: return true or false?
       participantDatastore.updateMatchId(firstParticipantUsername, matchId);
       participantDatastore.nullAvailability(firstParticipantUsername);
       participantDatastore.updateMatchId(secondParticipantUsername, matchId);

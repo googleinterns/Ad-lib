@@ -9,13 +9,14 @@ public final class Participant {
   /** Google username (ldap) */
   private final String username;
   /** Time user starts being available */
-  private final ZonedDateTime startTimeAvailable;
+  // TODO: make these fields final once Participant and User classes are created
+  private ZonedDateTime startTimeAvailable;
   /** Time user is available until */
-  private final ZonedDateTime endTimeAvailable;
+  private ZonedDateTime endTimeAvailable;
   /** How long user wants to chat */
-  private final int duration;
+  private int duration;
   /** Current match in datastore, null if never found a match or already been returned */
-  private final long currentMatchId;
+  private long currentMatchId;
   /** Time of submitted form */
   private final long timestamp;
 
@@ -46,16 +47,32 @@ public final class Participant {
     return startTimeAvailable;
   }
 
+  public void setStartTimeAvailable(ZonedDateTime startTimeAvailable) {
+    this.startTimeAvailable = startTimeAvailable;
+  }
+
   public ZonedDateTime getEndTimeAvailable() {
     return endTimeAvailable;
+  }
+
+  public void setEndTimeAvailable(ZonedDateTime endTimeAvailable) {
+    this.endTimeAvailable = endTimeAvailable;
   }
 
   public int getDuration() {
     return duration;
   }
 
+  public void setDuration(int duration) {
+    this.duration = duration;
+  }
+
   public long getCurrentMatchId() {
     return currentMatchId;
+  }
+
+  public void setCurrentMatchId(long ecurrentMatchId) {
+    this.currentMatchId = currentMatchId;
   }
 
   public long getTimestamp() {

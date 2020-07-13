@@ -46,7 +46,7 @@ public final class MatchDatastore {
   }
 
   /** Return Match from entity, or null if entity is null */
-  private Match getMatchFromEntity(Entity entity) {
+  private static Match getMatchFromEntity(Entity entity) {
     if (entity == null) {
       return null;
     }

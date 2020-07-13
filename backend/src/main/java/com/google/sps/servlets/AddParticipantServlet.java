@@ -15,16 +15,23 @@
 package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+import com.google.sps.FindMatchQuery;
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,83 +58,58 @@ public class AddParticipantServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Request parameter values
-    // TODO: Check input values are filled (before allowing to submit)
 
-    /*UserService userService = UserServiceFactory.getUserService();
+    // Retrieve user email address via Users API and parse for ldap
+    UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     if (email == null) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid email.");
       return;
     }
-    String username = email.split("@")[0];*/
+    String username = email.split("@")[0];
 
+    // Retrieve body of HTTP request
     StringBuffer requestBuffer = new StringBuffer();
-    String line = null;
     try {
       BufferedReader reader = request.getReader();
-      while ((line = reader.readLine()) != null) requestBuffer.append(line);
+      String currentLine;
+      while ((currentLine = reader.readLine()) != null) {
+        requestBuffer.append(currentLine);
+      }
     } catch (Exception e) {
-      /*report an error*/
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not read request body");
     }
-
-    System.out.println(requestBuffer);
-
     JSONObject obj = new JSONObject(requestBuffer.toString());
-    String duration = obj.getJSONObject("formDetails").getString("duration");
-    String role = obj.getJSONObject("formDetails").getString("role");
 
-    System.out.println("Duration: " + duration);
-    System.out.println("Role: " + role);
+    // Retrieve the timeAvailableUntil input and convert to a UTC ZonedDateTime
+    long timeAvailableUntil = obj.getJSONObject("formDetails").getLong("timeAvailableUntil");
+    ZoneId zoneId = ZoneId.of("UTC");
+    ZonedDateTime startTimeAvailable = ZonedDateTime.now(Clock.systemUTC());
+    ZonedDateTime endTimeAvailable =
+        ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeAvailableUntil), zoneId);
 
-    /*try {
-     JSONObject jsonObject =  HTTP.toJSONObject(jb.toString());
-    } catch (JSONException e) {
-      throw new IOException("Error parsing JSON request string");
-    }*/
-
-    // int duration = convertToPositiveInt(request.getParameter("duration"));
-    /*if (duration <= 0) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
-      return;
-    }*/
-
-    /*String productArea = request.getParameter("productArea");
-    String role = request.getParameter("role");
-    String yearRange = request.getParameter("years");
-    String savePreference = request.getParameter("savePreference");
-    String matchPreference = request.getParameter("matchPreference");
-
-    System.out.println("Duration: " + duration);
-    System.out.println("Role: " + role);*/
-
-    /*String timezone = request.getParameter("timezone");
-    ZoneId zoneId = ZoneId.of(timezone); // TODO: convert input timezone to valid ZoneId
-    ZonedDateTime startTimeAvailable =
-        ZonedDateTime.now(zoneId); // TODO: set to future time if not available now
-    Instant endTimeAvailableInstant =
-        Instant.ofEpochMilli(
-            Long.parseLong(
-                request.getParameter("endTimeAvailable"))); // TODO: figure out input format
-    ZonedDateTime endTimeAvailable = endTimeAvailableInstant.atZone(zoneId);
-
-    int duration = convertToPositiveInt(request.getParameter("duration"));
+    int duration = obj.getJSONObject("formDetails").getInt("duration");
     if (duration <= 0) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
       return;
     }
 
-    long timestamp = System.currentTimeMillis();*/
+    String role = obj.getJSONObject("formDetails").getString("role");
+    String productArea = obj.getJSONObject("formDetails").getString("productArea");
+    boolean savePreference = obj.getJSONObject("formDetails").getBoolean("savePreference");
+    String matchPreference = obj.getJSONObject("formDetails").getString("matchPreference");
+
+    Long timestamp = System.currentTimeMillis();
 
     // id is irrelevant, only relevant when getting from datastore
-    // Participant newParticipant =
-    // new Participant(
-    //  /* id= */ -1L, username, startTimeAvailable, endTimeAvailable, duration, timestamp);
+    Participant newParticipant =
+        new Participant(
+            /* id= */ -1L, username, startTimeAvailable, endTimeAvailable, duration, timestamp);
 
-    // DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    // Find immediate match if possibl;
-    /*FindMatchQuery query = new FindMatchQuery(Clock.systemUTC());
+    // Find immediate match if possible
+    FindMatchQuery query = new FindMatchQuery(Clock.systemUTC());
     Match match = query.findMatch(getParticipants(datastore), newParticipant);
 
     // Match found, add to datastore, delete matched participants from datastore
@@ -138,18 +120,16 @@ public class AddParticipantServlet extends HttpServlet {
       // Match not found, insert participant entity into datastore
       Entity participantEntity = new Entity(KEY_PARTICIPANT);
       participantEntity.setProperty(PROPERTY_USERNAME, username);
-      participantEntity.setProperty(PROPERTY_STARTTIMEAVAILABLE, startTimeAvailable);
-      participantEntity.setProperty(PROPERTY_ENDTIMEAVAILABLE, endTimeAvailable);
+      participantEntity.setProperty(PROPERTY_STARTTIMEAVAILABLE, startTimeAvailable.toString());
+      participantEntity.setProperty(PROPERTY_ENDTIMEAVAILABLE, endTimeAvailable.toString());
       participantEntity.setProperty(PROPERTY_DURATION, duration);
       participantEntity.setProperty(PROPERTY_TIMESTAMP, timestamp);
       datastore.put(participantEntity);
     }
 
-    // Redirect back to the HTML page
-    response.sendRedirect("/index.html");*/
-
+    // TODO: Return match status to frontend instead of this success message
     response.setContentType("text/plain;charset=UTF-8");
-    response.getWriter().println("Recieved the object!");
+    response.getWriter().println("Recieved form input details!");
   }
 
   /** Return list of current participants from datastore */
@@ -165,12 +145,13 @@ public class AddParticipantServlet extends HttpServlet {
     for (Entity entity : results.asIterable()) {
       long id = (long) entity.getKey().getId();
       String username = (String) entity.getProperty(PROPERTY_USERNAME);
+      String startTimeAvailableString = (String) entity.getProperty(PROPERTY_STARTTIMEAVAILABLE);
       ZonedDateTime startTimeAvailable =
-          (ZonedDateTime) entity.getProperty(PROPERTY_STARTTIMEAVAILABLE);
-      ZonedDateTime endTimeAvailable =
-          (ZonedDateTime) entity.getProperty(PROPERTY_ENDTIMEAVAILABLE);
-      int duration = (int) entity.getProperty(PROPERTY_DURATION);
-      long timestamp = (long) entity.getProperty(PROPERTY_TIMESTAMP);
+          (ZonedDateTime) ZonedDateTime.parse(startTimeAvailableString);
+      String endTimeAvailableString = (String) entity.getProperty(PROPERTY_ENDTIMEAVAILABLE);
+      ZonedDateTime endTimeAvailable = (ZonedDateTime) ZonedDateTime.parse(endTimeAvailableString);
+      int duration = ((Long) entity.getProperty(PROPERTY_DURATION)).intValue();
+      Long timestamp = (Long) entity.getProperty(PROPERTY_TIMESTAMP);
       Participant currParticipant =
           new Participant(id, username, startTimeAvailable, endTimeAvailable, duration, timestamp);
       participants.add(currParticipant);
@@ -195,18 +176,5 @@ public class AddParticipantServlet extends HttpServlet {
   private void deleteParticipantFromDatastore(Participant participant, DatastoreService datastore) {
     Key participantEntityKey = KeyFactory.createKey(KEY_PARTICIPANT, participant.getId());
     datastore.delete(participantEntityKey);
-  }
-
-  /** Return positive integer value, or -1 if invalid or negative */
-  private static int convertToPositiveInt(String s) {
-    if (s == null) {
-      return -1;
-    }
-    try {
-      int parsed = Integer.parseInt(s);
-      return (parsed >= 0) ? parsed : -1;
-    } catch (NumberFormatException e) {
-      return -1;
-    }
   }
 }

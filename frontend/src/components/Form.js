@@ -61,13 +61,14 @@ export default function Form() {
     * @param {Event} event
    */
   function handleFormSubmission(event) {
+    // TODO: Validate input values (before allowing to submit)
 
-    // Override browser's default behvaior and execute POST to backend
+    // Override browser's default behvaior to execute POST request
     event.preventDefault();
 
     // Gather all form inputs into one object
     const formDetails = {
-      timeAvailableUntil: timeAvailableUntil,
+      timeAvailableUntil: timeAvailableUntil.getTime(),
       duration: duration,
       role: role,
       productArea: productArea,
@@ -76,30 +77,15 @@ export default function Form() {
     };
 
     console.log(formDetails);
-
-    const options = {
-      method: 'POST',
-      headers: {
-        'Accept': 'text/plain;charset=UTF-8',
-        'Content-Type': 'application/json;charset=UTF-8',
-      },
-      body: JSON.stringify({formDetails}),
-    };
-
-    fetch('/api/v1/add-participant', options)
+    // Send form details to AddParticipantServlet and alert user on success
+    axios.post('/api/v1/add-participant', {formDetails})
         .then((response) => {
           if (response.data != null) {
-            alert('Successful');
-          }
-        });
-
-    /*axios.post('/api/v1/add-participant', {formDetails})
-        .then((response) => {
-          if (response.data != null) {
+            // TODO: change alert to a redirection to the loading page view
             alert("Successful");
           }
 
-        });*/
+        });
   }
 
   return (

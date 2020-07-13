@@ -14,18 +14,17 @@
 
 package com.google.sps;
 
-import static com.google.common.truth.Truth.assertThat;
-
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
-import java.time.Clock;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import java.time.Clock;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(JUnit4.class)
 public final class FindMatchQueryTest {
@@ -73,14 +72,14 @@ public final class FindMatchQueryTest {
   private static final ZonedDateTime TIME_1200PT = getNewTimeToday(currentDateTimePT, 12, 0);
   private static final ZonedDateTime TIME_1600PT = getNewTimeToday(currentDateTimePT, 16, 0);
 
-  private FindMatchQuery query;
+  private com.google.sps.FindMatchQuery query;
 
   @Before
   public void setUp() {
     // Set "current" date to  1/1/2020 2:00pm ET
     Clock clock = Clock.fixed(currentDateTimeET.toInstant(), currentDateTimeET.getZone());
 
-    query = new FindMatchQuery(clock);
+    query = new com.google.sps.FindMatchQuery(clock);
   }
 
   /** Return today's date with time of hour:minute */

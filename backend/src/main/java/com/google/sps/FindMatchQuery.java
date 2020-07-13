@@ -28,7 +28,7 @@ public final class FindMatchQuery {
   /** Maximum difference in duration to be compatible */
   private static final int MAX_DURATION_DIFF = 15;
   /** Extra padding time to ensure large enough meeting time block */
-  private static final int PADDING_TIME = 15;
+  private static final int PADDING_TIME = 10;
   /** Reference clock */
   private final Clock clock;
   /** Datastore of Participants */

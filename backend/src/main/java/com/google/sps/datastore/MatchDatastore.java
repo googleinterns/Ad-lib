@@ -47,6 +47,7 @@ public final class MatchDatastore {
 
   /** Return Match from entity, or null if entity is null */
 <<<<<<< HEAD
+<<<<<<< HEAD
   private static Match getMatchFromEntity(Entity entity) {
     if (entity == null) {
       return null;
@@ -72,6 +73,9 @@ public final class MatchDatastore {
     } catch (EntityNotFoundException e) {
 =======
   private Match getMatchFromEntity(Entity entity) {
+=======
+  private static Match getMatchFromEntity(Entity entity) {
+>>>>>>> Replace update entity methods with just adding/overwriting
     if (entity == null) {
 >>>>>>> Add null return types
       return null;

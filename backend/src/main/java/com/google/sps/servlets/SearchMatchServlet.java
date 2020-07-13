@@ -94,6 +94,7 @@ public class SearchMatchServlet extends HttpServlet {
       // Reset matchId to indicate returned match
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       participant.setCurrentMatchId(0);
       participantDatastore.addParticipant(participant);
 =======
@@ -102,6 +103,10 @@ public class SearchMatchServlet extends HttpServlet {
 >>>>>>> Deal with null returns
       participantDatastore.updateMatchId(participant.getUsername(), /* matchId=*/ 0);
 >>>>>>> Add null return types
+=======
+      participant.setCurrentMatchId(0);
+      participantDatastore.addParticipant(participant);
+>>>>>>> Replace update entity methods with just adding/overwriting
 
       JSONObject matchExists = new JSONObject();
       matchExists.put(JSON_MATCHSTATUS, "true");

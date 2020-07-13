@@ -125,12 +125,16 @@ public class AddParticipantServlet extends HttpServlet {
     // Find immediate match if possible
     FindMatchQuery query = new FindMatchQuery(Clock.systemUTC(), participantDatastore);
     Match match = query.findMatch(newParticipant);
+<<<<<<< HEAD
     // Add newParticipant to datastore
     participantDatastore.addParticipant(newParticipant);
+=======
+>>>>>>> Replace update entity methods with just adding/overwriting
 
     if (match != null) {
       // Match found, add to match datastore, update participant datastore
       long matchId = matchDatastore.addMatch(match);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
       String firstParticipantUsername = match.getFirstParticipantUsername();
@@ -140,6 +144,27 @@ public class AddParticipantServlet extends HttpServlet {
       participantDatastore.nullAvailability(firstParticipantUsername);
       participantDatastore.updateMatchId(secondParticipantUsername, matchId);
       participantDatastore.nullAvailability(secondParticipantUsername);
+=======
+
+      // Update currParticipant entity with new currentMatchId and null availability
+      Participant currParticipant =
+          participantDatastore.getParticipantFromUsername(match.getSecondParticipantUsername());
+      currParticipant.setCurrentMatchId(matchId);
+      currParticipant.setStartTimeAvailable(null);
+      currParticipant.setEndTimeAvailable(null);
+      currParticipant.setDuration(0);
+      participantDatastore.addParticipant(currParticipant);
+
+      // Update newParticipant entity with new currentMatchId and null availability
+      newParticipant.setCurrentMatchId(matchId);
+      newParticipant.setStartTimeAvailable(null);
+      newParticipant.setEndTimeAvailable(null);
+      newParticipant.setDuration(0);
+      participantDatastore.addParticipant(newParticipant);
+    } else {
+      // Match not found, add participant to datastore
+      participantDatastore.addParticipant(newParticipant);
+>>>>>>> Replace update entity methods with just adding/overwriting
     }
 >>>>>>> Add null return types
 

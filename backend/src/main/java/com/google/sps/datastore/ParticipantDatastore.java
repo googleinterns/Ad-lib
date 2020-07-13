@@ -42,13 +42,19 @@ public final class ParticipantDatastore {
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Replace update entity methods with just adding/overwriting
   /**
    * Put participant in datastore. Overwrite participant entity if participant with same username
    * already exists.
    */
+<<<<<<< HEAD
 =======
   /** Put participant in datastore */
 >>>>>>> Add null return types
+=======
+>>>>>>> Replace update entity methods with just adding/overwriting
   public void addParticipant(Participant participant) {
     // Set properties of entity based on participant fields
     Entity participantEntity = new Entity(KIND_PARTICIPANT, participant.getUsername());
@@ -79,6 +85,7 @@ public final class ParticipantDatastore {
   
 =======
 
+<<<<<<< HEAD
   /**
    * Update Participant entity with username with new matchId
    *
@@ -119,6 +126,8 @@ public final class ParticipantDatastore {
   }
 
 >>>>>>> Add null return types
+=======
+>>>>>>> Replace update entity methods with just adding/overwriting
   /** Return Participant from username, or null if participant with username not in datastore */
   @Nullable
   public Participant getParticipantFromUsername(String username) {
@@ -128,10 +137,14 @@ public final class ParticipantDatastore {
   /** Return participant object from datastore participant entity, or null if entity is null */
   @Nullable
 <<<<<<< HEAD
+<<<<<<< HEAD
   private static Participant getParticipantFromEntity(Entity entity) {
 =======
   private Participant getParticipantFromEntity(Entity entity) {
 >>>>>>> Add null return types
+=======
+  private static Participant getParticipantFromEntity(Entity entity) {
+>>>>>>> Replace update entity methods with just adding/overwriting
     if (entity == null) {
       return null;
     }

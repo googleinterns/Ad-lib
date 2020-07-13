@@ -59,15 +59,6 @@ public class AddParticipantServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    // Retrieve user email address via Users API and parse for ldap
-    UserService userService = UserServiceFactory.getUserService();
-    String email = userService.getCurrentUser().getEmail();
-    if (email == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid email.");
-      return;
-    }
-    String username = email.split("@")[0];
-
     // Retrieve body of HTTP request
     StringBuffer requestBuffer = new StringBuffer();
     try {
@@ -100,6 +91,15 @@ public class AddParticipantServlet extends HttpServlet {
     String matchPreference = obj.getJSONObject("formDetails").getString("matchPreference");
 
     Long timestamp = System.currentTimeMillis();
+
+    // Retrieve user email address via Users API and parse for ldap
+    UserService userService = UserServiceFactory.getUserService();
+    String email = userService.getCurrentUser().getEmail();
+    if (email == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid email.");
+      return;
+    }
+    String username = email.split("@")[0];
 
     // id is irrelevant, only relevant when getting from datastore
     Participant newParticipant =

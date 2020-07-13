@@ -130,8 +130,12 @@ public class AddParticipantServlet extends HttpServlet {
     // Match found, add match to datastore, update recent match for Participants
     if (match != null) {
       long matchId = matchDatastore.addMatch(match);
-      participantDatastore.updateNewMatch(match.getFirstParticipantUsername(), matchId);
-      participantDatastore.updateNewMatch(match.getSecondParticipantUsername(), matchId);
+      String firstParticipantUsername = match.getFirstParticipantUsername();
+      String secondParticipantUsername = match.getSecondParticipantUsername();
+      participantDatastore.updateMatchId(firstParticipantUsername, matchId);
+      participantDatastore.nullAvailability(firstParticipantUsername);
+      participantDatastore.updateMatchId(secondParticipantUsername, matchId);
+      participantDatastore.nullAvailability(secondParticipantUsername);
     }
 
     response.setContentType("text/plain;charset=UTF-8");

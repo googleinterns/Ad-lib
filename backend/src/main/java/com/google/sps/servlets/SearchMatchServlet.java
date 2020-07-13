@@ -57,10 +57,17 @@ public class SearchMatchServlet extends HttpServlet {
 
     // Find participant's current match, if exists and not returned yet
     Participant participant = participantDatastore.getParticipantFromUsername(username);
+    if (participant == null) {
+      response.sendError(
+          HttpServletResponse.SC_BAD_REQUEST,
+          "Participant with username " + username + "is invalid.");
+      return;
+    }
     long currentMatchId = participant.getCurrentMatchId();
+
     // Check if match exists and not returned yet
     if (currentMatchId == 0) {
-      // Match doesn't exist yet
+      // No match yet
       JSONObject matchDoesNotExist = new JSONObject();
       matchDoesNotExist.put(JSON_MATCHSTATUS, "false");
 
@@ -68,11 +75,11 @@ public class SearchMatchServlet extends HttpServlet {
       response.setContentType("application/json");
       response.getWriter().println(matchDoesNotExist.toString());
     } else {
-      // Match exists
+      // Match found
       Match match = matchDatastore.getMatchFromId(currentMatchId);
 
       // Reset matchId to indicate returned match
-      participantDatastore.updateNewMatch(participant.getUsername(), /* matchId=*/ 0);
+      participantDatastore.updateMatchId(participant.getUsername(), /* matchId=*/ 0);
 
       JSONObject matchExists = new JSONObject();
       matchExists.put(JSON_MATCHSTATUS, "true");

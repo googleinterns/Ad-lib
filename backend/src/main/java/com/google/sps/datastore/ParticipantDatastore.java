@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 
+/** Separates datastore method calls involving Participant type from caller */
 public final class ParticipantDatastore {
 
   // Datastore Key/Property constants
@@ -35,14 +36,14 @@ public final class ParticipantDatastore {
   /** Datastore */
   private final DatastoreService datastore;
 
-  /** Constructor */
+  /** Constructor that takes in DatastoreService */
   public ParticipantDatastore(DatastoreService datastore) {
     this.datastore = datastore;
   }
 
-  /** Add Participant to datastore */
+  /** Put participant in datastore */
   public void addParticipant(Participant participant) {
-    // Set properties of entity
+    // Set properties of entity based on participant fields
     Entity participantEntity = new Entity(KIND_PARTICIPANT, participant.getUsername());
     participantEntity.setProperty(PROPERTY_USERNAME, participant.getUsername());
     participantEntity.setProperty(
@@ -57,22 +58,45 @@ public final class ParticipantDatastore {
     datastore.put(participantEntity);
   }
 
-  /** Return Participant Entity from username */
+  /** Return Participant Entity from username, or null if entity is not found */
+  @Nullable
   private Entity getEntityFromUsername(String username) {
     Key participantKey = KeyFactory.createKey(KIND_PARTICIPANT, username);
     try {
       return datastore.get(participantKey);
     } catch (EntityNotFoundException e) {
-      // TODO: what error to send
       return null;
     }
   }
 
-  /** Update Participant with new matchId, null out availability to show currently matched */
-  public void updateNewMatch(String username, long matchId) {
+  /**
+   * Update Participant entity with username with new matchId
+   *
+   * @return true if valid username (entity found), false if not
+   */
+  public boolean updateMatchId(String username, long matchId) {
     Entity participantEntity = getEntityFromUsername(username);
+    if (participantEntity == null) {
+      return false;
+    }
 
     participantEntity.setProperty(PROPERTY_CURRENTMATCHID, matchId);
+
+    // Overwrite existing entity in datastore
+    datastore.put(participantEntity);
+    return true;
+  }
+
+  /**
+   * Update Participant entity with nulled out availability fields
+   *
+   * @return true if valid username (entity found), false if not
+   */
+  public boolean nullAvailability(String username) {
+    Entity participantEntity = getEntityFromUsername(username);
+    if (participantEntity == null) {
+      return false;
+    }
 
     // Null out availibility fields if not already
     participantEntity.setProperty(PROPERTY_STARTTIMEAVAILABLE, null);
@@ -81,16 +105,22 @@ public final class ParticipantDatastore {
 
     // Overwrite existing entity in datastore
     datastore.put(participantEntity);
+    return true;
   }
 
-  /** Return Participant from username */
+  /** Return Participant from username, or null if participant with username not in datastore */
   @Nullable
   public Participant getParticipantFromUsername(String username) {
     return getParticipantFromEntity(getEntityFromUsername(username));
   }
 
-  /** Return participant object from datastore participant entity */
+  /** Return participant object from datastore participant entity, or null if entity is null */
+  @Nullable
   private Participant getParticipantFromEntity(Entity entity) {
+    if (entity == null) {
+      return null;
+    }
+
     // Get entity properties
     String username = (String) entity.getProperty(PROPERTY_USERNAME);
     ZonedDateTime startTimeAvailable =
@@ -108,7 +138,7 @@ public final class ParticipantDatastore {
 
   /** Return list of all unmatched participants */
   public List<Participant> getUnmatchedParticipants() {
-    Query query = new Query(KIND_PARTICIPANT).addSort(PROPERTY_DURATION, SortDirection.DESCENDING);
+    Query query = new Query(KIND_PARTICIPANT).addSort(PROPERTY_DURATION, SortDirection.ASCENDING);
 
     // Create filter to get all currently unmatched participants
     Filter unmatched = new FilterPredicate(PROPERTY_DURATION, FilterOperator.GREATER_THAN, 0);
@@ -124,13 +154,7 @@ public final class ParticipantDatastore {
     return participants;
   }
 
-  /** Remove Participant from datastore */
-  public void removeParticipant(String username) {
-    Key participantKey = KeyFactory.createKey(KIND_PARTICIPANT, username);
-    datastore.delete(participantKey);
-  }
-
-  /** Return String representation of participants */
+  /** Return String representation of participants for logging purposes */
   public String toString() {
     StringBuilder sb = new StringBuilder();
     Query query = new Query(KIND_PARTICIPANT);

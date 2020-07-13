@@ -46,28 +46,17 @@ public final class FindMatchQuery {
    */
   @Nullable
   public Match findMatch(Participant newParticipant) {
-    // Get list of unmatched participants in datastore
-    List<Participant> unmatchedParticipants = participantDatastore.getUnmatchedParticipants();
+    int duration = newParticipant.getDuration();
 
-    // Add newParticipant to datastore
-    participantDatastore.addParticipant(newParticipant);
+    // Get list of unmatched participants with same duration as newParticipant
+    List<Participant> sameDurationParticipants =
+        participantDatastore.getSameDurationParticipants(duration);
 
     // Set reference date time using clock
     ZonedDateTime dateTime = ZonedDateTime.now(clock);
 
     // Compare new participant preferences with other participants to find match
-    for (Participant currParticipant : unmatchedParticipants) {
-      // Check if participants are looking for similar meeting duration
-      int newDuration = newParticipant.getDuration();
-      int currDuration = currParticipant.getDuration();
-      boolean compatibleDuration = Math.abs(newDuration - currDuration) <= MAX_DURATION_DIFF;
-
-      if (!compatibleDuration) {
-        // Not a match
-        continue;
-      }
-      int duration = Math.min(newDuration, currDuration);
-
+    for (Participant currParticipant : sameDurationParticipants) {
       // Check if participants are both free for that duration + extra
       ZonedDateTime newEndTimeAvailable = newParticipant.getEndTimeAvailable();
       ZonedDateTime currEndTimeAvailable = currParticipant.getEndTimeAvailable();

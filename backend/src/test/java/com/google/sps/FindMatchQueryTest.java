@@ -112,7 +112,7 @@ public final class FindMatchQueryTest {
             PERSON_A,
             TIME_1400ET,
             TIME_1600ET,
-            DURATION_30_MINUTES,
+            DURATION_15_MINUTES,
             MATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);
     Participant participantB =
@@ -312,7 +312,7 @@ public final class FindMatchQueryTest {
             PERSON_B,
             TIME_1400ET,
             TIME_1800ET,
-            DURATION_15_MINUTES,
+            DURATION_30_MINUTES,
             MATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);
     Participant participantC =
@@ -320,7 +320,7 @@ public final class FindMatchQueryTest {
             PERSON_C,
             TIME_1400ET,
             TIME_2000ET,
-            DURATION_45_MINUTES,
+            DURATION_30_MINUTES,
             MATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);
 
@@ -356,7 +356,7 @@ public final class FindMatchQueryTest {
             PERSON_B,
             TIME_1400ET,
             TIME_1800ET,
-            DURATION_15_MINUTES,
+            DURATION_45_MINUTES,
             MATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);
 
@@ -417,7 +417,7 @@ public final class FindMatchQueryTest {
             PERSON_A,
             TIME_1400ET,
             TIME_1600ET,
-            DURATION_45_MINUTES,
+            DURATION_30_MINUTES,
             MATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);
     Participant participantB =

@@ -100,13 +100,13 @@ public final class ParticipantDatastore {
         username, startTimeAvailable, endTimeAvailable, duration, currentMatchId, timestamp);
   }
 
-  /** Return list of all unmatched participants */
-  public List<Participant> getUnmatchedParticipants() {
+  /** Return list of all unmatched participants with same duration */
+  public List<Participant> getSameDurationParticipants(int duration) {
     Query query = new Query(KIND_PARTICIPANT).addSort(PROPERTY_DURATION, SortDirection.ASCENDING);
 
-    // Create filter to get all currently unmatched participants
-    Filter unmatched = new FilterPredicate(PROPERTY_DURATION, FilterOperator.GREATER_THAN, 0);
-    query.setFilter(unmatched);
+    // Create filter to get only participants with same duration
+    Filter sameDuration = new FilterPredicate(PROPERTY_DURATION, FilterOperator.EQUAL, duration);
+    query.setFilter(sameDuration);
 
     PreparedQuery results = datastore.prepare(query);
 

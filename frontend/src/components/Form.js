@@ -82,9 +82,8 @@ export default function Form() {
         .then((response) => {
           if (response.data != null) {
             // TODO: change alert to a redirection to the loading page view
-            alert("Successful");
+            alert('Successful');
           }
-
         });
   }
 

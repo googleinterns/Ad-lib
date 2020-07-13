@@ -165,6 +165,7 @@ public final class ParticipantDatastore {
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   /** Return list of all unmatched participants with same duration */
   public List<Participant> getSameDurationParticipants(int duration) {
     Query query = new Query(KIND_PARTICIPANT).addSort(PROPERTY_DURATION, SortDirection.ASCENDING);
@@ -180,6 +181,15 @@ public final class ParticipantDatastore {
     Filter unmatched = new FilterPredicate(PROPERTY_DURATION, FilterOperator.GREATER_THAN, 0);
     query.setFilter(unmatched);
 >>>>>>> Add null return types
+=======
+  /** Return list of all unmatched participants with same duration */
+  public List<Participant> getSameDurationParticipants(int duration) {
+    Query query = new Query(KIND_PARTICIPANT).addSort(PROPERTY_DURATION, SortDirection.ASCENDING);
+
+    // Create filter to get only participants with same duration
+    Filter sameDuration = new FilterPredicate(PROPERTY_DURATION, FilterOperator.EQUAL, duration);
+    query.setFilter(sameDuration);
+>>>>>>> Change so that only participants with same duration can be matched
 
     PreparedQuery results = datastore.prepare(query);
 

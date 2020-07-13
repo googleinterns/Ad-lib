@@ -47,7 +47,11 @@ public final class FindMatchQuery {
   @Nullable
   public Match findMatch(Participant newParticipant) {
     int duration = newParticipant.getDuration();
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> Change so that only participants with same duration can be matched
     // Get list of unmatched participants with same duration as newParticipant
     List<Participant> sameDurationParticipants =
         participantDatastore.getSameDurationParticipants(duration);
@@ -56,7 +60,11 @@ public final class FindMatchQuery {
     ZonedDateTime dateTime = ZonedDateTime.now(clock);
 
     // Compare new participant preferences with other participants to find match
+<<<<<<< HEAD
     for (Participant currParticipant : unmatchedParticipants) {
+=======
+    for (Participant currParticipant : sameDurationParticipants) {
+>>>>>>> Change so that only participants with same duration can be matched
       // Check if participants are both free for that duration + extra
       ZonedDateTime newEndTimeAvailable = newParticipant.getEndTimeAvailable();
       ZonedDateTime currEndTimeAvailable = currParticipant.getEndTimeAvailable();

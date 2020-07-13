@@ -8,7 +8,6 @@ import Button from '@material-ui/core/Button';
 import MatchPreference from './MatchPreference';
 import Checkbox from './PreferencesCheckbox';
 import RoleDropdown from './RoleDropdown';
-import YearDropdown from './YearsDropdown';
 import ProductAreaDropdown from './ProductAreaDropdown';
 import DurationDropdown from './DurationDropdown';
 
@@ -54,7 +53,6 @@ export default function Form() {
   const [duration, setDuration] = React.useState(15);
   const [productArea, setProductArea] = React.useState('');
   const [role, setRole] = React.useState('');
-  const [yearRange, setYearRange] = React.useState('');
   const [savePreference, setSavePreference] = React.useState(true);
   const [matchPreference, setMatchPreference] = React.useState('none');
 
@@ -89,7 +87,6 @@ export default function Form() {
         <div className={classes.flexStartDiv}>
           <RoleDropdown onChange={(value) => setRole(value)} />
           <ProductAreaDropdown onChange={(value) => setProductArea(value)} />
-          <YearDropdown onChange={(value) => setYearRange(value)} />
         </div>
         <div className={classes.padding}>
           <MatchPreference onChange={(value) => setMatchPreference(value)} />
@@ -102,8 +99,7 @@ export default function Form() {
           <Button variant="contained" color="primary" onClick={() => {
             alert('Availability: ' + timeAvailableUntil + '\nDuration: ' +
             duration + '\nRole: ' + role + '\nPA: ' + productArea +
-            '\nYears: ' + yearRange + '\nSave: ' + savePreference +
-            '\nMatch: ' + matchPreference);
+            '\nSave: ' + savePreference + '\nMatch: ' + matchPreference);
           }}>
             Submit
           </Button>

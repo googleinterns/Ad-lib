@@ -61,7 +61,7 @@ export default function Form() {
     * @param {Event} event
    */
   function handleFormSubmission(event) {
-    // TODO: Validate input values (before allowing to submit)
+    // TODO(#34): Validate input values (before allowing to submit)
 
     // Override browser's default behvaior to execute POST request
     event.preventDefault();
@@ -76,12 +76,11 @@ export default function Form() {
       savePreference: savePreference,
     };
 
-    console.log(formDetails);
     // Send form details to AddParticipantServlet and alert user on success
     axios.post('/api/v1/add-participant', {formDetails})
         .then((response) => {
           if (response.data != null) {
-            // TODO: change alert to a redirection to the loading page view
+            // TODO(#33): change alert to a redirection to the loading page view
             alert('Successful');
           }
         });

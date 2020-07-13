@@ -127,7 +127,6 @@ public class AddParticipantServlet extends HttpServlet {
       datastore.put(participantEntity);
     }
 
-    // TODO: Return match status to frontend instead of this success message
     response.setContentType("text/plain;charset=UTF-8");
     response.getWriter().println("Recieved form input details!");
   }

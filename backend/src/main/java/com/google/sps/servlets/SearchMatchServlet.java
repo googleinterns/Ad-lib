@@ -85,8 +85,8 @@ public class SearchMatchServlet extends HttpServlet {
       }
 
       // Reset matchId to indicate returned match
-      // TODO: return true or false?
-      participantDatastore.updateMatchId(participant.getUsername(), /* matchId=*/ 0);
+      participant.setCurrentMatchId(0);
+      participantDatastore.addParticipant(participant);
 
       JSONObject matchExists = new JSONObject();
       matchExists.put(JSON_MATCHSTATUS, "true");

@@ -41,7 +41,10 @@ public final class ParticipantDatastore {
     this.datastore = datastore;
   }
 
-  /** Put participant in datastore */
+  /**
+   * Put participant in datastore. Overwrite participant entity if participant with same username
+   * already exists.
+   */
   public void addParticipant(Participant participant) {
     // Set properties of entity based on participant fields
     Entity participantEntity = new Entity(KIND_PARTICIPANT, participant.getUsername());
@@ -69,45 +72,6 @@ public final class ParticipantDatastore {
     }
   }
 
-  /**
-   * Update Participant entity with username with new matchId
-   *
-   * @return true if valid username (entity found), false if not
-   */
-  public boolean updateMatchId(String username, long matchId) {
-    Entity participantEntity = getEntityFromUsername(username);
-    if (participantEntity == null) {
-      return false;
-    }
-
-    participantEntity.setProperty(PROPERTY_CURRENTMATCHID, matchId);
-
-    // Overwrite existing entity in datastore
-    datastore.put(participantEntity);
-    return true;
-  }
-
-  /**
-   * Update Participant entity with nulled out availability fields
-   *
-   * @return true if valid username (entity found), false if not
-   */
-  public boolean nullAvailability(String username) {
-    Entity participantEntity = getEntityFromUsername(username);
-    if (participantEntity == null) {
-      return false;
-    }
-
-    // Null out availibility fields if not already
-    participantEntity.setProperty(PROPERTY_STARTTIMEAVAILABLE, null);
-    participantEntity.setProperty(PROPERTY_ENDTIMEAVAILABLE, null);
-    participantEntity.setProperty(PROPERTY_DURATION, 0);
-
-    // Overwrite existing entity in datastore
-    datastore.put(participantEntity);
-    return true;
-  }
-
   /** Return Participant from username, or null if participant with username not in datastore */
   @Nullable
   public Participant getParticipantFromUsername(String username) {
@@ -116,7 +80,7 @@ public final class ParticipantDatastore {
 
   /** Return participant object from datastore participant entity, or null if entity is null */
   @Nullable
-  private Participant getParticipantFromEntity(Entity entity) {
+  private static Participant getParticipantFromEntity(Entity entity) {
     if (entity == null) {
       return null;
     }

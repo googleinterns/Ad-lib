@@ -95,6 +95,7 @@ public class SearchMatchServlet extends HttpServlet {
         return;
       }
 
+<<<<<<< HEAD
       // Reset matchId to indicate returned match
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -111,6 +112,11 @@ public class SearchMatchServlet extends HttpServlet {
       participant.setCurrentMatchId(0);
       participantDatastore.addParticipant(participant);
 >>>>>>> Replace update entity methods with just adding/overwriting
+=======
+      // Remove matched participants from datastore
+      participantDatastore.removeParticipant(match.getFirstParticipantUsername());
+      participantDatastore.removeParticipant(match.getSecondParticipantUsername());
+>>>>>>> Add all participants initially, only remove once found and returned match
 
       JSONObject matchExists = new JSONObject();
       matchExists.put(JSON_MATCHSTATUS, "true");

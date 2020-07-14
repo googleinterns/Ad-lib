@@ -132,7 +132,7 @@ public class AddParticipantServlet extends HttpServlet {
 >>>>>>> Replace update entity methods with just adding/overwriting
 
     if (match != null) {
-      // Match found, add to match datastore
+      // Match found, add to match datastore, update participant datastore
       long matchId = matchDatastore.addMatch(match);
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -146,8 +146,21 @@ public class AddParticipantServlet extends HttpServlet {
       participantDatastore.nullAvailability(secondParticipantUsername);
 =======
 
-      // Remove previously unmatched participant from datastore
-      participantDatastore.removeParticipant(match.getSecondParticipantUsername());
+      // Update currParticipant entity with new currentMatchId and null availability
+      Participant currParticipant =
+          participantDatastore.getParticipantFromUsername(match.getSecondParticipantUsername());
+      currParticipant.setCurrentMatchId(matchId);
+      currParticipant.setStartTimeAvailable(null);
+      currParticipant.setEndTimeAvailable(null);
+      currParticipant.setDuration(0);
+      participantDatastore.addParticipant(currParticipant);
+
+      // Update newParticipant entity with new currentMatchId and null availability
+      newParticipant.setCurrentMatchId(matchId);
+      newParticipant.setStartTimeAvailable(null);
+      newParticipant.setEndTimeAvailable(null);
+      newParticipant.setDuration(0);
+      participantDatastore.addParticipant(newParticipant);
     } else {
       // Match not found, add participant to datastore
       participantDatastore.addParticipant(newParticipant);

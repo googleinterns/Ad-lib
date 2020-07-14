@@ -49,44 +49,50 @@ public class AddParticipantServlet extends HttpServlet {
   private static final String KEY_PARTICIPANT = "Participant";
   private static final String KEY_MATCH = "Match";
   private static final String PROPERTY_USERNAME = "username";
-  private static final String PROPERTY_STARTTIMEAVAILABLE = "startTimeAvailable";
-  private static final String PROPERTY_ENDTIMEAVAILABLE = "endTimeAvailable";
+  private static final String PROPERTY_START_TIME_AVAILABLE = "startTimeAvailable";
+  private static final String PROPERTY_END_TIME_AVAILABLE = "endTimeAvailable";
   private static final String PROPERTY_DURATION = "duration";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
-  private static final String PROPERTY_FIRSTPARTICIPANT = "firstParticipant";
-  private static final String PROPERTY_SECONDPARTICIPANT = "secondParticipant";
+  private static final String PROPERTY_FIRST_PARTICIPANT = "firstParticipant";
+  private static final String PROPERTY_SECOND_PARTICIPANT = "secondParticipant";
 
   // HTTP Request JSON key constants
-  private static final String JSON_TIMEAVAILABLEUNTIL = "timeAvailableUntil";
-  private static final String JSON_DURATION = "duration";
-  private static final String JSON_ROLE = "role";
-  private static final String JSON_PRODUCTAREA = "productArea";
-  private static final String JSON_SAVEPREFERENCE = "savePreference";
-  private static final String JSON_MATCHPREFERENCE = "matchPreference";
+  private static final String REQUEST_FORM_DETAILS = "formDetails";
+  private static final String REQUEST_TIME_AVAILABLE_UNTIL = "timeAvailableUntil";
+  private static final String REQUEST_DURATION = "duration";
+  private static final String REQUEST_ROLE = "role";
+  private static final String REQUEST_PRODUCT_AREA = "productArea";
+  private static final String REQUEST_SAVE_PREFERENCE = "savePreference";
+  private static final String REQUEST_MATCH_PREFERENCE = "matchPreference";
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    JSONObject formDetails = retrieveRequestBody(request, response).getJSONObject("formDetails");
+    JSONObject obj = retrieveRequestBody(request);
+    if (obj == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not read request body");
+      return;
+    }
+    JSONObject formDetails = obj.getJSONObject(REQUEST_FORM_DETAILS);
 
     // Retrieve the timeAvailableUntil input and convert to a UTC ZonedDateTime
-    long timeAvailableUntil = formDetails.getLong(JSON_TIMEAVAILABLEUNTIL);
+    long timeAvailableUntil = formDetails.getLong(REQUEST_TIME_AVAILABLE_UNTIL);
     ZoneId zoneId = ZoneId.of("UTC");
     ZonedDateTime startTimeAvailable = ZonedDateTime.now(Clock.systemUTC());
     ZonedDateTime endTimeAvailable =
         ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeAvailableUntil), zoneId);
 
-    int duration = formDetails.getInt(JSON_DURATION);
+    int duration = formDetails.getInt(REQUEST_DURATION);
     if (duration <= 0) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
       return;
     }
 
-    String role = formDetails.getString(JSON_ROLE);
-    String productArea = formDetails.getString(JSON_PRODUCTAREA);
-    boolean savePreference = formDetails.getBoolean(JSON_SAVEPREFERENCE);
-    String matchPreference = formDetails.getString(JSON_MATCHPREFERENCE);
+    String role = formDetails.getString(REQUEST_ROLE);
+    String productArea = formDetails.getString(REQUEST_PRODUCT_AREA);
+    boolean savePreference = formDetails.getBoolean(REQUEST_SAVE_PREFERENCE);
+    String matchPreference = formDetails.getString(REQUEST_MATCH_PREFERENCE);
 
-    Long timestamp = System.currentTimeMillis();
+    long timestamp = System.currentTimeMillis();
 
     // Retrieve user email address via Users API and parse for ldap
     UserService userService = UserServiceFactory.getUserService();
@@ -116,8 +122,8 @@ public class AddParticipantServlet extends HttpServlet {
       // Match not found, insert participant entity into datastore
       Entity participantEntity = new Entity(KEY_PARTICIPANT);
       participantEntity.setProperty(PROPERTY_USERNAME, username);
-      participantEntity.setProperty(PROPERTY_STARTTIMEAVAILABLE, startTimeAvailable.toString());
-      participantEntity.setProperty(PROPERTY_ENDTIMEAVAILABLE, endTimeAvailable.toString());
+      participantEntity.setProperty(PROPERTY_START_TIME_AVAILABLE, startTimeAvailable.toString());
+      participantEntity.setProperty(PROPERTY_END_TIME_AVAILABLE, endTimeAvailable.toString());
       participantEntity.setProperty(PROPERTY_DURATION, duration);
       participantEntity.setProperty(PROPERTY_TIMESTAMP, timestamp);
       datastore.put(participantEntity);
@@ -127,8 +133,7 @@ public class AddParticipantServlet extends HttpServlet {
     response.getWriter().println("Received form input details!");
   }
 
-  private JSONObject retrieveRequestBody(HttpServletRequest request, HttpServletResponse response)
-      throws IOException {
+  private JSONObject retrieveRequestBody(HttpServletRequest request) throws IOException {
     StringBuilder requestBuffer = new StringBuilder();
     try {
       BufferedReader reader = request.getReader();
@@ -137,7 +142,7 @@ public class AddParticipantServlet extends HttpServlet {
         requestBuffer.append(currentLine);
       }
     } catch (IOException e) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not read request body");
+      return null;
     }
     return new JSONObject(requestBuffer.toString());
   }
@@ -155,13 +160,13 @@ public class AddParticipantServlet extends HttpServlet {
     for (Entity entity : results.asIterable()) {
       long id = (long) entity.getKey().getId();
       String username = (String) entity.getProperty(PROPERTY_USERNAME);
-      String startTimeAvailableString = (String) entity.getProperty(PROPERTY_STARTTIMEAVAILABLE);
+      String startTimeAvailableString = (String) entity.getProperty(PROPERTY_START_TIME_AVAILABLE);
       ZonedDateTime startTimeAvailable =
           (ZonedDateTime) ZonedDateTime.parse(startTimeAvailableString);
-      String endTimeAvailableString = (String) entity.getProperty(PROPERTY_ENDTIMEAVAILABLE);
+      String endTimeAvailableString = (String) entity.getProperty(PROPERTY_END_TIME_AVAILABLE);
       ZonedDateTime endTimeAvailable = (ZonedDateTime) ZonedDateTime.parse(endTimeAvailableString);
       int duration = ((Long) entity.getProperty(PROPERTY_DURATION)).intValue();
-      Long timestamp = (Long) entity.getProperty(PROPERTY_TIMESTAMP);
+      long timestamp = (long) entity.getProperty(PROPERTY_TIMESTAMP);
       Participant currParticipant =
           new Participant(id, username, startTimeAvailable, endTimeAvailable, duration, timestamp);
       participants.add(currParticipant);
@@ -173,8 +178,8 @@ public class AddParticipantServlet extends HttpServlet {
   private void addMatchToDatastore(Match match, DatastoreService datastore) {
     // Set properties of entity
     Entity matchEntity = new Entity(KEY_MATCH);
-    matchEntity.setProperty(PROPERTY_FIRSTPARTICIPANT, match.getFirstParticipant());
-    matchEntity.setProperty(PROPERTY_SECONDPARTICIPANT, match.getSecondParticipant());
+    matchEntity.setProperty(PROPERTY_FIRST_PARTICIPANT, match.getFirstParticipant());
+    matchEntity.setProperty(PROPERTY_SECOND_PARTICIPANT, match.getSecondParticipant());
     matchEntity.setProperty(PROPERTY_DURATION, match.getDuration());
     matchEntity.setProperty(PROPERTY_TIMESTAMP, match.getTimestamp());
 

@@ -56,39 +56,35 @@ public class AddParticipantServlet extends HttpServlet {
   private static final String PROPERTY_FIRSTPARTICIPANT = "firstParticipant";
   private static final String PROPERTY_SECONDPARTICIPANT = "secondParticipant";
 
+  // HTTP Request JSON key constants
+  private static final String KEY_TIMEAVAILABLEUNTIL = "timeAvailableUntil";
+  private static final String KEY_DURATION = "duration";
+  private static final String KEY_ROLE = "role";
+  private static final String KEY_PRODUCTAREA = "productArea";
+  private static final String KEY_SAVEPREFERENCE = "savePreference";
+  private static final String KEY_MATCHPREFERENCE = "matchPreference";
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-    // Retrieve body of HTTP request
-    StringBuffer requestBuffer = new StringBuffer();
-    try {
-      BufferedReader reader = request.getReader();
-      String currentLine;
-      while ((currentLine = reader.readLine()) != null) {
-        requestBuffer.append(currentLine);
-      }
-    } catch (Exception e) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not read request body");
-    }
-    JSONObject obj = new JSONObject(requestBuffer.toString());
+    JSONObject formDetails = retrieveRequestBody(request, response).getJSONObject("formDetails");
 
     // Retrieve the timeAvailableUntil input and convert to a UTC ZonedDateTime
-    long timeAvailableUntil = obj.getJSONObject("formDetails").getLong("timeAvailableUntil");
+    long timeAvailableUntil = formDetails.getLong(KEY_TIMEAVAILABLEUNTIL);
     ZoneId zoneId = ZoneId.of("UTC");
     ZonedDateTime startTimeAvailable = ZonedDateTime.now(Clock.systemUTC());
     ZonedDateTime endTimeAvailable =
         ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeAvailableUntil), zoneId);
 
-    int duration = obj.getJSONObject("formDetails").getInt("duration");
+    int duration = formDetails.getInt(KEY_DURATION);
     if (duration <= 0) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
       return;
     }
 
-    String role = obj.getJSONObject("formDetails").getString("role");
-    String productArea = obj.getJSONObject("formDetails").getString("productArea");
-    boolean savePreference = obj.getJSONObject("formDetails").getBoolean("savePreference");
-    String matchPreference = obj.getJSONObject("formDetails").getString("matchPreference");
+    String role = formDetails.getString(KEY_ROLE);
+    String productArea = formDetails.getString(KEY_PRODUCTAREA);
+    boolean savePreference = formDetails.getBoolean(KEY_SAVEPREFERENCE);
+    String matchPreference = formDetails.getString(KEY_MATCHPREFERENCE);
 
     Long timestamp = System.currentTimeMillis();
 
@@ -128,7 +124,22 @@ public class AddParticipantServlet extends HttpServlet {
     }
 
     response.setContentType("text/plain;charset=UTF-8");
-    response.getWriter().println("Recieved form input details!");
+    response.getWriter().println("Received form input details!");
+  }
+
+  private JSONObject retrieveRequestBody(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    StringBuilder requestBuffer = new StringBuilder();
+    try {
+      BufferedReader reader = request.getReader();
+      String currentLine;
+      while ((currentLine = reader.readLine()) != null) {
+        requestBuffer.append(currentLine);
+      }
+    } catch (IOException e) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not read request body");
+    }
+    return new JSONObject(requestBuffer.toString());
   }
 
   /** Return list of current participants from datastore */

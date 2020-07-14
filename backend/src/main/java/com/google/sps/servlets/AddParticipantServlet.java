@@ -91,17 +91,13 @@ public class AddParticipantServlet extends HttpServlet {
     String productArea = formDetails.getString(REQUEST_PRODUCT_AREA);
     boolean savePreference = formDetails.getBoolean(REQUEST_SAVE_PREFERENCE);
     String matchPreference = formDetails.getString(REQUEST_MATCH_PREFERENCE);
-
     long timestamp = System.currentTimeMillis();
 
-    // Retrieve user email address via Users API and parse for ldap
-    UserService userService = UserServiceFactory.getUserService();
-    String email = userService.getCurrentUser().getEmail();
-    if (email == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid email.");
+    String username = getUsername();
+    if (username == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not retrieve email.");
       return;
     }
-    String username = email.split("@")[0];
 
     // id is irrelevant, only relevant when getting from datastore
     Participant newParticipant =
@@ -119,20 +115,14 @@ public class AddParticipantServlet extends HttpServlet {
       addMatchToDatastore(match, datastore);
       deleteParticipantFromDatastore(match.getSecondParticipant(), datastore);
     } else {
-      // Match not found, insert participant entity into datastore
-      Entity participantEntity = new Entity(KEY_PARTICIPANT);
-      participantEntity.setProperty(PROPERTY_USERNAME, username);
-      participantEntity.setProperty(PROPERTY_START_TIME_AVAILABLE, startTimeAvailable.toString());
-      participantEntity.setProperty(PROPERTY_END_TIME_AVAILABLE, endTimeAvailable.toString());
-      participantEntity.setProperty(PROPERTY_DURATION, duration);
-      participantEntity.setProperty(PROPERTY_TIMESTAMP, timestamp);
-      datastore.put(participantEntity);
+      datastore.put(addParticipantEntityToDatastore(newParticipant));
     }
 
     response.setContentType("text/plain;charset=UTF-8");
     response.getWriter().println("Received form input details!");
   }
 
+  /** Retrieve JSON body payload and convert to a JSONObject for parsing purposes */
   private JSONObject retrieveRequestBody(HttpServletRequest request) throws IOException {
     StringBuilder requestBuffer = new StringBuilder();
     try {
@@ -145,6 +135,26 @@ public class AddParticipantServlet extends HttpServlet {
       return null;
     }
     return new JSONObject(requestBuffer.toString());
+  }
+
+  /** Retrieve user email address via Users API and parse for username */
+  private String getUsername() {
+    UserService userService = UserServiceFactory.getUserService();
+    String email = userService.getCurrentUser().getEmail();
+    return email != null ? email.split("@")[0] : null;
+  }
+
+  /* Convert Participant into an Entity compatible for datastore purposes */
+  private Entity addParticipantEntityToDatastore(Participant participant) {
+    Entity participantEntity = new Entity(KEY_PARTICIPANT);
+    participantEntity.setProperty(PROPERTY_USERNAME, participant.getUsername());
+    participantEntity.setProperty(
+        PROPERTY_START_TIME_AVAILABLE, participant.getStartTimeAvailable().toString());
+    participantEntity.setProperty(
+        PROPERTY_END_TIME_AVAILABLE, participant.getEndTimeAvailable().toString());
+    participantEntity.setProperty(PROPERTY_DURATION, participant.getDuration());
+    participantEntity.setProperty(PROPERTY_TIMESTAMP, participant.getTimestamp());
+    return participantEntity;
   }
 
   /** Return list of current participants from datastore */

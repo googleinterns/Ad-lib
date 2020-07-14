@@ -57,7 +57,7 @@ public class AddParticipantServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Request parameter values
-    // TODO: Check input values are filled (before allowing to submit)
+    // TODO(#27): Check input values are filled (before allowing to submit)
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     if (email == null) {

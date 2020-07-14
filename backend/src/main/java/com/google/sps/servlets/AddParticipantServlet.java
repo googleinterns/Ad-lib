@@ -57,34 +57,34 @@ public class AddParticipantServlet extends HttpServlet {
   private static final String PROPERTY_SECONDPARTICIPANT = "secondParticipant";
 
   // HTTP Request JSON key constants
-  private static final String KEY_TIMEAVAILABLEUNTIL = "timeAvailableUntil";
-  private static final String KEY_DURATION = "duration";
-  private static final String KEY_ROLE = "role";
-  private static final String KEY_PRODUCTAREA = "productArea";
-  private static final String KEY_SAVEPREFERENCE = "savePreference";
-  private static final String KEY_MATCHPREFERENCE = "matchPreference";
+  private static final String JSON_TIMEAVAILABLEUNTIL = "timeAvailableUntil";
+  private static final String JSON_DURATION = "duration";
+  private static final String JSON_ROLE = "role";
+  private static final String JSON_PRODUCTAREA = "productArea";
+  private static final String JSON_SAVEPREFERENCE = "savePreference";
+  private static final String JSON_MATCHPREFERENCE = "matchPreference";
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     JSONObject formDetails = retrieveRequestBody(request, response).getJSONObject("formDetails");
 
     // Retrieve the timeAvailableUntil input and convert to a UTC ZonedDateTime
-    long timeAvailableUntil = formDetails.getLong(KEY_TIMEAVAILABLEUNTIL);
+    long timeAvailableUntil = formDetails.getLong(JSON_TIMEAVAILABLEUNTIL);
     ZoneId zoneId = ZoneId.of("UTC");
     ZonedDateTime startTimeAvailable = ZonedDateTime.now(Clock.systemUTC());
     ZonedDateTime endTimeAvailable =
         ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeAvailableUntil), zoneId);
 
-    int duration = formDetails.getInt(KEY_DURATION);
+    int duration = formDetails.getInt(JSON_DURATION);
     if (duration <= 0) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
       return;
     }
 
-    String role = formDetails.getString(KEY_ROLE);
-    String productArea = formDetails.getString(KEY_PRODUCTAREA);
-    boolean savePreference = formDetails.getBoolean(KEY_SAVEPREFERENCE);
-    String matchPreference = formDetails.getString(KEY_MATCHPREFERENCE);
+    String role = formDetails.getString(JSON_ROLE);
+    String productArea = formDetails.getString(JSON_PRODUCTAREA);
+    boolean savePreference = formDetails.getBoolean(JSON_SAVEPREFERENCE);
+    String matchPreference = formDetails.getString(JSON_MATCHPREFERENCE);
 
     Long timestamp = System.currentTimeMillis();
 

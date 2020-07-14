@@ -1,5 +1,6 @@
 package com.google.sps.data;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import java.time.ZonedDateTime;
 
@@ -77,5 +78,16 @@ public final class Participant {
 
   public long getTimestamp() {
     return timestamp;
+  }
+
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("username", username)
+        .add("startTimeAvailable", startTimeAvailable)
+        .add("endTimeAvailable", endTimeAvailable)
+        .add("duration", duration)
+        .add("currentMatchId", currentMatchId)
+        .add("timestamp", timestamp)
+        .toString();
   }
 }

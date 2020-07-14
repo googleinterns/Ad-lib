@@ -46,12 +46,6 @@ public final class UserDatastore {
     }
   }
 
-  /** Return User from username, or null if user with username not in datastore */
-  @Nullable
-  public User getUserFromUsername(String username) {
-    return getUserFromEntity(getEntityFromUsername(username));
-  }
-
   /** Return user object from datastore user entity, or null if entity is null */
   @Nullable
   private static User getUserFromEntity(Entity entity) {
@@ -67,6 +61,11 @@ public final class UserDatastore {
     return new User(id, username);
   }
 
+  /** Return User from username, or null if user with username not in datastore */
+  public User getUserFromUsername(String username) {
+    return getUserFromEntity(getEntityFromUsername(username));
+  }
+
   /** Return String representation of users for logging purposes */
   public String toString() {
     StringBuilder sb = new StringBuilder();
@@ -74,7 +73,7 @@ public final class UserDatastore {
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
       User user = getUserFromEntity(entity);
-      sb.append("username=" + user.getUsername());
+      sb.append("username=" + user.getUsername() + "\n");
     }
     return sb.toString();
   }

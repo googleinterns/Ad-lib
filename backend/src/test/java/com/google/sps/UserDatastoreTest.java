@@ -94,18 +94,15 @@ public final class UserDatastoreTest {
   }
 
   @Test
-  public void addGetTwoUsers() {
-    // Add two users to datastore, return user from username
+  public void addGetOneUser() {
+    // Add one user to datastore, return user from username
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserDatastore userDatastore = new UserDatastore(datastore);
     User userA = new User(ID_DEFAULT, PERSON_A);
-    User userB = new User(ID_DEFAULT, PERSON_B);
 
     userDatastore.addUser(userA);
-    userDatastore.addUser(userB);
 
     assertThat(userDatastore.getUserFromUsername(PERSON_A).getUsername()).isEqualTo(PERSON_A);
-    assertThat(userDatastore.getUserFromUsername(PERSON_B).getUsername()).isEqualTo(PERSON_B);
   }
 
   @Test

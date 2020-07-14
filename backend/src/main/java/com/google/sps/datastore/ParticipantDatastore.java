@@ -16,6 +16,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /** Separates datastore method calls involving Participant type from caller */
@@ -63,7 +64,7 @@ public final class ParticipantDatastore {
 
   /** Return Participant Entity from username, or null if entity is not found */
   @Nullable
-  private Entity getEntityFromUsername(String username) {
+  private Entity getEntity(String username) {
     Key participantKey = KeyFactory.createKey(KIND_PARTICIPANT, username);
     try {
       return datastore.get(participantKey);
@@ -75,16 +76,16 @@ public final class ParticipantDatastore {
   /** Return Participant from username, or null if participant with username not in datastore */
   @Nullable
   public Participant getParticipantFromUsername(String username) {
-    return getParticipantFromEntity(getEntityFromUsername(username));
+    Entity entity = getEntity(username);
+    if (entity == null) {
+      return null;
+    }
+    return getParticipantFromEntity(entity);
   }
 
   /** Return participant object from datastore participant entity, or null if entity is null */
   @Nullable
-  private static Participant getParticipantFromEntity(Entity entity) {
-    if (entity == null) {
-      return null;
-    }
-
+  private static Participant getParticipantFromEntity(@Nonnull Entity entity) {
     // Get entity properties
     String username = (String) entity.getProperty(PROPERTY_USERNAME);
     ZonedDateTime startTimeAvailable =

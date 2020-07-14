@@ -65,6 +65,7 @@ public final class UserDatastoreTest {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserDatastore userDatastore = new UserDatastore(datastore);
     User userA = new User(ID_DEFAULT, PERSON_A);
+
     userDatastore.addUser(userA);
 
     Key keyA = KeyFactory.createKey(KIND_USER, PERSON_A);
@@ -82,6 +83,7 @@ public final class UserDatastoreTest {
 
     userDatastore.addUser(userA);
     userDatastore.addUser(userB);
+
     Key keyA = KeyFactory.createKey(KIND_USER, PERSON_A);
     Key keyB = KeyFactory.createKey(KIND_USER, PERSON_B);
     Entity entityA = datastore.get(keyA);
@@ -97,6 +99,7 @@ public final class UserDatastoreTest {
     UserDatastore userDatastore = new UserDatastore(datastore);
     User userA = new User(ID_DEFAULT, PERSON_A);
     User userB = new User(ID_DEFAULT, PERSON_B);
+
     userDatastore.addUser(userA);
     userDatastore.addUser(userB);
 

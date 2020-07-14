@@ -84,9 +84,9 @@ public class SearchMatchServlet extends HttpServlet {
         return;
       }
 
-      // Reset matchId to indicate returned match
-      participant.setCurrentMatchId(0);
-      participantDatastore.addParticipant(participant);
+      // Remove matched participants from datastore
+      participantDatastore.removeParticipant(match.getFirstParticipantUsername());
+      participantDatastore.removeParticipant(match.getSecondParticipantUsername());
 
       JSONObject matchExists = new JSONObject();
       matchExists.put(JSON_MATCHSTATUS, "true");

@@ -71,7 +71,7 @@ public final class UserDatastore {
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
       User user = getUserFromEntity(entity);
-      sb.append("username=" + user.getUsername() + "\n");
+      sb.append(user.toString());
     }
     return sb.toString();
   }

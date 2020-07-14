@@ -22,4 +22,8 @@ public final class User {
   public String getUsername() {
     return username;
   }
+
+  public String toString() {
+    return "username=" + username + "\n";
+  }
 }

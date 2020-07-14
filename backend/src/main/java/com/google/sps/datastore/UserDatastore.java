@@ -8,6 +8,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.sps.data.User;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /** Separates datastore method calls involving User type from caller */
@@ -37,7 +38,7 @@ public final class UserDatastore {
 
   /** Return User Entity from username, or null if entity is not found */
   @Nullable
-  private Entity getEntityFromUsername(String username) {
+  private Entity getEntity(String username) {
     Key userKey = KeyFactory.createKey(KIND_USER, username);
     try {
       return datastore.get(userKey);
@@ -48,7 +49,7 @@ public final class UserDatastore {
 
   /** Return user object from datastore user entity, or null if entity is null */
   @Nullable
-  private static User getUserFromEntity(Entity entity) {
+  private static User getUserFromEntity(@Nonnull Entity entity) {
     if (entity == null) {
       return null;
     }
@@ -63,7 +64,7 @@ public final class UserDatastore {
 
   /** Return User from username, or null if user with username not in datastore */
   public User getUserFromUsername(String username) {
-    return getUserFromEntity(getEntityFromUsername(username));
+    return getUserFromEntity(getEntity(username));
   }
 
   /** Return String representation of users for logging purposes */

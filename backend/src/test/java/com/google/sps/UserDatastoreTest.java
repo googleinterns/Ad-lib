@@ -54,12 +54,9 @@ public final class UserDatastoreTest {
   @Test
   public void addOneUser() {
     // Add one user to datastore
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserDatastore userDatastore = new UserDatastore(datastore);
-
     User userA = new User(ID_DEFAULT, PERSON_A);
-
     userDatastore.addUser(userA);
 
     String expected = "username=" + PERSON_A + "\n";
@@ -69,13 +66,10 @@ public final class UserDatastoreTest {
   @Test
   public void addTwoUsers() {
     // Add two users to datastore
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserDatastore userDatastore = new UserDatastore(datastore);
-
     User userA = new User(ID_DEFAULT, PERSON_A);
     User userB = new User(ID_DEFAULT, PERSON_B);
-
     userDatastore.addUser(userA);
     userDatastore.addUser(userB);
 
@@ -86,13 +80,10 @@ public final class UserDatastoreTest {
   @Test
   public void addGetTwoUsers() {
     // Add two users to datastore, return user from username
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserDatastore userDatastore = new UserDatastore(datastore);
-
     User userA = new User(ID_DEFAULT, PERSON_A);
     User userB = new User(ID_DEFAULT, PERSON_B);
-
     userDatastore.addUser(userA);
     userDatastore.addUser(userB);
 
@@ -103,10 +94,9 @@ public final class UserDatastoreTest {
   @Test
   public void getNonexistentUser() {
     // Try to get user from username that's not in datastore
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserDatastore userDatastore = new UserDatastore(datastore);
 
-    assertThat(userDatastore.getUserFromUsername(PERSON_A)).isEqualTo(null);
+    assertThat(userDatastore.getUserFromUsername(PERSON_A)).isNull();
   }
 }

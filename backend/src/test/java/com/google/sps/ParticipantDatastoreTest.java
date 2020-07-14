@@ -193,7 +193,7 @@ public final class ParticipantDatastoreTest {
   }
 
   @Test
-  public void getNonexistentParticipant() throws EntityNotFoundException {
+  public void getNonexistentParticipant() {
     // Try to get participant from username that's not in datastore
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -205,6 +205,27 @@ public final class ParticipantDatastoreTest {
             DURATION_DEFAULT,
             CURRENTMATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);
+
+    Participant participantFromUsername = participantDatastore.getParticipantFromUsername(PERSON_A);
+    assertThat(participantFromUsername).isNull();
+  }
+
+  @Test
+  public void removeParticipant() {
+    // Add and then remove participant from datastore
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
+    Participant participant =
+        new Participant(
+            PERSON_A,
+            STARTTIMEAVAILABLE_DEFAULT,
+            ENDTIMEAVAILABLE_DEFAULT,
+            DURATION_DEFAULT,
+            CURRENTMATCHID_DEFAULT,
+            TIMESTAMP_DEFAULT);
+
+    participantDatastore.addParticipant(participant);
+    participantDatastore.removeParticipant(participant.getUsername());
 
     Participant participantFromUsername = participantDatastore.getParticipantFromUsername(PERSON_A);
     assertThat(participantFromUsername).isNull();

@@ -1,5 +1,7 @@
 package com.google.sps.data;
 
+import com.google.common.base.MoreObjects;
+
 /** A match between two participants. */
 public final class Match {
 
@@ -46,5 +48,15 @@ public final class Match {
 
   public long getTimestamp() {
     return timestamp;
+  }
+
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("id", id)
+        .add("firstParticipantUsername", firstParticipantUsername)
+        .add("secondParticipantUsername", secondParticipantUsername)
+        .add("duration", duration)
+        .add("timestamp", timestamp)
+        .toString();
   }
 }

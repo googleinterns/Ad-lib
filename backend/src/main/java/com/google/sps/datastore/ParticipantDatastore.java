@@ -119,6 +119,12 @@ public final class ParticipantDatastore {
     return participants;
   }
 
+  /** Remove Participant from datastore */
+  public void removeParticipant(String username) {
+    Key participantKey = KeyFactory.createKey(KIND_PARTICIPANT, username);
+    datastore.delete(participantKey);
+  }
+
   /** Return String representation of participants for logging purposes */
   public String toString() {
     StringBuilder sb = new StringBuilder();

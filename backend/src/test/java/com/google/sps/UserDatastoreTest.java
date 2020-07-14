@@ -107,7 +107,7 @@ public final class UserDatastoreTest {
     assertThat(userDatastore.getUserFromUsername(PERSON_B).getUsername()).isEqualTo(PERSON_B);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void getNonexistentUser() {
     // Try to get user from username that's not in datastore
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

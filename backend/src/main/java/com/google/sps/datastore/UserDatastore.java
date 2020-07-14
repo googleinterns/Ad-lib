@@ -50,7 +50,6 @@ public final class UserDatastore {
   /** Return user object from datastore user entity, or null if entity is null */
   @Nullable
   private static User getUserFromEntity(@Nonnull Entity entity) {
-
     // Get entity properties
     long id = (long) entity.getKey().getId();
     String username = (String) entity.getProperty(PROPERTY_USERNAME);
@@ -61,7 +60,11 @@ public final class UserDatastore {
 
   /** Return User from username, or null if user with username not in datastore */
   public User getUserFromUsername(String username) {
-    return getUserFromEntity(getEntity(username));
+    Entity entity = getEntity(username);
+    if (entity == null) {
+      return null;
+    }
+    return getUserFromEntity(entity);
   }
 
   /** Return String representation of users for logging purposes */

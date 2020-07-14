@@ -1,5 +1,7 @@
 package com.google.sps.data;
 
+import com.google.common.base.MoreObjects;
+
 /** A user with saved preferences. */
 public final class User {
 
@@ -24,6 +26,6 @@ public final class User {
   }
 
   public String toString() {
-    return "username=" + username + "\n";
+    return MoreObjects.toStringHelper(this).add("id", id).add("username", username).toString();
   }
 }

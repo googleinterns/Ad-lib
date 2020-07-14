@@ -5,8 +5,6 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
 import com.google.sps.data.User;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -59,23 +57,12 @@ public final class UserDatastore {
   }
 
   /** Return User from username, or null if user with username not in datastore */
+  @Nullable
   public User getUserFromUsername(String username) {
     Entity entity = getEntity(username);
     if (entity == null) {
       return null;
     }
     return getUserFromEntity(entity);
-  }
-
-  /** Return String representation of users for logging purposes */
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    Query query = new Query(KIND_USER);
-    PreparedQuery results = datastore.prepare(query);
-    for (Entity entity : results.asIterable()) {
-      User user = getUserFromEntity(entity);
-      sb.append(user.toString());
-    }
-    return sb.toString();
   }
 }

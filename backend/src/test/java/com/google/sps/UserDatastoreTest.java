@@ -49,6 +49,7 @@ public final class UserDatastoreTest {
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
+  // TODO(#37): Find/write JUnit rule to encapsulate setUp() and tearDown()
   @Before
   public void setUp() {
     helper.setUp();

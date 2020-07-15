@@ -125,7 +125,7 @@ export default function Form() {
       <div className={classes.flexEndDiv}>
         <Checkbox onChange={(value) => setSavePreference(value)} />
         <div className={classes.flexEndDiv}>
-          <Button id="submit-button" variant="contained" color="primary"
+          <Button variant="contained" color="primary"
             onClick={handleFormSubmission}>
             Submit
           </Button>

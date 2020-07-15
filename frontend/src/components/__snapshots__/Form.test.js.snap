@@ -563,7 +563,6 @@ exports[`Form should render correctly accounting for varying times and timezones
       <button
         className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
         disabled={false}
-        id="submit-button"
         onBlur={[Function]}
         onClick={[Function]}
         onDragLeave={[Function]}

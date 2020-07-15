@@ -644,7 +644,6 @@ exports[`App should render correctly 1`] = `
             <button
               className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
               disabled={false}
-              id="submit-button"
               onBlur={[Function]}
               onClick={[Function]}
               onDragLeave={[Function]}

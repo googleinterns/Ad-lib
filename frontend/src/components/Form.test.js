@@ -3,7 +3,6 @@ import Form from './Form';
 import renderer from 'react-test-renderer';
 import axios from 'axios';
 import mockAxios from 'axios';
-import {shallow} from 'enzyme';
 
 beforeAll(() => {
   const DATE_TO_USE = new Date('2020');

@@ -57,20 +57,27 @@ export default function Form() {
   const [savePreference, setSavePreference] = React.useState(true);
   const [matchPreference, setMatchPreference] = React.useState('none');
 
+  function validateFormInputs() {
+    const currentTimeInMilliseconds = new Date().getTime();
+    const durationInMilliseconds = duration * 60000;
+    if (productArea === '' || role === '') {
+      alert("Please select options for all form fields to submit!");
+      return false;
+    } else if (currentTimeInMilliseconds + durationInMilliseconds
+        >= timeAvailableUntil.getTime()) {
+      // Check if a meeting is possible with the provided inputs
+      alert("Please select an larger time availability window");
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   /** Gather user inputs from form and send POST request to backend
     * @param {Event} event
    */
   function handleFormSubmission(event) {
-    // TODO(#34): Validate input values (before allowing to submit)
-    const currentTime = new Date();
-    const durationInMilliseconds = duration * 60000;
-    if (productArea === '' || role === '') {
-      alert("Please select options for all form fields to submit!");
-    } else if (currentTime.getTime() + durationInMilliseconds
-        < timeAvailableUntil.getTime()) {
-      // Check if a meeting is possible with the provided inputs
-      alert("Please select an larger time availability window");
-    } else {
+    if (validateFormInputs()) {
       // Override browser's default behvaior to execute POST request
       event.preventDefault();
 
@@ -92,7 +99,7 @@ export default function Form() {
               alert('Successful');
             }
           });
-      }
+    }
   }
 
   return (

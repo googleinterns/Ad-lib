@@ -1,4 +1,4 @@
-name: Frontend Continuous Integration
+name: Frontend CI
 
 on: [pull_request]
 
@@ -23,3 +23,5 @@ jobs:
         yarn
         yarn build
         yarn test
+        env:
+          CI: true  

@@ -62,28 +62,37 @@ export default function Form() {
    */
   function handleFormSubmission(event) {
     // TODO(#34): Validate input values (before allowing to submit)
+    const currentTime = new Date();
+    const durationInMilliseconds = duration * 60000;
+    if (productArea === '' || role === '') {
+      alert("Please select options for all form fields to submit!");
+    } else if (currentTime.getTime() + durationInMilliseconds
+        < timeAvailableUntil.getTime()) {
+      // Check if a meeting is possible with the provided inputs
+      alert("Please select an larger time availability window");
+    } else {
+      // Override browser's default behvaior to execute POST request
+      event.preventDefault();
 
-    // Override browser's default behvaior to execute POST request
-    event.preventDefault();
+      // Gather all form inputs into one object
+      const formDetails = {
+        timeAvailableUntil: timeAvailableUntil.getTime(),
+        duration: duration,
+        role: role,
+        productArea: productArea,
+        matchPreference: matchPreference,
+        savePreference: savePreference,
+      };
 
-    // Gather all form inputs into one object
-    const formDetails = {
-      timeAvailableUntil: timeAvailableUntil.getTime(),
-      duration: duration,
-      role: role,
-      productArea: productArea,
-      matchPreference: matchPreference,
-      savePreference: savePreference,
-    };
-
-    // Send form details to AddParticipantServlet and alert user on success
-    axios.post('/api/v1/add-participant', {formDetails})
-        .then((response) => {
-          if (response.data != null) {
-            // TODO(#33): change alert to a redirection to the loading page view
-            alert('Successful');
-          }
-        });
+      // Send form details to AddParticipantServlet and alert user on success
+      axios.post('/api/v1/add-participant', {formDetails})
+          .then((response) => {
+            if (response.data != null) {
+              // TODO(#33): change alert to a redirection to the loading page view
+              alert('Successful');
+            }
+          });
+      }
   }
 
   return (

@@ -4,7 +4,6 @@ on: [pull_request]
 
 jobs:
   frontend-ci:
-    name: Build and Test Frontend
     runs-on: ubuntu-latest
 
     steps:

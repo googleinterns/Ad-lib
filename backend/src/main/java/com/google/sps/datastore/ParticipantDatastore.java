@@ -42,20 +42,10 @@ public final class ParticipantDatastore {
     this.datastore = datastore;
   }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> Replace update entity methods with just adding/overwriting
   /**
    * Put participant in datastore. Overwrite participant entity if participant with same username
    * already exists.
    */
-<<<<<<< HEAD
-=======
-  /** Put participant in datastore */
->>>>>>> Add null return types
-=======
->>>>>>> Replace update entity methods with just adding/overwriting
   public void addParticipant(Participant participant) {
     // Set properties of entity based on participant fields
     Entity participantEntity = new Entity(KIND_PARTICIPANT, participant.getUsername());
@@ -82,74 +72,11 @@ public final class ParticipantDatastore {
       return null;
     }
   }
-<<<<<<< HEAD
-  
-=======
 
-<<<<<<< HEAD
-  /**
-   * Update Participant entity with username with new matchId
-   *
-   * @return true if valid username (entity found), false if not
-   */
-  public boolean updateMatchId(String username, long matchId) {
-    Entity participantEntity = getEntityFromUsername(username);
-    if (participantEntity == null) {
-      return false;
-    }
-
-    participantEntity.setProperty(PROPERTY_CURRENTMATCHID, matchId);
-
-    // Overwrite existing entity in datastore
-    datastore.put(participantEntity);
-    return true;
-  }
-
-  /**
-   * Update Participant entity with nulled out availability fields
-   *
-   * @return true if valid username (entity found), false if not
-   */
-  public boolean nullAvailability(String username) {
-    Entity participantEntity = getEntityFromUsername(username);
-    if (participantEntity == null) {
-      return false;
-    }
-
-    // Null out availibility fields if not already
-    participantEntity.setProperty(PROPERTY_STARTTIMEAVAILABLE, null);
-    participantEntity.setProperty(PROPERTY_ENDTIMEAVAILABLE, null);
-    participantEntity.setProperty(PROPERTY_DURATION, 0);
-
-    // Overwrite existing entity in datastore
-    datastore.put(participantEntity);
-    return true;
-  }
-
->>>>>>> Add null return types
-=======
->>>>>>> Replace update entity methods with just adding/overwriting
   /** Return Participant from username, or null if participant with username not in datastore */
   @Nullable
   public Participant getParticipantFromUsername(String username) {
-<<<<<<< HEAD
-    return getParticipantFromEntity(getEntityFromUsername(username));
-  }
-
-  /** Return participant object from datastore participant entity, or null if entity is null */
-  @Nullable
-<<<<<<< HEAD
-<<<<<<< HEAD
-  private static Participant getParticipantFromEntity(Entity entity) {
-=======
-  private Participant getParticipantFromEntity(Entity entity) {
->>>>>>> Add null return types
-=======
-  private static Participant getParticipantFromEntity(Entity entity) {
->>>>>>> Replace update entity methods with just adding/overwriting
-=======
     Entity entity = getEntity(username);
->>>>>>> Add MatchDatastore and ParticipantDatastore tests
     if (entity == null) {
       return null;
     }
@@ -174,24 +101,6 @@ public final class ParticipantDatastore {
         username, startTimeAvailable, endTimeAvailable, duration, currentMatchId, timestamp);
   }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  /** Return list of all unmatched participants with same duration */
-  public List<Participant> getSameDurationParticipants(int duration) {
-    Query query = new Query(KIND_PARTICIPANT).addSort(PROPERTY_DURATION, SortDirection.ASCENDING);
-    // Create filter to get only participants with same duration
-    Filter sameDuration = new FilterPredicate(PROPERTY_DURATION, FilterOperator.EQUAL, duration);
-    query.setFilter(sameDuration);
-=======
-  /** Return list of all unmatched participants */
-  public List<Participant> getUnmatchedParticipants() {
-    Query query = new Query(KIND_PARTICIPANT).addSort(PROPERTY_DURATION, SortDirection.ASCENDING);
-
-    // Create filter to get all currently unmatched participants
-    Filter unmatched = new FilterPredicate(PROPERTY_DURATION, FilterOperator.GREATER_THAN, 0);
-    query.setFilter(unmatched);
->>>>>>> Add null return types
-=======
   /** Return list of all unmatched participants with same duration */
   public List<Participant> getSameDurationParticipants(int duration) {
     Query query = new Query(KIND_PARTICIPANT).addSort(PROPERTY_DURATION, SortDirection.ASCENDING);
@@ -199,7 +108,6 @@ public final class ParticipantDatastore {
     // Create filter to get only participants with same duration
     Filter sameDuration = new FilterPredicate(PROPERTY_DURATION, FilterOperator.EQUAL, duration);
     query.setFilter(sameDuration);
->>>>>>> Change so that only participants with same duration can be matched
 
     PreparedQuery results = datastore.prepare(query);
 
@@ -215,50 +123,5 @@ public final class ParticipantDatastore {
   public void removeParticipant(String username) {
     Key participantKey = KeyFactory.createKey(KIND_PARTICIPANT, username);
     datastore.delete(participantKey);
-  }
-
-  /** Return String representation of participants for logging purposes */
-<<<<<<< HEAD
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    Query query = new Query(KIND_PARTICIPANT);
-    PreparedQuery results = datastore.prepare(query);
-    for (Entity entity : results.asIterable()) {
-      Participant participant = getParticipantFromEntity(entity);
-      sb.append(
-          "username="
-              + participant.getUsername()
-              + ", endTimeAvailable="
-              + participant.getEndTimeAvailable()
-              + ", duration="
-              + participant.getDuration());
-    }
-    return sb.toString();
-  }
-
-  /** Remove Participant from datastore */
-  public void removeParticipant(String username) {
-    Key participantKey = KeyFactory.createKey(KIND_PARTICIPANT, username);
-    datastore.delete(participantKey);
-  }
-
-  /** Return String representation of participants */
-=======
->>>>>>> Add null return types
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    Query query = new Query(KIND_PARTICIPANT);
-    PreparedQuery results = datastore.prepare(query);
-    for (Entity entity : results.asIterable()) {
-      Participant participant = getParticipantFromEntity(entity);
-      sb.append(
-          "username="
-              + participant.getUsername()
-              + ", endTimeAvailable="
-              + participant.getEndTimeAvailable()
-              + ", duration="
-              + participant.getDuration());
-    }
-    return sb.toString();
   }
 }

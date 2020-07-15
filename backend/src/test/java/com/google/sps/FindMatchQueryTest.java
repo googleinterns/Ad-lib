@@ -22,7 +22,6 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
-import com.google.sps.datastore.MatchDatastore;
 import com.google.sps.datastore.ParticipantDatastore;
 import java.time.Clock;
 import java.time.ZoneId;
@@ -90,11 +89,6 @@ public final class FindMatchQueryTest {
 
     // Set "current" date to  1/1/2020 2:00pm ET
     clock = Clock.fixed(currentDateTimeET.toInstant(), currentDateTimeET.getZone());
-  }
-
-  @After
-  public void tearDown() {
-    helper.tearDown();
   }
 
   @After
@@ -398,7 +392,6 @@ public final class FindMatchQueryTest {
             DURATION_30_MINUTES,
             MATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
     participantDatastore.addParticipant(participantA);
@@ -431,7 +424,6 @@ public final class FindMatchQueryTest {
             DURATION_30_MINUTES,
             MATCHID_DEFAULT,
             TIMESTAMP_DEFAULT);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
     participantDatastore.addParticipant(participantA);

@@ -16,16 +16,14 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.FindMatchQuery;
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
-import java.io.BufferedReader;
 import com.google.sps.datastore.MatchDatastore;
 import com.google.sps.datastore.ParticipantDatastore;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
@@ -78,22 +76,6 @@ public class AddParticipantServlet extends HttpServlet {
         ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeAvailableUntil), zoneId);
 
     int duration = formDetails.getInt(REQUEST_DURATION);
-    String username = email.split("@")[0];
-
-    // Get and convert time availability parameters
-    String timezone = request.getParameter("timezone");
-    ZoneId zoneId = ZoneId.of(timezone); // TODO: convert input timezone to valid java ZoneId
-    ZonedDateTime startTimeAvailable =
-        ZonedDateTime.now(zoneId); // TODO: set to future time if not available now
-    ZonedDateTime endTimeAvailable = getEndTimeAvailableParameter(request, zoneId);
-
-    // Get duration parameter
-    int duration = getDurationParameter(request, response);
-    if (duration <= 0) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
-      return;
-    }
-
     String role = formDetails.getString(REQUEST_ROLE);
     String productArea = formDetails.getString(REQUEST_PRODUCT_AREA);
     boolean savePreference = formDetails.getBoolean(REQUEST_SAVE_PREFERENCE);
@@ -125,48 +107,10 @@ public class AddParticipantServlet extends HttpServlet {
     // Find immediate match if possible
     FindMatchQuery query = new FindMatchQuery(Clock.systemUTC(), participantDatastore);
     Match match = query.findMatch(newParticipant);
-<<<<<<< HEAD
-    // Add newParticipant to datastore
-    participantDatastore.addParticipant(newParticipant);
-=======
->>>>>>> Replace update entity methods with just adding/overwriting
 
     if (match != null) {
       // Match found, add to match datastore, update participant datastore
       long matchId = matchDatastore.addMatch(match);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-      String firstParticipantUsername = match.getFirstParticipantUsername();
-      String secondParticipantUsername = match.getSecondParticipantUsername();
-      // TODO: return true or false?
-      participantDatastore.updateMatchId(firstParticipantUsername, matchId);
-      participantDatastore.nullAvailability(firstParticipantUsername);
-      participantDatastore.updateMatchId(secondParticipantUsername, matchId);
-      participantDatastore.nullAvailability(secondParticipantUsername);
-=======
-
-      // Update currParticipant entity with new currentMatchId and null availability
-      Participant currParticipant =
-          participantDatastore.getParticipantFromUsername(match.getSecondParticipantUsername());
-      currParticipant.setCurrentMatchId(matchId);
-      currParticipant.setStartTimeAvailable(null);
-      currParticipant.setEndTimeAvailable(null);
-      currParticipant.setDuration(0);
-      participantDatastore.addParticipant(currParticipant);
-
-      // Update newParticipant entity with new currentMatchId and null availability
-      newParticipant.setCurrentMatchId(matchId);
-      newParticipant.setStartTimeAvailable(null);
-      newParticipant.setEndTimeAvailable(null);
-      newParticipant.setDuration(0);
-      participantDatastore.addParticipant(newParticipant);
-    } else {
-      // Match not found, add participant to datastore
-      participantDatastore.addParticipant(newParticipant);
->>>>>>> Replace update entity methods with just adding/overwriting
-    }
->>>>>>> Add null return types
 
       // Update currParticipant entity with new currentMatchId and null availability
       Participant currParticipant =
@@ -187,9 +131,6 @@ public class AddParticipantServlet extends HttpServlet {
       // Match not found, add participant to datastore
       participantDatastore.addParticipant(newParticipant);
     }
-
-    response.setContentType("text/plain;charset=UTF-8");
-    response.getWriter().println("Received form input details!");
   }
 
   /** Retrieve JSON body payload and convert to a JSONObject for parsing purposes */
@@ -212,18 +153,5 @@ public class AddParticipantServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     return email != null ? email.split("@")[0] : null;
-  }
-
-  /* Convert Participant into an Entity compatible for datastore purposes */
-  private Entity addParticipantEntityToDatastore(Participant participant) {
-    Entity participantEntity = new Entity(KEY_PARTICIPANT);
-    participantEntity.setProperty(PROPERTY_USERNAME, participant.getUsername());
-    participantEntity.setProperty(
-        PROPERTY_START_TIME_AVAILABLE, participant.getStartTimeAvailable().toString());
-    participantEntity.setProperty(
-        PROPERTY_END_TIME_AVAILABLE, participant.getEndTimeAvailable().toString());
-    participantEntity.setProperty(PROPERTY_DURATION, participant.getDuration());
-    participantEntity.setProperty(PROPERTY_TIMESTAMP, participant.getTimestamp());
-    return participantEntity;
   }
 }

@@ -60,20 +60,9 @@ public class SearchMatchServlet extends HttpServlet {
     if (participant == null) {
       response.sendError(
           HttpServletResponse.SC_BAD_REQUEST,
-<<<<<<< HEAD
-<<<<<<< HEAD
           "Participant with username " + username + "does not exist.");
       return;
     }
-
-=======
-          "Participant with username " + username + "is invalid.");
-=======
-          "Participant with username " + username + "does not exist.");
->>>>>>> Change wording
-      return;
-    }
->>>>>>> Add null return types
     long currentMatchId = participant.getCurrentMatchId();
 
     // Check if match exists and not returned yet
@@ -95,28 +84,9 @@ public class SearchMatchServlet extends HttpServlet {
         return;
       }
 
-<<<<<<< HEAD
-      // Reset matchId to indicate returned match
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-      participant.setCurrentMatchId(0);
-      participantDatastore.addParticipant(participant);
-=======
-=======
-      // TODO: return true or false?
->>>>>>> Deal with null returns
-      participantDatastore.updateMatchId(participant.getUsername(), /* matchId=*/ 0);
->>>>>>> Add null return types
-=======
-      participant.setCurrentMatchId(0);
-      participantDatastore.addParticipant(participant);
->>>>>>> Replace update entity methods with just adding/overwriting
-=======
       // Remove matched participants from datastore
       participantDatastore.removeParticipant(match.getFirstParticipantUsername());
       participantDatastore.removeParticipant(match.getSecondParticipantUsername());
->>>>>>> Add all participants initially, only remove once found and returned match
 
       JSONObject matchExists = new JSONObject();
       matchExists.put(JSON_MATCHSTATUS, "true");

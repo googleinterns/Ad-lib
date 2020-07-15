@@ -120,6 +120,9 @@ public class AddParticipantServlet extends HttpServlet {
       // Match not found, add participant to datastore
       participantDatastore.addParticipant(newParticipant);
     }
+
+    response.setContentType("text/plain;charset=UTF-8");
+    response.getWriter().println("Received form input details!");
   }
 
   /** Retrieve JSON body payload and convert to a JSONObject for parsing purposes */

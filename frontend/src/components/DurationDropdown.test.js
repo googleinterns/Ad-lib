@@ -10,4 +10,4 @@ describe('Duration Dropdown', () => {
     const tree = renderer.create(<DurationDropdown />).toJSON();
     expect(tree).toMatchSnapshot();
   });
-});  
+});

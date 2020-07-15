@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Form should render correctly accounting for varying times and timezones 1`] = `
+exports[`Form should render correctly in varying times and timezones 1`] = `
 <div>
   <div
     className="makeStyles-heading-4"

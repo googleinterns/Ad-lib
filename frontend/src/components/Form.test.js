@@ -18,7 +18,7 @@ describe('Form', () => {
     expect(Form).toBeDefined();
   });
 
-  it ('should render correctly accounting for varying times and timezones', () => {
+  it('should render correctly in varying times and timezones', () => {
     const tree = renderer.create(<Form />).toJSON();
     expect(tree).toMatchSnapshot();
   });
@@ -26,7 +26,7 @@ describe('Form', () => {
 
 jest.mock('axios');
 
-test('POST request using axios() to `/api/v1/add-participant` with form details body', () => {
+test('POST request using axios() to servlet with form details', () => {
   const mockedDate = new Date();
   const servletEndpoint = '/api/v1/add-participant';
   const mockFormDetails = {
@@ -38,10 +38,10 @@ test('POST request using axios() to `/api/v1/add-participant` with form details 
     savePreference: true,
   };
 
-  axios.post(servletEndpoint, {mockFormDetails})
+  axios.post(servletEndpoint, {mockFormDetails});
 
   expect(mockAxios.post).toHaveBeenCalledTimes(1);
   expect(mockAxios.post).toHaveBeenCalledWith(
-    servletEndpoint, {mockFormDetails}
+      servletEndpoint, {mockFormDetails},
   );
 });

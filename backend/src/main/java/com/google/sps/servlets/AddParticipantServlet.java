@@ -67,10 +67,10 @@ public class AddParticipantServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
     JSONObject obj = retrieveRequestBody(request);
     if (obj == null) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not read request body");
-      return;
     }
     JSONObject formDetails = obj.getJSONObject(REQUEST_FORM_DETAILS);
 

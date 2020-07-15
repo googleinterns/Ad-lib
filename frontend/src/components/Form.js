@@ -42,6 +42,31 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
+ * Validates from inputs on submission and alerts user on error
+ * @return {Boolean}  true or false based on validity of inputs
+ * @param {String} role
+ * @param {String} productArea
+ * @param {Number} duration
+ * @param {Number} timeAvailableUntilMilliseconds
+ * @param {Number} currentTimeInMilliseconds
+ */
+export function validateFormInputs(role, productArea, duration,
+    timeAvailableUntilMilliseconds, currentTimeInMilliseconds) {
+  const durationInMilliseconds = duration * 60000;
+  if (productArea === '' || role === '') {
+    alert('Please select options for all form fields to submit!');
+    return false;
+  } else if (currentTimeInMilliseconds + durationInMilliseconds >=
+      timeAvailableUntilMilliseconds) {
+    // Check if a meeting is possible with the provided inputs
+    alert('Please select an larger time availability window');
+    return false;
+  } else {
+    return true;
+  }
+}
+
+/**
  * Create form component with time and match preference inputs
  * @return {Form} Form component
  */
@@ -57,27 +82,13 @@ export default function Form() {
   const [savePreference, setSavePreference] = React.useState(true);
   const [matchPreference, setMatchPreference] = React.useState('none');
 
-  function validateFormInputs() {
-    const currentTimeInMilliseconds = new Date().getTime();
-    const durationInMilliseconds = duration * 60000;
-    if (productArea === '' || role === '') {
-      alert("Please select options for all form fields to submit!");
-      return false;
-    } else if (currentTimeInMilliseconds + durationInMilliseconds
-        >= timeAvailableUntil.getTime()) {
-      // Check if a meeting is possible with the provided inputs
-      alert("Please select an larger time availability window");
-      return false;
-    } else {
-      return true;
-    }
-  }
-
   /** Gather user inputs from form and send POST request to backend
     * @param {Event} event
    */
   function handleFormSubmission(event) {
-    if (validateFormInputs()) {
+    const currentTimeInMilliseconds = new Date().getTime();
+    if (validateFormInputs(role, productArea, duration,
+        timeAvailableUntil.getTime(), currentTimeInMilliseconds)) {
       // Override browser's default behvaior to execute POST request
       event.preventDefault();
 
@@ -95,7 +106,7 @@ export default function Form() {
       axios.post('/api/v1/add-participant', {formDetails})
           .then((response) => {
             if (response.data != null) {
-              // TODO(#33): change alert to a redirection to the loading page view
+              // TODO(#33): change alert to a redirection to loading page view
               alert('Successful');
             }
           });

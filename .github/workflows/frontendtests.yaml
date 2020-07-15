@@ -1,0 +1,20 @@
+name: Frontend Continuous Integration
+
+on: [pull_request]
+
+jobs:
+  frontend-ci:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install Dependencies
+        run: yarn
+        working-directory: ./frontend
+      - name: Build
+        run: yarn build
+        working-directory: ./frontend
+      - name: Test
+        run: yarn test
+        working-directory: ./frontend

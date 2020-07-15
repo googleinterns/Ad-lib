@@ -55,7 +55,7 @@ public class SearchMatchServlet extends HttpServlet {
     MatchDatastore matchDatastore = new MatchDatastore(datastore);
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
 
-    // Find participant's current match, if exists and not returned yet
+    // Find participant's match, if exists and not returned yet
     Participant participant = participantDatastore.getParticipantFromUsername(username);
     if (participant == null) {
       response.sendError(
@@ -63,10 +63,10 @@ public class SearchMatchServlet extends HttpServlet {
           "Participant with username " + username + "does not exist.");
       return;
     }
-    long currentMatchId = participant.getCurrentMatchId();
+    long matchId = participant.getMatchId();
 
     // Check if match exists and not returned yet
-    if (currentMatchId == 0) {
+    if (matchId == 0) {
       // No match yet
       JSONObject matchDoesNotExist = new JSONObject();
       matchDoesNotExist.put(JSON_MATCHSTATUS, "false");
@@ -74,29 +74,30 @@ public class SearchMatchServlet extends HttpServlet {
       // Send the JSON back as the response
       response.setContentType("application/json");
       response.getWriter().println(matchDoesNotExist.toString());
-    } else {
-      // Match found
-      Match match = matchDatastore.getMatchFromId(currentMatchId);
-      if (match == null) {
-        response.sendError(
-            HttpServletResponse.SC_BAD_REQUEST,
-            "No match entity in datastore with match id " + currentMatchId + ".");
-        return;
-      }
-
-      // Remove matched participants from datastore
-      participantDatastore.removeParticipant(match.getFirstParticipantUsername());
-      participantDatastore.removeParticipant(match.getSecondParticipantUsername());
-
-      JSONObject matchExists = new JSONObject();
-      matchExists.put(JSON_MATCHSTATUS, "true");
-      matchExists.put(JSON_FIRSTPARTICIPANTUSERNAME, match.getFirstParticipantUsername());
-      matchExists.put(JSON_SECONDPARTICIPANTUSERNAME, match.getSecondParticipantUsername());
-      matchExists.put(JSON_DURATION, match.getDuration());
-
-      // Send the JSON back as the response
-      response.setContentType("application/json");
-      response.getWriter().println(matchExists.toString());
+      return;
     }
+
+    // Match found
+    Match match = matchDatastore.getMatchFromId(matchId);
+    if (match == null) {
+      response.sendError(
+          HttpServletResponse.SC_BAD_REQUEST,
+          "No match entity in datastore with match id " + matchId + ".");
+      return;
+    }
+
+    // Remove matched participants from datastore
+    participantDatastore.removeParticipant(match.getFirstParticipantUsername());
+    participantDatastore.removeParticipant(match.getSecondParticipantUsername());
+
+    JSONObject matchExists = new JSONObject();
+    matchExists.put(JSON_MATCHSTATUS, "true");
+    matchExists.put(JSON_FIRSTPARTICIPANTUSERNAME, match.getFirstParticipantUsername());
+    matchExists.put(JSON_SECONDPARTICIPANTUSERNAME, match.getSecondParticipantUsername());
+    matchExists.put(JSON_DURATION, match.getDuration());
+
+    // Send the JSON back as the response
+    response.setContentType("application/json");
+    response.getWriter().println(matchExists.toString());
   }
 }

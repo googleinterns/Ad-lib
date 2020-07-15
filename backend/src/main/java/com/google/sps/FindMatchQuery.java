@@ -25,8 +25,6 @@ import javax.annotation.Nullable;
 /** Class used to find a match for new Participant with unmatched Participants in datastore */
 public final class FindMatchQuery {
 
-  /** Maximum difference in duration to be compatible */
-  private static final int MAX_DURATION_DIFF = 15;
   /** Extra padding time to ensure large enough meeting time block */
   private static final int PADDING_TIME = 10;
   /** Reference clock */
@@ -55,10 +53,11 @@ public final class FindMatchQuery {
     // Set reference date time using clock
     ZonedDateTime dateTime = ZonedDateTime.now(clock);
 
+    ZonedDateTime newEndTimeAvailable = newParticipant.getEndTimeAvailable();
+
     // Compare new participant preferences with other participants to find match
     for (Participant currParticipant : sameDurationParticipants) {
       // Check if participants are both free for that duration + extra
-      ZonedDateTime newEndTimeAvailable = newParticipant.getEndTimeAvailable();
       ZonedDateTime currEndTimeAvailable = currParticipant.getEndTimeAvailable();
       ZonedDateTime earliestEndTimeAvailable =
           getEarlier(newEndTimeAvailable, currEndTimeAvailable);
@@ -66,6 +65,7 @@ public final class FindMatchQuery {
           dateTime.plusMinutes(duration + PADDING_TIME).isBefore(earliestEndTimeAvailable);
 
       if (compatibleTime) {
+        // Create and return match (id is irrelevant because it's assigned when put into datastore
         return new Match(
             /* id= */ -1L,
             newParticipant.getUsername(),

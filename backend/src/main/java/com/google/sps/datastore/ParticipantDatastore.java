@@ -28,7 +28,7 @@ public final class ParticipantDatastore {
   private static final String PROPERTY_STARTTIMEAVAILABLE = "startTimeAvailable";
   private static final String PROPERTY_ENDTIMEAVAILABLE = "endTimeAvailable";
   private static final String PROPERTY_DURATION = "duration";
-  private static final String PROPERTY_CURRENTMATCHID = "currentMatchId";
+  private static final String PROPERTY_MATCHID = "matchId";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
 
   /** Formatter for converting between String and ZonedDateTime */
@@ -55,7 +55,7 @@ public final class ParticipantDatastore {
     participantEntity.setProperty(
         PROPERTY_ENDTIMEAVAILABLE, participant.getEndTimeAvailable().format(formatter));
     participantEntity.setProperty(PROPERTY_DURATION, participant.getDuration());
-    participantEntity.setProperty(PROPERTY_CURRENTMATCHID, participant.getCurrentMatchId());
+    participantEntity.setProperty(PROPERTY_MATCHID, participant.getMatchId());
     participantEntity.setProperty(PROPERTY_TIMESTAMP, participant.getTimestamp());
 
     // Insert entity into datastore
@@ -93,12 +93,12 @@ public final class ParticipantDatastore {
     ZonedDateTime endTimeAvailable =
         ZonedDateTime.parse((String) entity.getProperty(PROPERTY_ENDTIMEAVAILABLE), formatter);
     int duration = ((Long) entity.getProperty(PROPERTY_DURATION)).intValue();
-    long currentMatchId = (long) entity.getProperty(PROPERTY_CURRENTMATCHID);
+    long matchId = (long) entity.getProperty(PROPERTY_MATCHID);
     long timestamp = (long) entity.getProperty(PROPERTY_TIMESTAMP);
 
     // Create and return new Participant
     return new Participant(
-        username, startTimeAvailable, endTimeAvailable, duration, currentMatchId, timestamp);
+        username, startTimeAvailable, endTimeAvailable, duration, matchId, timestamp);
   }
 
   /** Return list of all unmatched participants with same duration */

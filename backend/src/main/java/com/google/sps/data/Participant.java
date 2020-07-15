@@ -16,8 +16,8 @@ public final class Participant {
   private ZonedDateTime endTimeAvailable;
   /** How long user wants to chat */
   private int duration;
-  /** Current match in datastore, null if never found a match or already been returned */
-  private long currentMatchId;
+  /** Id of match in datastore, 0 if never found a match */
+  private long matchId;
   /** Time of submitted form */
   private final long timestamp;
 
@@ -27,7 +27,7 @@ public final class Participant {
       ZonedDateTime startTimeAvailable,
       ZonedDateTime endTimeAvailable,
       int duration,
-      long currentMatchId,
+      long matchId,
       long timestamp) {
     this.username = username;
     Preconditions.checkArgument(
@@ -36,7 +36,7 @@ public final class Participant {
     this.startTimeAvailable = startTimeAvailable;
     this.endTimeAvailable = endTimeAvailable;
     this.duration = duration;
-    this.currentMatchId = currentMatchId;
+    this.matchId = matchId;
     this.timestamp = timestamp;
   }
 
@@ -68,12 +68,12 @@ public final class Participant {
     this.duration = duration;
   }
 
-  public long getCurrentMatchId() {
-    return currentMatchId;
+  public long getMatchId() {
+    return matchId;
   }
 
-  public void setCurrentMatchId(long ecurrentMatchId) {
-    this.currentMatchId = currentMatchId;
+  public void setMatchId(long matchId) {
+    this.matchId = matchId;
   }
 
   public long getTimestamp() {
@@ -86,7 +86,7 @@ public final class Participant {
         .add("startTimeAvailable", startTimeAvailable)
         .add("endTimeAvailable", endTimeAvailable)
         .add("duration", duration)
-        .add("currentMatchId", currentMatchId)
+        .add("matchId", matchId)
         .add("timestamp", timestamp)
         .toString();
   }

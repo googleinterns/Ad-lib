@@ -76,6 +76,10 @@ public class AddParticipantServlet extends HttpServlet {
         ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeAvailableUntil), zoneId);
 
     int duration = formDetails.getInt(REQUEST_DURATION);
+    if (duration <= 0) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
+      return;
+    }
     String role = formDetails.getString(REQUEST_ROLE);
     String productArea = formDetails.getString(REQUEST_PRODUCT_AREA);
     boolean savePreference = formDetails.getBoolean(REQUEST_SAVE_PREFERENCE);
@@ -89,15 +93,10 @@ public class AddParticipantServlet extends HttpServlet {
     }
 
     // Create new Participant from input parameters
-    // id is irrelevant, only relevant when getting from datastore
+    // id is irrelevant, created when added to datastore
     Participant newParticipant =
         new Participant(
-            username,
-            startTimeAvailable,
-            endTimeAvailable,
-            duration,
-            /* currentMatchId=*/ 0,
-            timestamp);
+            username, startTimeAvailable, endTimeAvailable, duration, /* matchId=*/ 0, timestamp);
 
     // Get DatastoreService and instiate Match and Participant Datastores
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -112,21 +111,11 @@ public class AddParticipantServlet extends HttpServlet {
       // Match found, add to match datastore, update participant datastore
       long matchId = matchDatastore.addMatch(match);
 
-      // Update currParticipant entity with new currentMatchId and null availability
+      // Update participant entities with new matchId and null availability
       Participant currParticipant =
           participantDatastore.getParticipantFromUsername(match.getSecondParticipantUsername());
-      currParticipant.setCurrentMatchId(matchId);
-      currParticipant.setStartTimeAvailable(null);
-      currParticipant.setEndTimeAvailable(null);
-      currParticipant.setDuration(0);
-      participantDatastore.addParticipant(currParticipant);
-
-      // Update newParticipant entity with new currentMatchId and null availability
-      newParticipant.setCurrentMatchId(matchId);
-      newParticipant.setStartTimeAvailable(null);
-      newParticipant.setEndTimeAvailable(null);
-      newParticipant.setDuration(0);
-      participantDatastore.addParticipant(newParticipant);
+      nullAvailabilityAdd(participantDatastore, currParticipant, matchId);
+      nullAvailabilityAdd(participantDatastore, newParticipant, matchId);
     } else {
       // Match not found, add participant to datastore
       participantDatastore.addParticipant(newParticipant);
@@ -153,5 +142,15 @@ public class AddParticipantServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     return email != null ? email.split("@")[0] : null;
+  }
+
+  /** Update participant entity with new matchId and null availability */
+  private void nullAvailabilityAdd(
+      ParticipantDatastore participantDatastore, Participant participant, long matchId) {
+    participant.setMatchId(matchId);
+    participant.setStartTimeAvailable(null);
+    participant.setEndTimeAvailable(null);
+    participant.setDuration(0);
+    participantDatastore.addParticipant(participant);
   }
 }

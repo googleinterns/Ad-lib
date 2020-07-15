@@ -6,14 +6,14 @@ jobs:
   frontend-ci:
     runs-on: ubuntu-latest
 
-    steps:
+      steps:
       - uses: actions/checkout@v2
-      - name: Install Dependencies
-        run: yarn
-        working-directory: ./frontend
-      - name: Build
-        run: yarn build
-        working-directory: ./frontend
-      - name: Test
-        run: yarn test
-        working-directory: ./frontend
+      - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: install # will run `yarn install` command
+      - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: build # will run `yarn build` command
+      - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: test # will run `yarn test` command

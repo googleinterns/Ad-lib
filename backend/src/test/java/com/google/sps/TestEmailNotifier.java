@@ -8,6 +8,7 @@ import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class TestEmailNotifier {
@@ -19,7 +20,7 @@ public class TestEmailNotifier {
   }
 
   private String getTextFromMessage(MimeMessage message) throws MessagingException, IOException {
-    String result = "";
+    String result;
     result = message.getContent().toString();
     return result;
   }
@@ -49,7 +50,7 @@ public class TestEmailNotifier {
     MimeMessage mimeMessage = emailNotifier.createEmail("", "Random Subject", "");
     MimeMessage message = createTestMessage();
     message.setSubject("Random Subject");
-    Assert.assertEquals(
+    assertEquals(
         "These two subjects should be the same", message.getSubject(), mimeMessage.getSubject());
   }
 
@@ -59,7 +60,7 @@ public class TestEmailNotifier {
     MimeMessage mimeMessage = emailNotifier.createEmail("", "", "Random Text");
     MimeMessage message = createTestMessage();
     message.setText("Random Text");
-    Assert.assertEquals(
+    assertEquals(
         "These two strings should not be the same ",
         getTextFromMessage(message),
         getTextFromMessage(mimeMessage));
@@ -78,7 +79,7 @@ public class TestEmailNotifier {
   }
 
   @Test
-  public void testMessageShouldHaveCorrectRecipients() throws MessagingException, IOException {
+  public void testMessageShouldHaveCorrectRecipients() throws MessagingException {
     EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu", null);
     MimeMessage mimeMessage = emailNotifier.createEmail("", "", "");
     MimeMessage message = createTestMessage();
@@ -90,7 +91,7 @@ public class TestEmailNotifier {
   }
 
   @Test
-  public void testMessageShouldNotHaveCorrectRecipients() throws MessagingException, IOException {
+  public void testMessageShouldNotHaveCorrectRecipients() throws MessagingException {
     EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu", null);
     MimeMessage mimeMessage =
         emailNotifier.createEmail(

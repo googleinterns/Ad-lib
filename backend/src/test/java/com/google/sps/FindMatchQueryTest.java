@@ -22,7 +22,6 @@ import java.time.Clock;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,21 +73,21 @@ public final class FindMatchQueryTest {
   private static final ZonedDateTime TIME_1200PT = getNewTimeToday(currentDateTimePT, 12, 0);
   private static final ZonedDateTime TIME_1600PT = getNewTimeToday(currentDateTimePT, 16, 0);
 
-  private com.google.sps.FindMatchQuery query;
-
-  /** Return today's date with time of hour:minute */
-  public static ZonedDateTime getNewTimeToday(ZonedDateTime dateTime, int hour, int minute) {
-    // Calculate current date but with hour:minute time
-    // TODO: All times are currently today, wrap around times?
-    return dateTime.withHour(hour).withMinute(minute).withNano(0);
-  }
+  private FindMatchQuery query;
 
   @Before
   public void setUp() {
     // Set "current" date to  1/1/2020 2:00pm ET
     Clock clock = Clock.fixed(currentDateTimeET.toInstant(), currentDateTimeET.getZone());
 
-    query = new com.google.sps.FindMatchQuery(clock);
+    query = new FindMatchQuery(clock);
+  }
+
+  /** Return today's date with time of hour:minute */
+  public static ZonedDateTime getNewTimeToday(ZonedDateTime dateTime, int hour, int minute) {
+    // Calculate current date but with hour:minute time
+    // TODO: All times are currently today, wrap around times?
+    return dateTime.withHour(hour).withMinute(minute).withNano(0);
   }
 
   @Test
@@ -259,7 +258,7 @@ public final class FindMatchQueryTest {
         new Participant(
             ID_DEFAULT, PERSON_B, TIME_1100PT, TIME_1200PT, DURATION_30_MINUTES, TIMESTAMP_DEFAULT);
 
-    Match match = query.findMatch(Collections.singletonList(participantA), participantB);
+    Match match = query.findMatch(Arrays.asList(participantA), participantB);
 
     assertThat(match.getFirstParticipant().getUsername()).isEqualTo(PERSON_B);
     assertThat(match.getSecondParticipant().getUsername()).isEqualTo(PERSON_A);

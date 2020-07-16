@@ -50,14 +50,11 @@ public final class MatchDatastore {
 
   /** Return Match from entity, or null if entity is null */
   private static Match getMatchFromEntity(@Nonnull Entity entity) {
-    String firstParticipantUsername =
-        (String) entity.getProperty(PROPERTY_FIRSTPARTICIPANTUSERNAME);
-    String secondParticipantUsername =
-        (String) entity.getProperty(PROPERTY_SECONDPARTICIPANTUSERNAME);
-    int duration = ((Long) entity.getProperty(PROPERTY_DURATION)).intValue();
-    long timestamp = (long) entity.getProperty(PROPERTY_TIMESTAMP);
-
-    return new Match(firstParticipantUsername, secondParticipantUsername, duration, timestamp);
+    return new Match(
+        (String) entity.getProperty(PROPERTY_FIRSTPARTICIPANTUSERNAME),
+        (String) entity.getProperty(PROPERTY_SECONDPARTICIPANTUSERNAME),
+        ((Long) entity.getProperty(PROPERTY_DURATION)).intValue(),
+        (long) entity.getProperty(PROPERTY_TIMESTAMP));
   }
 
   /** Return match based on match datastore key id, or null if entity not found */

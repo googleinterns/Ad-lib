@@ -84,17 +84,13 @@ public final class ParticipantDatastore {
   /** Return participant object from datastore participant entity, or null if entity is null */
   @Nullable
   private static Participant getParticipantFromEntity(@Nonnull Entity entity) {
-    // Get entity properties
-    String username = (String) entity.getProperty(PROPERTY_USERNAME);
-    long startTimeAvailable = (long) entity.getProperty(PROPERTY_STARTTIMEAVAILABLE);
-    long endTimeAvailable = (long) entity.getProperty(PROPERTY_ENDTIMEAVAILABLE);
-    int duration = ((Long) entity.getProperty(PROPERTY_DURATION)).intValue();
-    long matchId = (long) entity.getProperty(PROPERTY_MATCHID);
-    long timestamp = (long) entity.getProperty(PROPERTY_TIMESTAMP);
-
-    // Create and return new Participant
     return new Participant(
-        username, startTimeAvailable, endTimeAvailable, duration, matchId, timestamp);
+        (String) entity.getProperty(PROPERTY_USERNAME),
+        (long) entity.getProperty(PROPERTY_STARTTIMEAVAILABLE),
+        (long) entity.getProperty(PROPERTY_ENDTIMEAVAILABLE),
+        ((Long) entity.getProperty(PROPERTY_DURATION)).intValue(),
+        (long) entity.getProperty(PROPERTY_MATCHID),
+        (long) entity.getProperty(PROPERTY_TIMESTAMP));
   }
 
   /** Return list of all unmatched participants with duration */

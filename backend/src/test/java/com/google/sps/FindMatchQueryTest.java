@@ -51,7 +51,7 @@ public final class FindMatchQueryTest {
   private static final int DURATION_45_MINUTES = 45;
   private static final int DURATION_60_MINUTES = 60;
 
-  // Reference date time of 1/1/20 2pm ET, 11am PT
+  // Reference date time of 1/1/20 2pm ET
   private static final ZonedDateTime currentDateTimeET =
       ZonedDateTime.of(
           /* year= */ 2020,
@@ -62,21 +62,16 @@ public final class FindMatchQueryTest {
           /* second= */ 0,
           /* nanosecond= */ 0,
           /* zone= */ ZoneId.of("US/Eastern"));
-  private static final ZonedDateTime currentDateTimePT =
-      currentDateTimeET.withZoneSameInstant(ZoneId.of("US/Pacific"));
 
   // Some times available until on 1/1/2020
-  private static final ZonedDateTime TIME_1400ET = currentDateTimeET;
-  private static final ZonedDateTime TIME_1450ET = getNewTimeToday(currentDateTimeET, 14, 50);
-  private static final ZonedDateTime TIME_1456ET = getNewTimeToday(currentDateTimeET, 14, 56);
-  private static final ZonedDateTime TIME_1500ET = getNewTimeToday(currentDateTimeET, 15, 0);
-  private static final ZonedDateTime TIME_1530ET = getNewTimeToday(currentDateTimeET, 15, 30);
-  private static final ZonedDateTime TIME_1600ET = getNewTimeToday(currentDateTimeET, 16, 0);
-  private static final ZonedDateTime TIME_1800ET = getNewTimeToday(currentDateTimeET, 18, 0);
-  private static final ZonedDateTime TIME_2000ET = getNewTimeToday(currentDateTimeET, 20, 0);
-  private static final ZonedDateTime TIME_1100PT = getNewTimeToday(currentDateTimePT, 11, 0);
-  private static final ZonedDateTime TIME_1200PT = getNewTimeToday(currentDateTimePT, 12, 0);
-  private static final ZonedDateTime TIME_1600PT = getNewTimeToday(currentDateTimePT, 16, 0);
+  private static final long TIME_1400ET = currentDateTimeET.toInstant().toEpochMilli();
+  private static final long TIME_1450ET = getNewTimeToday(currentDateTimeET, 14, 50);
+  private static final long TIME_1456ET = getNewTimeToday(currentDateTimeET, 14, 56);
+  private static final long TIME_1500ET = getNewTimeToday(currentDateTimeET, 15, 0);
+  private static final long TIME_1530ET = getNewTimeToday(currentDateTimeET, 15, 30);
+  private static final long TIME_1600ET = getNewTimeToday(currentDateTimeET, 16, 0);
+  private static final long TIME_1800ET = getNewTimeToday(currentDateTimeET, 18, 0);
+  private static final long TIME_2000ET = getNewTimeToday(currentDateTimeET, 20, 0);
 
   private Clock clock;
 
@@ -97,10 +92,10 @@ public final class FindMatchQueryTest {
   }
 
   /** Return today's date with time of hour:minute */
-  private static ZonedDateTime getNewTimeToday(ZonedDateTime dateTime, int hour, int minute) {
+  private static long getNewTimeToday(ZonedDateTime dateTime, int hour, int minute) {
     // Calculate current date but with hour:minute time
     // TODO: All times are currently today, wrap around times?
-    return dateTime.withHour(hour).withMinute(minute).withNano(0);
+    return dateTime.withHour(hour).withMinute(minute).withNano(0).toInstant().toEpochMilli();
   }
 
   @Test
@@ -371,68 +366,5 @@ public final class FindMatchQueryTest {
     assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_B);
     assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_45_MINUTES);
-  }
-
-  @Test
-  public void compatibleDiffTimezones() {
-    // Two participants, A in ET timezone and B in PT timezone and compatible
-    Participant participantA =
-        new Participant(
-            PERSON_A,
-            TIME_1400ET,
-            TIME_1600ET,
-            DURATION_30_MINUTES,
-            MATCHID_DEFAULT,
-            TIMESTAMP_DEFAULT);
-    Participant participantB =
-        new Participant(
-            PERSON_B,
-            TIME_1100PT,
-            TIME_1600PT,
-            DURATION_30_MINUTES,
-            MATCHID_DEFAULT,
-            TIMESTAMP_DEFAULT);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
-    participantDatastore.addParticipant(participantA);
-
-    FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
-    Match match = query.findMatch(participantB);
-
-    assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_B);
-    assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);
-    assertThat(match.getDuration()).isEqualTo(DURATION_30_MINUTES);
-  }
-
-  @Test
-  public void compatibleWithoutConsideringTimezone() {
-    // Two participants, A in ET timezone and B in PT timezone, only compatible if considering
-    // timezone differences
-    Participant participantA =
-        new Participant(
-            PERSON_A,
-            TIME_1400ET,
-            TIME_1500ET,
-            DURATION_30_MINUTES,
-            MATCHID_DEFAULT,
-            TIMESTAMP_DEFAULT);
-    Participant participantB =
-        new Participant(
-            PERSON_B,
-            TIME_1100PT,
-            TIME_1200PT,
-            DURATION_30_MINUTES,
-            MATCHID_DEFAULT,
-            TIMESTAMP_DEFAULT);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
-    participantDatastore.addParticipant(participantA);
-
-    FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
-    Match match = query.findMatch(participantB);
-
-    assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_B);
-    assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);
-    assertThat(match.getDuration()).isEqualTo(DURATION_30_MINUTES);
   }
 }

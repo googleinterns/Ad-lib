@@ -2,7 +2,6 @@ package com.google.sps.data;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
-import java.time.ZonedDateTime;
 
 /** A user who wants to be matched. */
 public final class Participant {
@@ -10,10 +9,9 @@ public final class Participant {
   /** Google username (ldap) */
   private final String username;
   /** Time user starts being available */
-  // TODO: make these fields final once Participant and User classes are created
-  private ZonedDateTime startTimeAvailable;
+  private long startTimeAvailable;
   /** Time user is available until */
-  private ZonedDateTime endTimeAvailable;
+  private long endTimeAvailable;
   /** How long user wants to chat */
   private int duration;
   /** Id of match in datastore, 0 if never found a match (can assign 0 at construction) */
@@ -24,14 +22,14 @@ public final class Participant {
   /** Initialize constructor fields */
   public Participant(
       String username,
-      ZonedDateTime startTimeAvailable,
-      ZonedDateTime endTimeAvailable,
+      long startTimeAvailable,
+      long endTimeAvailable,
       int duration,
       long matchId,
       long timestamp) {
     this.username = username;
     Preconditions.checkArgument(
-        startTimeAvailable.isBefore(endTimeAvailable),
+        startTimeAvailable < endTimeAvailable,
         "Start available time must be before end available time.");
     this.startTimeAvailable = startTimeAvailable;
     this.endTimeAvailable = endTimeAvailable;
@@ -44,19 +42,19 @@ public final class Participant {
     return username;
   }
 
-  public ZonedDateTime getStartTimeAvailable() {
+  public long getStartTimeAvailable() {
     return startTimeAvailable;
   }
 
-  public void setStartTimeAvailable(ZonedDateTime startTimeAvailable) {
+  public void setStartTimeAvailable(long startTimeAvailable) {
     this.startTimeAvailable = startTimeAvailable;
   }
 
-  public ZonedDateTime getEndTimeAvailable() {
+  public long getEndTimeAvailable() {
     return endTimeAvailable;
   }
 
-  public void setEndTimeAvailable(ZonedDateTime endTimeAvailable) {
+  public void setEndTimeAvailable(long endTimeAvailable) {
     this.endTimeAvailable = endTimeAvailable;
   }
 

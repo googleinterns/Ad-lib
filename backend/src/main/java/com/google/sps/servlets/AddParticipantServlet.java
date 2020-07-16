@@ -27,8 +27,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -68,12 +66,9 @@ public class AddParticipantServlet extends HttpServlet {
     }
     JSONObject formDetails = obj.getJSONObject(REQUEST_FORM_DETAILS);
 
-    // Retrieve the timeAvailableUntil input and convert to a UTC ZonedDateTime
-    long timeAvailableUntil = formDetails.getLong(REQUEST_TIME_AVAILABLE_UNTIL);
-    ZoneId zoneId = ZoneId.of("UTC");
-    ZonedDateTime startTimeAvailable = ZonedDateTime.now(Clock.systemUTC());
-    ZonedDateTime endTimeAvailable =
-        ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeAvailableUntil), zoneId);
+    // Retrieve the timeAvailableUntil input and convert to a UTC milliseconds
+    long endTimeAvailable = formDetails.getLong(REQUEST_TIME_AVAILABLE_UNTIL);
+    long startTimeAvailable = Instant.now().toEpochMilli();
 
     int duration = formDetails.getInt(REQUEST_DURATION);
     if (duration <= 0) {
@@ -110,6 +105,8 @@ public class AddParticipantServlet extends HttpServlet {
     if (match != null) {
       // Match found, add to match datastore, update participant datastore
       long matchId = matchDatastore.addMatch(match);
+
+      System.out.println(matchDatastore.getMatchFromId(matchId).toString());
 
       // Update participant entities with new matchId and null availability
       Participant currParticipant =
@@ -151,8 +148,8 @@ public class AddParticipantServlet extends HttpServlet {
   private void nullAvailabilityAdd(
       ParticipantDatastore participantDatastore, Participant participant, long matchId) {
     participant.setMatchId(matchId);
-    participant.setStartTimeAvailable(null);
-    participant.setEndTimeAvailable(null);
+    participant.setStartTimeAvailable(0);
+    participant.setEndTimeAvailable(0);
     participant.setDuration(0);
     participantDatastore.addParticipant(participant);
   }

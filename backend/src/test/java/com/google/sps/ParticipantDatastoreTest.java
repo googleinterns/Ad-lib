@@ -27,7 +27,6 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.sps.data.Participant;
 import com.google.sps.datastore.ParticipantDatastore;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,13 +38,13 @@ public final class ParticipantDatastoreTest {
 
   // Default values
   private static final long ID_DEFAULT = 123456;
-  private static final ZonedDateTime STARTTIMEAVAILABLE_DEFAULT = ZonedDateTime.now();
-  private static final ZonedDateTime ENDTIMEAVAILABLE_DEFAULT = ZonedDateTime.now();
+  private static final long STARTTIMEAVAILABLE_DEFAULT =
+      ZonedDateTime.now().toInstant().toEpochMilli();
+  private static final long ENDTIMEAVAILABLE_DEFAULT =
+      ZonedDateTime.now().toInstant().toEpochMilli();
   private static final int DURATION_DEFAULT = 30;
   private static final long MATCHID_DEFAULT = 0;
   private static final long TIMESTAMP_DEFAULT = 0;
-
-  private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
 
   // Some usernames
   private static final String PERSON_A = "Person A";
@@ -95,12 +94,9 @@ public final class ParticipantDatastoreTest {
     Key key = KeyFactory.createKey(KIND_PARTICIPANT, PERSON_A);
     Entity entity = datastore.get(key);
     assertThat((String) entity.getProperty(PROPERTY_USERNAME)).isEqualTo(PERSON_A);
-    assertThat(
-            ZonedDateTime.parse(
-                (String) entity.getProperty(PROPERTY_STARTTIMEAVAILABLE), formatter))
+    assertThat((long) entity.getProperty(PROPERTY_STARTTIMEAVAILABLE))
         .isEqualTo(STARTTIMEAVAILABLE_DEFAULT);
-    assertThat(
-            ZonedDateTime.parse((String) entity.getProperty(PROPERTY_ENDTIMEAVAILABLE), formatter))
+    assertThat((long) entity.getProperty(PROPERTY_ENDTIMEAVAILABLE))
         .isEqualTo(ENDTIMEAVAILABLE_DEFAULT);
     assertThat(((Long) entity.getProperty(PROPERTY_DURATION)).intValue())
         .isEqualTo(DURATION_DEFAULT);
@@ -138,24 +134,18 @@ public final class ParticipantDatastoreTest {
     Entity entityA = datastore.get(keyA);
     Entity entityB = datastore.get(keyB);
     assertThat((String) entityA.getProperty(PROPERTY_USERNAME)).isEqualTo(PERSON_A);
-    assertThat(
-            ZonedDateTime.parse(
-                (String) entityA.getProperty(PROPERTY_STARTTIMEAVAILABLE), formatter))
+    assertThat((long) entityA.getProperty(PROPERTY_STARTTIMEAVAILABLE))
         .isEqualTo(STARTTIMEAVAILABLE_DEFAULT);
-    assertThat(
-            ZonedDateTime.parse((String) entityA.getProperty(PROPERTY_ENDTIMEAVAILABLE), formatter))
+    assertThat((long) entityA.getProperty(PROPERTY_ENDTIMEAVAILABLE))
         .isEqualTo(ENDTIMEAVAILABLE_DEFAULT);
     assertThat(((Long) entityA.getProperty(PROPERTY_DURATION)).intValue())
         .isEqualTo(DURATION_DEFAULT);
     assertThat((long) entityA.getProperty(PROPERTY_MATCHID)).isEqualTo(MATCHID_DEFAULT);
     assertThat((long) entityA.getProperty(PROPERTY_TIMESTAMP)).isEqualTo(TIMESTAMP_DEFAULT);
     assertThat((String) entityB.getProperty(PROPERTY_USERNAME)).isEqualTo(PERSON_B);
-    assertThat(
-            ZonedDateTime.parse(
-                (String) entityB.getProperty(PROPERTY_STARTTIMEAVAILABLE), formatter))
+    assertThat((long) entityB.getProperty(PROPERTY_STARTTIMEAVAILABLE))
         .isEqualTo(STARTTIMEAVAILABLE_DEFAULT);
-    assertThat(
-            ZonedDateTime.parse((String) entityB.getProperty(PROPERTY_ENDTIMEAVAILABLE), formatter))
+    assertThat((long) entityB.getProperty(PROPERTY_ENDTIMEAVAILABLE))
         .isEqualTo(ENDTIMEAVAILABLE_DEFAULT);
     assertThat(((Long) entityB.getProperty(PROPERTY_DURATION)).intValue())
         .isEqualTo(DURATION_DEFAULT);

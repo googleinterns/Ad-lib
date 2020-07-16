@@ -12,8 +12,6 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.sps.data.Participant;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -31,9 +29,6 @@ public final class ParticipantDatastore {
   private static final String PROPERTY_MATCHID = "matchId";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
 
-  /** Formatter for converting between String and ZonedDateTime */
-  private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
-
   /** Datastore */
   private final DatastoreService datastore;
 
@@ -50,10 +45,8 @@ public final class ParticipantDatastore {
     // Set properties of entity based on participant fields
     Entity participantEntity = new Entity(KIND_PARTICIPANT, participant.getUsername());
     participantEntity.setProperty(PROPERTY_USERNAME, participant.getUsername());
-    participantEntity.setProperty(
-        PROPERTY_STARTTIMEAVAILABLE, participant.getStartTimeAvailable().format(formatter));
-    participantEntity.setProperty(
-        PROPERTY_ENDTIMEAVAILABLE, participant.getEndTimeAvailable().format(formatter));
+    participantEntity.setProperty(PROPERTY_STARTTIMEAVAILABLE, participant.getStartTimeAvailable());
+    participantEntity.setProperty(PROPERTY_ENDTIMEAVAILABLE, participant.getEndTimeAvailable());
     participantEntity.setProperty(PROPERTY_DURATION, participant.getDuration());
     participantEntity.setProperty(PROPERTY_MATCHID, participant.getMatchId());
     participantEntity.setProperty(PROPERTY_TIMESTAMP, participant.getTimestamp());
@@ -88,10 +81,8 @@ public final class ParticipantDatastore {
   private static Participant getParticipantFromEntity(@Nonnull Entity entity) {
     // Get entity properties
     String username = (String) entity.getProperty(PROPERTY_USERNAME);
-    ZonedDateTime startTimeAvailable =
-        ZonedDateTime.parse((String) entity.getProperty(PROPERTY_STARTTIMEAVAILABLE), formatter);
-    ZonedDateTime endTimeAvailable =
-        ZonedDateTime.parse((String) entity.getProperty(PROPERTY_ENDTIMEAVAILABLE), formatter);
+    long startTimeAvailable = (long) entity.getProperty(PROPERTY_STARTTIMEAVAILABLE);
+    long endTimeAvailable = (long) entity.getProperty(PROPERTY_ENDTIMEAVAILABLE);
     int duration = ((Long) entity.getProperty(PROPERTY_DURATION)).intValue();
     long matchId = (long) entity.getProperty(PROPERTY_MATCHID);
     long timestamp = (long) entity.getProperty(PROPERTY_TIMESTAMP);

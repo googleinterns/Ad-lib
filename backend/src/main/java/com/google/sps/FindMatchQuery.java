@@ -18,7 +18,6 @@ import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
 import com.google.sps.datastore.ParticipantDatastore;
 import java.time.Clock;
-import java.time.ZonedDateTime;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -27,6 +26,8 @@ public final class FindMatchQuery {
 
   /** Extra padding time to ensure large enough meeting time block */
   private static final int PADDING_TIME = 10;
+  /** Conversion from minutes to milliseconds */
+  private static final int MINUTES_TO_MILLIS = 60000;
   /** Reference clock */
   private final Clock clock;
   /** Datastore of Participants */
@@ -51,18 +52,18 @@ public final class FindMatchQuery {
         participantDatastore.getSameDurationParticipants(duration);
 
     // Set reference date time using clock
-    ZonedDateTime dateTime = ZonedDateTime.now(clock);
+    long currentTimeMillis = clock.millis();
 
-    ZonedDateTime newEndTimeAvailable = newParticipant.getEndTimeAvailable();
+    long newEndTimeAvailable = newParticipant.getEndTimeAvailable();
 
     // Compare new participant preferences with other participants to find match
     for (Participant currParticipant : sameDurationParticipants) {
       // Check if participants are both free for that duration + extra
-      ZonedDateTime currEndTimeAvailable = currParticipant.getEndTimeAvailable();
-      ZonedDateTime earliestEndTimeAvailable =
-          getEarlier(newEndTimeAvailable, currEndTimeAvailable);
+      long currEndTimeAvailable = currParticipant.getEndTimeAvailable();
+      long earliestEndTimeAvailable = getEarlier(newEndTimeAvailable, currEndTimeAvailable);
       boolean compatibleTime =
-          dateTime.plusMinutes(duration + PADDING_TIME).isBefore(earliestEndTimeAvailable);
+          (currentTimeMillis + (duration + PADDING_TIME) * MINUTES_TO_MILLIS)
+              < earliestEndTimeAvailable;
 
       if (compatibleTime) {
         // Create and return match
@@ -70,15 +71,15 @@ public final class FindMatchQuery {
             newParticipant.getUsername(),
             currParticipant.getUsername(),
             duration,
-            dateTime.toInstant().toEpochMilli());
+            currentTimeMillis);
       }
     }
     // No inital match found
     return null;
   }
 
-  /** Return earlier of two ZonedDateTime objects */
-  private ZonedDateTime getEarlier(ZonedDateTime first, ZonedDateTime second) {
-    return first.isBefore(second) ? first : second;
+  /** Return earlier of two long millis */
+  private long getEarlier(long first, long second) {
+    return (first < second) ? first : second;
   }
 }

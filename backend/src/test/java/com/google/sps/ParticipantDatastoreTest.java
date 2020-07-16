@@ -38,8 +38,7 @@ public final class ParticipantDatastoreTest {
 
   // Default values
   private static final long ID_DEFAULT = 123456;
-  private static final long STARTTIMEAVAILABLE_DEFAULT =
-      ZonedDateTime.now().toInstant().toEpochMilli();
+  private static final long STARTTIMEAVAILABLE_DEFAULT = 0;
   private static final long ENDTIMEAVAILABLE_DEFAULT =
       ZonedDateTime.now().toInstant().toEpochMilli();
   private static final int DURATION_DEFAULT = 30;

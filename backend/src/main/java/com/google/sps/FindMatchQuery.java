@@ -24,8 +24,8 @@ import javax.annotation.Nullable;
 /** Class used to find a match for new Participant with unmatched Participants in datastore */
 public final class FindMatchQuery {
 
-  /** Extra padding time to ensure large enough meeting time block */
-  private static final int PADDING_TIME = 10;
+  /** Extra padding time in minutes to ensure large enough meeting time block */
+  private static final int PADDING_MINUTES = 10;
   /** Conversion from minutes to milliseconds */
   private static final int MINUTES_TO_MILLIS = 60000;
   /** Reference clock */
@@ -62,7 +62,7 @@ public final class FindMatchQuery {
       long currEndTimeAvailable = currParticipant.getEndTimeAvailable();
       long earliestEndTimeAvailable = Math.min(newEndTimeAvailable, currEndTimeAvailable);
       boolean compatibleTime =
-          (currentTimeMillis + (duration + PADDING_TIME) * MINUTES_TO_MILLIS)
+          (currentTimeMillis + (duration + PADDING_MINUTES) * MINUTES_TO_MILLIS)
               < earliestEndTimeAvailable;
 
       if (compatibleTime) {

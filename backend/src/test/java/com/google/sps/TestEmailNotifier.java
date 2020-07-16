@@ -10,6 +10,7 @@ import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.junit.Assert;
+import static org.junit.Assert.assertNotEquals;
 import org.junit.Test;
 
 public class TestEmailNotifier {
@@ -36,7 +37,7 @@ public class TestEmailNotifier {
   @Test
   public void testMessageHasCorrectApplicationName() throws MessagingException {
     EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu", null);
-    MimeMessage mimeMessage = emailNotifier.createEmail("", "", "");
+    MimeMessage mimeMessage = emailNotifier.createEmail("test@fakemail.com", "testSubject", "testBody");
     MimeMessage message = createTestMessage();
     message.setFrom(new InternetAddress("Adlib-Step@gmail.com"));
     Assert.assertArrayEquals(
@@ -48,9 +49,9 @@ public class TestEmailNotifier {
   @Test
   public void testMessageHasCorrectSubject() throws MessagingException {
     EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu", null);
-    MimeMessage mimeMessage = emailNotifier.createEmail("", "Random Subject", "");
+    MimeMessage mimeMessage = emailNotifier.createEmail("test@fakemail.com", "testSubject", "testBody");
     MimeMessage message = createTestMessage();
-    message.setSubject("Random Subject");
+    message.setSubject("testSubject");
     assertEquals(
         "These two subjects should be the same", message.getSubject(), mimeMessage.getSubject());
   }
@@ -58,10 +59,10 @@ public class TestEmailNotifier {
   @Test
   public void testMessageShouldHaveCorrectBodyText() throws MessagingException, IOException {
     EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu", null);
-    MimeMessage mimeMessage = emailNotifier.createEmail("", "", "Random Text");
+    MimeMessage mimeMessage = emailNotifier.createEmail("test@fakemail.com", "testSubject", "testBody");
     MimeMessage message = createTestMessage();
     message.setText("Random Text");
-    assertEquals(
+    assertNotEquals(
         "These two strings should not be the same ",
         getTextFromMessage(message),
         getTextFromMessage(mimeMessage));
@@ -70,7 +71,7 @@ public class TestEmailNotifier {
   @Test
   public void testMessageShouldHaveIncorrectBodyText() throws MessagingException, IOException {
     EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu", null);
-    MimeMessage mimeMessage = emailNotifier.createEmail("", "", "Welcome To  Your Ad-lib event");
+    MimeMessage mimeMessage = emailNotifier.createEmail("test@fakemail.com", "testSubject", "testBody");
     MimeMessage message = createTestMessage();
     message.setText("Please Leave Your Ad-lib event");
     Assert.assertNotEquals(
@@ -82,7 +83,7 @@ public class TestEmailNotifier {
   @Test
   public void testMessageShouldHaveCorrectRecipients() throws MessagingException {
     EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu", null);
-    MimeMessage mimeMessage = emailNotifier.createEmail("", "", "");
+    MimeMessage mimeMessage = emailNotifier.createEmail("jjgrant@buffalo.edu", "testSubject", "testBody");
     MimeMessage message = createTestMessage();
     message.addRecipient(MimeMessage.RecipientType.TO, new InternetAddress("jjgrant@buffalo.edu"));
     Assert.assertArrayEquals(
@@ -102,7 +103,7 @@ public class TestEmailNotifier {
     message.addRecipient(MimeMessage.RecipientType.TO, new InternetAddress("jdoe@buffalo.edu"));
     message.addRecipient(MimeMessage.RecipientType.TO, new InternetAddress("grantj@buffalo.edu"));
 
-    Assert.assertArrayEquals(
+    Assert.assertNotSame(
         "These two messages should have different recipients ",
         message.getAllRecipients(),
         mimeMessage.getAllRecipients());

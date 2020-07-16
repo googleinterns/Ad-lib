@@ -13,6 +13,8 @@ beforeAll(() => {
   global.Date.now = mockedDate.now;
 });
 
+jest.mock('axios');
+
 describe('Form', () => {
   it('should be defined', () => {
     expect(Form).toBeDefined();
@@ -22,26 +24,24 @@ describe('Form', () => {
     const tree = renderer.create(<Form />).toJSON();
     expect(tree).toMatchSnapshot();
   });
-});
 
-jest.mock('axios');
+  it('POST request using axios() to servlet with form details', () => {
+    const mockedDate = new Date();
+    const servletEndpoint = '/api/v1/add-participant';
+    const mockFormDetails = {
+      timeAvailableUntil: mockedDate.getTime(),
+      duration: 15,
+      role: 'Intern',
+      productArea: 'Core',
+      matchPreference: 'similar',
+      savePreference: true,
+    };
 
-test('POST request using axios() to servlet with form details', () => {
-  const mockedDate = new Date();
-  const servletEndpoint = '/api/v1/add-participant';
-  const mockFormDetails = {
-    timeAvailableUntil: mockedDate.getTime(),
-    duration: 15,
-    role: 'Intern',
-    productArea: 'Core',
-    matchPreference: 'similar',
-    savePreference: true,
-  };
+    axios.post(servletEndpoint, {mockFormDetails});
 
-  axios.post(servletEndpoint, {mockFormDetails});
-
-  expect(mockAxios.post).toHaveBeenCalledTimes(1);
-  expect(mockAxios.post).toHaveBeenCalledWith(
-      servletEndpoint, {mockFormDetails},
-  );
+    expect(mockAxios.post).toHaveBeenCalledTimes(1);
+    expect(mockAxios.post).toHaveBeenCalledWith(
+        servletEndpoint, {mockFormDetails},
+    );
+  });
 });

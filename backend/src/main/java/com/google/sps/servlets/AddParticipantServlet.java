@@ -27,6 +27,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.FindMatchQuery;
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
@@ -38,6 +39,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONObject;
 
 /** Servlet that returns some example content. */
 @WebServlet("/api/v1/add-participant")
@@ -47,42 +49,55 @@ public class AddParticipantServlet extends HttpServlet {
   private static final String KEY_PARTICIPANT = "Participant";
   private static final String KEY_MATCH = "Match";
   private static final String PROPERTY_USERNAME = "username";
-  private static final String PROPERTY_STARTTIMEAVAILABLE = "startTimeAvailable";
-  private static final String PROPERTY_ENDTIMEAVAILABLE = "endTimeAvailable";
+  private static final String PROPERTY_START_TIME_AVAILABLE = "startTimeAvailable";
+  private static final String PROPERTY_END_TIME_AVAILABLE = "endTimeAvailable";
   private static final String PROPERTY_DURATION = "duration";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
-  private static final String PROPERTY_FIRSTPARTICIPANT = "firstParticipant";
-  private static final String PROPERTY_SECONDPARTICIPANT = "secondParticipant";
+  private static final String PROPERTY_FIRST_PARTICIPANT = "firstParticipant";
+  private static final String PROPERTY_SECOND_PARTICIPANT = "secondParticipant";
+
+  // HTTP Request JSON key constants
+  private static final String REQUEST_FORM_DETAILS = "formDetails";
+  private static final String REQUEST_TIME_AVAILABLE_UNTIL = "timeAvailableUntil";
+  private static final String REQUEST_DURATION = "duration";
+  private static final String REQUEST_ROLE = "role";
+  private static final String REQUEST_PRODUCT_AREA = "productArea";
+  private static final String REQUEST_SAVE_PREFERENCE = "savePreference";
+  private static final String REQUEST_MATCH_PREFERENCE = "matchPreference";
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Request parameter values
-    // TODO: Check input values are filled (before allowing to submit)
-    UserService userService = UserServiceFactory.getUserService();
-    String email = userService.getCurrentUser().getEmail();
-    if (email == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid email.");
-      return;
+
+    JSONObject obj = retrieveRequestBody(request);
+    if (obj == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not read request body");
     }
-    String username = email.split("@")[0];
+    JSONObject formDetails = obj.getJSONObject(REQUEST_FORM_DETAILS);
 
-    String timezone = request.getParameter("timezone");
-    ZoneId zoneId = ZoneId.of(timezone); // TODO: convert input timezone to valid ZoneId
-    ZonedDateTime startTimeAvailable =
-        ZonedDateTime.now(zoneId); // TODO: set to future time if not available now
-    Instant endTimeAvailableInstant =
-        Instant.ofEpochMilli(
-            Long.parseLong(
-                request.getParameter("endTimeAvailable"))); // TODO: figure out input format
-    ZonedDateTime endTimeAvailable = endTimeAvailableInstant.atZone(zoneId);
+    // Retrieve the timeAvailableUntil input and convert to a UTC ZonedDateTime
+    long timeAvailableUntil = formDetails.getLong(REQUEST_TIME_AVAILABLE_UNTIL);
+    ZoneId zoneId = ZoneId.of("UTC");
+    ZonedDateTime startTimeAvailable = ZonedDateTime.now(Clock.systemUTC());
+    ZonedDateTime endTimeAvailable =
+        ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeAvailableUntil), zoneId);
 
-    int duration = convertToPositiveInt(request.getParameter("duration"));
+    int duration = formDetails.getInt(REQUEST_DURATION);
     if (duration <= 0) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
       return;
     }
 
+    String role = formDetails.getString(REQUEST_ROLE);
+    String productArea = formDetails.getString(REQUEST_PRODUCT_AREA);
+    boolean savePreference = formDetails.getBoolean(REQUEST_SAVE_PREFERENCE);
+    String matchPreference = formDetails.getString(REQUEST_MATCH_PREFERENCE);
     long timestamp = System.currentTimeMillis();
+
+    String username = getUsername();
+    if (username == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not retrieve email.");
+      return;
+    }
 
     // id is irrelevant, only relevant when getting from datastore
     Participant newParticipant =
@@ -91,7 +106,7 @@ public class AddParticipantServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    // Find immediate match if possibl;
+    // Find immediate match if possible
     FindMatchQuery query = new FindMatchQuery(Clock.systemUTC());
     Match match = query.findMatch(getParticipants(datastore), newParticipant);
 
@@ -100,18 +115,46 @@ public class AddParticipantServlet extends HttpServlet {
       addMatchToDatastore(match, datastore);
       deleteParticipantFromDatastore(match.getSecondParticipant(), datastore);
     } else {
-      // Match not found, insert participant entity into datastore
-      Entity participantEntity = new Entity(KEY_PARTICIPANT);
-      participantEntity.setProperty(PROPERTY_USERNAME, username);
-      participantEntity.setProperty(PROPERTY_STARTTIMEAVAILABLE, startTimeAvailable);
-      participantEntity.setProperty(PROPERTY_ENDTIMEAVAILABLE, endTimeAvailable);
-      participantEntity.setProperty(PROPERTY_DURATION, duration);
-      participantEntity.setProperty(PROPERTY_TIMESTAMP, timestamp);
-      datastore.put(participantEntity);
+      datastore.put(addParticipantEntityToDatastore(newParticipant));
     }
 
-    // Redirect back to the HTML page
-    response.sendRedirect("/index.html");
+    response.setContentType("text/plain;charset=UTF-8");
+    response.getWriter().println("Received form input details!");
+  }
+
+  /** Retrieve JSON body payload and convert to a JSONObject for parsing purposes */
+  private JSONObject retrieveRequestBody(HttpServletRequest request) throws IOException {
+    StringBuilder requestBuffer = new StringBuilder();
+    try {
+      BufferedReader reader = request.getReader();
+      String currentLine;
+      while ((currentLine = reader.readLine()) != null) {
+        requestBuffer.append(currentLine);
+      }
+    } catch (IOException e) {
+      return null;
+    }
+    return new JSONObject(requestBuffer.toString());
+  }
+
+  /** Retrieve user email address via Users API and parse for username */
+  private String getUsername() {
+    UserService userService = UserServiceFactory.getUserService();
+    String email = userService.getCurrentUser().getEmail();
+    return email != null ? email.split("@")[0] : null;
+  }
+
+  /* Convert Participant into an Entity compatible for datastore purposes */
+  private Entity addParticipantEntityToDatastore(Participant participant) {
+    Entity participantEntity = new Entity(KEY_PARTICIPANT);
+    participantEntity.setProperty(PROPERTY_USERNAME, participant.getUsername());
+    participantEntity.setProperty(
+        PROPERTY_START_TIME_AVAILABLE, participant.getStartTimeAvailable().toString());
+    participantEntity.setProperty(
+        PROPERTY_END_TIME_AVAILABLE, participant.getEndTimeAvailable().toString());
+    participantEntity.setProperty(PROPERTY_DURATION, participant.getDuration());
+    participantEntity.setProperty(PROPERTY_TIMESTAMP, participant.getTimestamp());
+    return participantEntity;
   }
 
   /** Return list of current participants from datastore */
@@ -127,11 +170,12 @@ public class AddParticipantServlet extends HttpServlet {
     for (Entity entity : results.asIterable()) {
       long id = (long) entity.getKey().getId();
       String username = (String) entity.getProperty(PROPERTY_USERNAME);
+      String startTimeAvailableString = (String) entity.getProperty(PROPERTY_START_TIME_AVAILABLE);
       ZonedDateTime startTimeAvailable =
-          (ZonedDateTime) entity.getProperty(PROPERTY_STARTTIMEAVAILABLE);
-      ZonedDateTime endTimeAvailable =
-          (ZonedDateTime) entity.getProperty(PROPERTY_ENDTIMEAVAILABLE);
-      int duration = (int) entity.getProperty(PROPERTY_DURATION);
+          (ZonedDateTime) ZonedDateTime.parse(startTimeAvailableString);
+      String endTimeAvailableString = (String) entity.getProperty(PROPERTY_END_TIME_AVAILABLE);
+      ZonedDateTime endTimeAvailable = (ZonedDateTime) ZonedDateTime.parse(endTimeAvailableString);
+      int duration = ((Long) entity.getProperty(PROPERTY_DURATION)).intValue();
       long timestamp = (long) entity.getProperty(PROPERTY_TIMESTAMP);
       Participant currParticipant =
           new Participant(id, username, startTimeAvailable, endTimeAvailable, duration, timestamp);
@@ -144,8 +188,8 @@ public class AddParticipantServlet extends HttpServlet {
   private void addMatchToDatastore(Match match, DatastoreService datastore) {
     // Set properties of entity
     Entity matchEntity = new Entity(KEY_MATCH);
-    matchEntity.setProperty(PROPERTY_FIRSTPARTICIPANT, match.getFirstParticipant());
-    matchEntity.setProperty(PROPERTY_SECONDPARTICIPANT, match.getSecondParticipant());
+    matchEntity.setProperty(PROPERTY_FIRST_PARTICIPANT, match.getFirstParticipant());
+    matchEntity.setProperty(PROPERTY_SECOND_PARTICIPANT, match.getSecondParticipant());
     matchEntity.setProperty(PROPERTY_DURATION, match.getDuration());
     matchEntity.setProperty(PROPERTY_TIMESTAMP, match.getTimestamp());
 
@@ -157,18 +201,5 @@ public class AddParticipantServlet extends HttpServlet {
   private void deleteParticipantFromDatastore(Participant participant, DatastoreService datastore) {
     Key participantEntityKey = KeyFactory.createKey(KEY_PARTICIPANT, participant.getId());
     datastore.delete(participantEntityKey);
-  }
-
-  /** Return positive integer value, or -1 if invalid or negative */
-  private static int convertToPositiveInt(String s) {
-    if (s == null) {
-      return -1;
-    }
-    try {
-      int parsed = Integer.parseInt(s);
-      return (parsed >= 0) ? parsed : -1;
-    } catch (NumberFormatException e) {
-      return -1;
-    }
   }
 }

@@ -59,7 +59,7 @@ public class EmailNotifier {
   private static final List<String> SCOPES = ImmutableList.of(GmailScopes.MAIL_GOOGLE_COM);
 
   private static final String CREDENTIALS_FILE_PATH =
-      "/home/grantjustice/IdeaProjects/Ad-lib/backend/credentials.json";
+      "backend/credentials.json";
 
   /** The email to be notified */
   private final String toEmail;

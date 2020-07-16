@@ -97,9 +97,18 @@ public class AddParticipantServlet extends HttpServlet {
     MatchDatastore matchDatastore = new MatchDatastore(datastore);
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
 
+    // Check if new participant already in datastore (unmatched, in queue)
+    if (participantDatastore.getParticipantFromUsername() == null) {
+      response.sendError(
+          HttpServletResponse.SC_BAD_REQUEST, "Already submitted form. Wait for your match!");
+      return;
+    }
+
     // Find immediate match if possible
     FindMatchQuery query = new FindMatchQuery(Clock.systemUTC(), participantDatastore);
     Match match = query.findMatch(newParticipant);
+
+    participantDatastore.addParticipant(newParticipant);
 
     if (match != null) {
       // Match found, add to match datastore, update participant datastore

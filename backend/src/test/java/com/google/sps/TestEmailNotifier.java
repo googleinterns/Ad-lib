@@ -1,15 +1,14 @@
 package com.google.sps;
 
 import com.google.sps.notifs.EmailNotifier;
-import org.junit.Assert;
-import org.junit.Test;
+import java.io.IOException;
+import java.util.Properties;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.IOException;
-import java.util.Properties;
-import static org.junit.Assert.*;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class TestEmailNotifier {
 
@@ -84,7 +83,7 @@ public class TestEmailNotifier {
     MimeMessage mimeMessage = emailNotifier.createEmail("", "", "");
     MimeMessage message = createTestMessage();
     message.addRecipient(MimeMessage.RecipientType.TO, new InternetAddress("jjgrant@buffalo.edu"));
-    assertArrayEquals(
+    Assert.assertArrayEquals(
         "These two messages should have the same single recipient ",
         message.getAllRecipients(),
         mimeMessage.getAllRecipients());
@@ -101,7 +100,7 @@ public class TestEmailNotifier {
     message.addRecipient(MimeMessage.RecipientType.TO, new InternetAddress("jdoe@buffalo.edu"));
     message.addRecipient(MimeMessage.RecipientType.TO, new InternetAddress("grantj@buffalo.edu"));
 
-    assertNotEquals(
+    Assert.assertArrayEquals(
         "These two messages should have different recipients ",
         message.getAllRecipients(),
         mimeMessage.getAllRecipients());

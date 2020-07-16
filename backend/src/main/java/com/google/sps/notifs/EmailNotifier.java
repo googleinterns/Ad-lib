@@ -27,16 +27,15 @@ import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
 import com.google.common.collect.ImmutableList;
-import com.google.inject.Inject;
-import org.apache.commons.codec.binary.Base64;
+import java.io.*;
+import java.util.List;
+import java.util.Properties;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.*;
-import java.util.List;
-import java.util.Properties;
+import org.apache.commons.codec.binary.Base64;
 
 /** Class representing the notification system capable of sending mail to the user. */
 public class EmailNotifier {
@@ -68,7 +67,6 @@ public class EmailNotifier {
    * @param recipientName Name of the recipient of the user
    * @param toEmail The email address that this email is going to be sent to.
    */
-  @Inject
   public EmailNotifier(String recipientName, String toEmail, Gmail gmail) {
     //    if (gmail == null) {
     //      throw new InvalidParameterException("Gmail Cannot be Null");

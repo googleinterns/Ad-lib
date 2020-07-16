@@ -75,19 +75,19 @@ public final class FindMatchQueryTest {
 
   private FindMatchQuery query;
 
+  /** Return today's date with time of hour:minute */
+  public static ZonedDateTime getNewTimeToday(ZonedDateTime dateTime, int hour, int minute) {
+    // Calculate current date but with hour:minute time
+    // TODO: All times are currently today, wrap around times?
+    return dateTime.withHour(hour).withMinute(minute).withNano(0);
+  }
+
   @Before
   public void setUp() {
     // Set "current" date to  1/1/2020 2:00pm ET
     Clock clock = Clock.fixed(currentDateTimeET.toInstant(), currentDateTimeET.getZone());
 
     query = new FindMatchQuery(clock);
-  }
-
-  /** Return today's date with time of hour:minute */
-  public static ZonedDateTime getNewTimeToday(ZonedDateTime dateTime, int hour, int minute) {
-    // Calculate current date but with hour:minute time
-    // TODO: All times are currently today, wrap around times?
-    return dateTime.withHour(hour).withMinute(minute).withNano(0);
   }
 
   @Test

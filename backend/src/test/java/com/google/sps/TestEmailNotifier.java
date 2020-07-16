@@ -1,5 +1,7 @@
 package com.google.sps;
 
+import static org.junit.Assert.assertEquals;
+
 import com.google.sps.notifs.EmailNotifier;
 import java.io.IOException;
 import java.util.Properties;
@@ -8,7 +10,6 @@ import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.junit.Assert;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class TestEmailNotifier {

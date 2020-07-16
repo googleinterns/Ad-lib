@@ -19,6 +19,7 @@ import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInsta
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -33,6 +34,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Properties;
 import javax.mail.Message.RecipientType;
@@ -65,20 +67,17 @@ public class EmailNotifier {
   /** The notification recipient */
   private final String recipientName;
 
-  /** The gmail dependency */
-  private final Gmail service;
 
   /**
    * @param recipientName Name of the recipient of the user
    * @param toEmail The email address that this email is going to be sent to.
    */
-  public EmailNotifier(String recipientName, String toEmail, Gmail gmail) {
+  public EmailNotifier(String recipientName, String toEmail) {
     //    if (gmail == null) {
     //      throw new InvalidParameterException("Gmail Cannot be Null");
     //    }
     this.recipientName = recipientName;
     this.toEmail = toEmail;
-    this.service = gmail;
   }
 
   /**
@@ -152,7 +151,8 @@ public class EmailNotifier {
   //    TODO(#35): Create a dummy email for ad lib itself to send emails.
   //    TODO(#36): Replace body to send real link to user instead of generic.
 
-  public void notifyUser() throws MessagingException, IOException {
+  public void notifyUser() throws MessagingException, IOException, GeneralSecurityException {
+    NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
     MimeMessage email =
         createEmail(
             getToEmail(),
@@ -162,7 +162,11 @@ public class EmailNotifier {
                 + " Please Join your Ad-Lib meeting via the link below : \n"
                 + " http://meet.google.com/new");
     Message messageWithEmail = createMessageWithEmail(email);
-    getService().users().messages().send("me", messageWithEmail).execute();
+    Gmail service =
+        new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+            .setApplicationName(APPLICATION_NAME)
+            .build();
+    service.users().messages().send("me", messageWithEmail).execute();
   }
 
   public String getToEmail() {
@@ -172,10 +176,5 @@ public class EmailNotifier {
   /** Getter function that returns the string representing the email recipients name . */
   public String getRecipientName() {
     return recipientName;
-  }
-
-  /** Getter function that returns the Gmail Service that emailNotifier depends on . */
-  public Gmail getService() {
-    return service;
   }
 }

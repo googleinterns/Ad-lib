@@ -29,14 +29,14 @@ public class TestEmailNotifier {
 
   @Test
   public void constructorShouldSetNameAndEmailTo() {
-    EmailNotifier emailNotifier = new EmailNotifier("John", "jdoe@gmail.com", null);
+    EmailNotifier emailNotifier = new EmailNotifier("John", "jdoe@gmail.com");
     assertEquals("John", emailNotifier.getRecipientName());
     assertEquals("jdoe@gmail.com", emailNotifier.getToEmail());
   }
 
   @Test
   public void testMessageHasCorrectApplicationName() throws MessagingException {
-    EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu", null);
+    EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu");
     MimeMessage mimeMessage =
         emailNotifier.createEmail("test@fakemail.com", "testSubject", "testBody");
     MimeMessage message = createTestMessage();
@@ -49,7 +49,7 @@ public class TestEmailNotifier {
 
   @Test
   public void testMessageHasCorrectSubject() throws MessagingException {
-    EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu", null);
+    EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu");
     MimeMessage mimeMessage =
         emailNotifier.createEmail("test@fakemail.com", "testSubject", "testBody");
     MimeMessage message = createTestMessage();
@@ -60,7 +60,7 @@ public class TestEmailNotifier {
 
   @Test
   public void testMessageShouldHaveCorrectBodyText() throws MessagingException, IOException {
-    EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu", null);
+    EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu");
     MimeMessage mimeMessage =
         emailNotifier.createEmail("test@fakemail.com", "testSubject", "testBody");
     MimeMessage message = createTestMessage();
@@ -73,7 +73,7 @@ public class TestEmailNotifier {
 
   @Test
   public void testMessageShouldHaveIncorrectBodyText() throws MessagingException, IOException {
-    EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu", null);
+    EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu");
     MimeMessage mimeMessage =
         emailNotifier.createEmail("test@fakemail.com", "testSubject", "testBody");
     MimeMessage message = createTestMessage();
@@ -86,7 +86,7 @@ public class TestEmailNotifier {
 
   @Test
   public void testMessageShouldHaveCorrectRecipients() throws MessagingException {
-    EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu", null);
+    EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu");
     MimeMessage mimeMessage =
         emailNotifier.createEmail("jjgrant@buffalo.edu", "testSubject", "testBody");
     MimeMessage message = createTestMessage();
@@ -99,7 +99,7 @@ public class TestEmailNotifier {
 
   @Test
   public void testMessageShouldNotHaveCorrectRecipients() throws MessagingException {
-    EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu", null);
+    EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu");
     MimeMessage mimeMessage =
         emailNotifier.createEmail(
             "jjgrant@buffalo.edu", "Random Subject", "Welcome To  Your Ad-lib event");

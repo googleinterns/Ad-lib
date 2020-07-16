@@ -5,8 +5,6 @@ import com.google.common.base.MoreObjects;
 /** A match between two participants. */
 public final class Match {
 
-  /** Match datastore key ID */
-  private final long id;
   /** First participant username (datastore key name) */
   private final String firstParticipantUsername;
   /** Second participant username (datastore key name) */
@@ -18,20 +16,14 @@ public final class Match {
 
   /** Constructor */
   public Match(
-      long id,
       String firstParticipantUsername,
       String secondParticipantUsername,
       int duration,
       long timestamp) {
-    this.id = id;
     this.firstParticipantUsername = firstParticipantUsername;
     this.secondParticipantUsername = secondParticipantUsername;
     this.duration = duration;
     this.timestamp = timestamp;
-  }
-
-  public long getId() {
-    return id;
   }
 
   public String getFirstParticipantUsername() {
@@ -52,7 +44,6 @@ public final class Match {
 
   public String toString() {
     return MoreObjects.toStringHelper(this)
-        .add("id", id)
         .add("firstParticipantUsername", firstParticipantUsername)
         .add("secondParticipantUsername", secondParticipantUsername)
         .add("duration", duration)

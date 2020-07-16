@@ -65,9 +65,8 @@ public final class FindMatchQuery {
           dateTime.plusMinutes(duration + PADDING_TIME).isBefore(earliestEndTimeAvailable);
 
       if (compatibleTime) {
-        // Create and return match (id is irrelevant because it's assigned when put into datastore
+        // Create and return match
         return new Match(
-            /* id= */ -1L,
             newParticipant.getUsername(),
             currParticipant.getUsername(),
             duration,

@@ -72,7 +72,7 @@ public final class MatchDatastoreTest {
     // Add one match to datastore
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     MatchDatastore matchDatastore = new MatchDatastore(datastore);
-    Match match = new Match(ID_DEFAULT, PERSON_A, PERSON_B, DURATION_DEFAULT, TIMESTAMP_DEFAULT);
+    Match match = new Match(PERSON_A, PERSON_B, DURATION_DEFAULT, TIMESTAMP_DEFAULT);
 
     long id = matchDatastore.addMatch(match);
 
@@ -90,8 +90,8 @@ public final class MatchDatastoreTest {
     // Add two matches to datastore
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     MatchDatastore matchDatastore = new MatchDatastore(datastore);
-    Match match1 = new Match(ID_DEFAULT, PERSON_A, PERSON_B, DURATION_DEFAULT, TIMESTAMP_DEFAULT);
-    Match match2 = new Match(ID_DEFAULT, PERSON_C, PERSON_D, DURATION_DEFAULT, TIMESTAMP_DEFAULT);
+    Match match1 = new Match(PERSON_A, PERSON_B, DURATION_DEFAULT, TIMESTAMP_DEFAULT);
+    Match match2 = new Match(PERSON_C, PERSON_D, DURATION_DEFAULT, TIMESTAMP_DEFAULT);
 
     long id1 = matchDatastore.addMatch(match1);
     long id2 = matchDatastore.addMatch(match2);
@@ -119,7 +119,7 @@ public final class MatchDatastoreTest {
     // Add one match and return it using id to datastore
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     MatchDatastore matchDatastore = new MatchDatastore(datastore);
-    Match match = new Match(ID_DEFAULT, PERSON_A, PERSON_B, DURATION_DEFAULT, TIMESTAMP_DEFAULT);
+    Match match = new Match(PERSON_A, PERSON_B, DURATION_DEFAULT, TIMESTAMP_DEFAULT);
 
     long id = matchDatastore.addMatch(match);
 
@@ -135,7 +135,6 @@ public final class MatchDatastoreTest {
     // Try to get match from id that's not in datastore
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     MatchDatastore matchDatastore = new MatchDatastore(datastore);
-    Match match = new Match(ID_DEFAULT, PERSON_A, PERSON_B, DURATION_DEFAULT, TIMESTAMP_DEFAULT);
 
     Match matchFromId = matchDatastore.getMatchFromId(ID_DEFAULT);
     assertThat(matchFromId).isNull();

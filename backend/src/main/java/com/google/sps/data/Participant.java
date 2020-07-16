@@ -16,7 +16,7 @@ public final class Participant {
   private ZonedDateTime endTimeAvailable;
   /** How long user wants to chat */
   private int duration;
-  /** Id of match in datastore, 0 if never found a match */
+  /** Id of match in datastore, 0 if never found a match (can assign 0 at construction) */
   private long matchId;
   /** Time of submitted form */
   private final long timestamp;

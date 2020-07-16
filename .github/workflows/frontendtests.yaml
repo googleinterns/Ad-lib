@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x] # Only run the 10.x build
+        node-version: [10.x] # Only run the 10.x build version
 
     steps:
     - uses: actions/checkout@v2

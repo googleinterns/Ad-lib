@@ -9,13 +9,13 @@ public final class Participant {
   /** Google username (ldap) */
   private final String username;
   /** Time user starts being available */
-  private long startTimeAvailable;
+  private final long startTimeAvailable;
   /** Time user is available until */
-  private long endTimeAvailable;
+  private final long endTimeAvailable;
   /** How long user wants to chat */
-  private int duration;
+  private final int duration;
   /** Id of match in datastore, 0 if never found a match (can assign 0 at construction) */
-  private long matchId;
+  private final long matchId;
   /** Time of submitted form */
   private final long timestamp;
 

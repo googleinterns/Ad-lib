@@ -8,7 +8,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Install npm packages
+      - name: Install yarn packages
         run: yarn add eslint@latest
       - name: Install eslint React Plugin
         run: yarn add eslint-plugin-react@latest

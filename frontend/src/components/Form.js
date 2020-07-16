@@ -47,19 +47,25 @@ const useStyles = makeStyles((theme) => ({
  * @param {String} role
  * @param {String} productArea
  * @param {Number} duration
- * @param {Number} timeAvailableUntilMilliseconds
- * @param {Number} currentTimeInMilliseconds
+ * @param {Date} timeAvailableUntil
+ * @param {Number} currentTimeMilliseconds
  */
 export function validateFormInputs(role, productArea, duration,
-    timeAvailableUntilMilliseconds, currentTimeInMilliseconds) {
-  const durationInMilliseconds = duration * 60000;
-  if (productArea === '' || role === '') {
-    alert('Please select options for all form fields to submit!');
+    timeAvailableUntil, currentTimeMilliseconds) {
+  if (!(timeAvailableUntil instanceof Date) ||
+    isNaN(timeAvailableUntil.getTime())) {
+    alert('Please select a valid date.');
     return false;
-  } else if (currentTimeInMilliseconds + durationInMilliseconds >=
-      timeAvailableUntilMilliseconds) {
+  }
+  const timeAvailableUntilMilliseconds = timeAvailableUntil.getTime();
+  const durationMilliseconds = duration * 60000;
+  if (currentTimeMilliseconds + durationMilliseconds >=
+    timeAvailableUntilMilliseconds) {
     // Check if a meeting is possible with the provided inputs
     alert('Please select an larger time availability window');
+    return false;
+  } else if (productArea === '' || role === '') {
+    alert('Please select options for all form fields to submit!');
     return false;
   } else {
     return true;
@@ -88,7 +94,7 @@ export default function Form() {
   function handleFormSubmission(event) {
     const currentTimeInMilliseconds = new Date().getTime();
     if (validateFormInputs(role, productArea, duration,
-        timeAvailableUntil.getTime(), currentTimeInMilliseconds)) {
+        timeAvailableUntil, currentTimeInMilliseconds)) {
       // Override browser's default behvaior to execute POST request
       event.preventDefault();
 

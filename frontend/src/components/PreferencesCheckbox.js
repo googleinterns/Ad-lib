@@ -23,7 +23,7 @@ export default function PreferencesCheckbox(props) {
           onChange={(event) => props.onChange(event.target.checked)}
           name="checkbox"
           color="primary"
-          defaultChecked="true"
+          defaultChecked={true}
         />
       }
     />

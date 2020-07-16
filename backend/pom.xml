@@ -139,12 +139,12 @@
 <!--            <version>3.8.2</version>-->
 <!--        </dependency>-->
 
-        <!-- https://mvnrepository.com/artifact/org.junit/org.junit -->
-        <dependency>
-            <groupId>org.junit</groupId>
-            <artifactId>org.junit</artifactId>
-            <version>3.8.2.v200706111738</version>
-        </dependency>
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.junit/org.junit &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.junit</groupId>-->
+<!--            <artifactId>org.junit</artifactId>-->
+<!--            <version>3.8.2.v200706111738</version>-->
+<!--        </dependency>-->
 
 
         <!-- https://mvnrepository.com/artifact/javax.activation/activation -->

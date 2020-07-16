@@ -88,7 +88,6 @@ public class AddParticipantServlet extends HttpServlet {
     }
 
     // Create new Participant from input parameters
-    // id is irrelevant, created when added to datastore
     Participant newParticipant =
         new Participant(
             username, startTimeAvailable, endTimeAvailable, duration, /* matchId=*/ 0, timestamp);
@@ -106,18 +105,21 @@ public class AddParticipantServlet extends HttpServlet {
       // Match found, add to match datastore, update participant datastore
       long matchId = matchDatastore.addMatch(match);
 
-      System.out.println(matchDatastore.getMatchFromId(matchId).toString());
+      System.out.println(match);
 
-      // Update participant entities with new matchId and null availability
+      // Update current participant entity with new matchId and null availability
       Participant currParticipant =
           participantDatastore.getParticipantFromUsername(match.getSecondParticipantUsername());
       participantDatastore.addParticipant(currParticipant.foundMatch(matchId));
+
+      // Add new participant to datastore with new matchId and null availability
       participantDatastore.addParticipant(newParticipant.foundMatch(matchId));
     } else {
       // Match not found, add participant to datastore
       participantDatastore.addParticipant(newParticipant);
     }
 
+    // Confirm received form input
     response.setContentType("text/plain;charset=UTF-8");
     response.getWriter().println("Received form input details!");
   }

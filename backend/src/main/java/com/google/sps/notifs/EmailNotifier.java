@@ -19,7 +19,6 @@ import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInsta
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -28,21 +27,16 @@ import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
 import com.google.common.collect.ImmutableList;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.security.GeneralSecurityException;
-import java.util.List;
-import java.util.Properties;
+import com.google.inject.Inject;
+import org.apache.commons.codec.binary.Base64;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import org.apache.commons.codec.binary.Base64;
+import java.io.*;
+import java.util.List;
+import java.util.Properties;
 
 /** Class representing the notification system capable of sending mail to the user. */
 public class EmailNotifier {
@@ -58,7 +52,8 @@ public class EmailNotifier {
    */
   private static final List<String> SCOPES = ImmutableList.of(GmailScopes.MAIL_GOOGLE_COM);
 
-  private static final String CREDENTIALS_FILE_PATH = "credentials.json";
+  private static final String CREDENTIALS_FILE_PATH =
+      "/home/grantjustice/IdeaProjects/Ad-lib/backend/credentials.json";
 
   /** The email to be notified */
   private final String toEmail;
@@ -66,13 +61,21 @@ public class EmailNotifier {
   /** The notification recipient */
   private final String recipientName;
 
+  /** The gmail dependency */
+  private final Gmail service;
+
   /**
    * @param recipientName Name of the recipient of the user
-   * @param toEmail The email addresse that this email is going to be sent to.
+   * @param toEmail The email address that this email is going to be sent to.
    */
-  public EmailNotifier(String recipientName, String toEmail) {
+  @Inject
+  public EmailNotifier(String recipientName, String toEmail, Gmail gmail) {
+    //    if (gmail == null) {
+    //      throw new InvalidParameterException("Gmail Cannot be Null");
+    //    }
     this.recipientName = recipientName;
     this.toEmail = toEmail;
+    this.service = gmail;
   }
 
   /**
@@ -82,7 +85,7 @@ public class EmailNotifier {
    * @return An authorized Credential object.
    * @throws IOException If the credentials.json file cannot be found.
    */
-  private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
+  public static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
       throws IOException {
     // Load client secrets.
     InputStream in = new FileInputStream(CREDENTIALS_FILE_PATH);
@@ -97,30 +100,6 @@ public class EmailNotifier {
             .build();
     LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8000).build();
     return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
-  }
-
-  /**
-   * Create a MimeMessage using the parameters provided.
-   *
-   * @param toEmail email address of the receiver
-   * @param subject subject of the email
-   * @param bodyText body text of the email
-   * @return the MimeMessage to be used to send email
-   * @throws MessagingException for other failures
-   */
-  public static MimeMessage createEmail(String toEmail, String subject, String bodyText)
-      throws MessagingException {
-
-    Properties props = new Properties();
-    Session session = Session.getDefaultInstance(props, /* authenticator= */ null);
-
-    MimeMessage email = new MimeMessage(session);
-
-    email.setFrom(new InternetAddress(APPLICATION_EMAIL));
-    email.addRecipient(RecipientType.TO, new InternetAddress(toEmail));
-    email.setSubject(subject);
-    email.setText(bodyText);
-    return email;
   }
 
   /**
@@ -142,17 +121,35 @@ public class EmailNotifier {
     return message;
   }
 
-  /** Getter function that returns the string representing the email recipients name . */
-  private String getRecipientName() {
-    return recipientName;
+  /**
+   * Create a MimeMessage using the parameters provided.
+   *
+   * @param toEmail email address of the receiver
+   * @param subject subject of the email
+   * @param bodyText body text of the email
+   * @return the MimeMessage to be used to send email
+   * @throws MessagingException if there was a problem accessing the Store
+   */
+  public MimeMessage createEmail(String toEmail, String subject, String bodyText)
+      throws MessagingException {
+
+    Properties props = new Properties();
+    Session session = Session.getDefaultInstance(props, /* authenticator= */ null);
+
+    MimeMessage email = new MimeMessage(session);
+
+    email.setFrom(new InternetAddress(APPLICATION_EMAIL));
+    email.addRecipient(RecipientType.TO, new InternetAddress(toEmail));
+    email.setSubject(subject);
+    email.setText(bodyText);
+    return email;
   }
 
   /** Function that access its api and using it sends an email */
-  //    TODO(): Create a dummy email for ad lib itself to send emails.
-  //    TODO(): Replace body to send real link to user instead of generic.
+  //    TODO(#35): Create a dummy email for ad lib itself to send emails.
+  //    TODO(#36): Replace body to send real link to user instead of generic.
 
-  public void notifyUser() throws MessagingException, GeneralSecurityException, IOException {
-
+  public void notifyUser() throws MessagingException, IOException {
     MimeMessage email =
         createEmail(
             getToEmail(),
@@ -161,16 +158,21 @@ public class EmailNotifier {
                 + getRecipientName()
                 + " Please Join your Ad-Lib meeting via the link below : \n"
                 + " http://meet.google.com/new");
-    NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-    Gmail service =
-        new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-            .setApplicationName(APPLICATION_NAME)
-            .build();
     Message messageWithEmail = createMessageWithEmail(email);
-    service.users().messages().send("me", messageWithEmail).execute();
+    getService().users().messages().send("me", messageWithEmail).execute();
   }
 
-  private String getToEmail() {
+  public String getToEmail() {
     return toEmail;
+  }
+
+  /** Getter function that returns the string representing the email recipients name . */
+  public String getRecipientName() {
+    return recipientName;
+  }
+
+  /** Getter function that returns the Gmail Service that emailNotifier depends on . */
+  public Gmail getService() {
+    return service;
   }
 }

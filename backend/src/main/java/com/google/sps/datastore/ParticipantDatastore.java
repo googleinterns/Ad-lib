@@ -37,22 +37,27 @@ public final class ParticipantDatastore {
     this.datastore = datastore;
   }
 
+  /** Return entity of participant */
+  private Entity getEntityFromParticipant(Participant participant) {
+    // Set properties of entity based on participant fields
+    Entity entity = new Entity(KIND_PARTICIPANT, participant.getUsername());
+    entity.setProperty(PROPERTY_USERNAME, participant.getUsername());
+    entity.setProperty(PROPERTY_STARTTIMEAVAILABLE, participant.getStartTimeAvailable());
+    entity.setProperty(PROPERTY_ENDTIMEAVAILABLE, participant.getEndTimeAvailable());
+    entity.setProperty(PROPERTY_DURATION, participant.getDuration());
+    entity.setProperty(PROPERTY_MATCHID, participant.getMatchId());
+    entity.setProperty(PROPERTY_TIMESTAMP, participant.getTimestamp());
+
+    return entity;
+  }
+
   /**
    * Put participant in datastore. Overwrite participant entity if participant with same username
    * already exists.
    */
   public void addParticipant(Participant participant) {
-    // Set properties of entity based on participant fields
-    Entity participantEntity = new Entity(KIND_PARTICIPANT, participant.getUsername());
-    participantEntity.setProperty(PROPERTY_USERNAME, participant.getUsername());
-    participantEntity.setProperty(PROPERTY_STARTTIMEAVAILABLE, participant.getStartTimeAvailable());
-    participantEntity.setProperty(PROPERTY_ENDTIMEAVAILABLE, participant.getEndTimeAvailable());
-    participantEntity.setProperty(PROPERTY_DURATION, participant.getDuration());
-    participantEntity.setProperty(PROPERTY_MATCHID, participant.getMatchId());
-    participantEntity.setProperty(PROPERTY_TIMESTAMP, participant.getTimestamp());
-
     // Insert entity into datastore
-    datastore.put(participantEntity);
+    datastore.put(getEntityFromParticipant(participant));
   }
 
   /** Return Participant Entity from username, or null if entity is not found */
@@ -92,8 +97,8 @@ public final class ParticipantDatastore {
         username, startTimeAvailable, endTimeAvailable, duration, matchId, timestamp);
   }
 
-  /** Return list of all unmatched participants with same duration */
-  public List<Participant> getSameDurationParticipants(int duration) {
+  /** Return list of all unmatched participants with duration */
+  public List<Participant> getParticipantsWithDuration(int duration) {
     Query query = new Query(KIND_PARTICIPANT).addSort(PROPERTY_DURATION, SortDirection.ASCENDING);
 
     // Create filter to get only participants with same duration

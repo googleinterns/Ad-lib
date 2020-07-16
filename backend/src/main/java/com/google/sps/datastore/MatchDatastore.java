@@ -6,6 +6,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.sps.data.Match;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /** Separates datastore method calls involving Match type from caller */
@@ -26,29 +27,29 @@ public final class MatchDatastore {
     this.datastore = datastore;
   }
 
+  /** Return entity of match */
+  private Entity getEntityFromMatch(Match match) {
+    // Set properties of entity
+    Entity entity = new Entity(KIND_MATCH);
+    entity.setProperty(PROPERTY_FIRSTPARTICIPANTUSERNAME, match.getFirstParticipantUsername());
+    entity.setProperty(PROPERTY_SECONDPARTICIPANTUSERNAME, match.getSecondParticipantUsername());
+    entity.setProperty(PROPERTY_DURATION, match.getDuration());
+    entity.setProperty(PROPERTY_TIMESTAMP, match.getTimestamp());
+    return entity;
+  }
+
   /** Put Match in datastore and return the match key id */
   public long addMatch(Match match) {
-    // Set properties of entity
-    Entity matchEntity = new Entity(KIND_MATCH);
-    matchEntity.setProperty(PROPERTY_FIRSTPARTICIPANTUSERNAME, match.getFirstParticipantUsername());
-    matchEntity.setProperty(
-        PROPERTY_SECONDPARTICIPANTUSERNAME, match.getSecondParticipantUsername());
-    matchEntity.setProperty(PROPERTY_DURATION, match.getDuration());
-    matchEntity.setProperty(PROPERTY_TIMESTAMP, match.getTimestamp());
-
-    // Insert entity into datastore
-    datastore.put(matchEntity);
+    // Create and insert entity into datastore
+    Entity entity = getEntityFromMatch(match);
+    datastore.put(entity);
 
     // Return match key id
-    return matchEntity.getKey().getId();
+    return entity.getKey().getId();
   }
 
   /** Return Match from entity, or null if entity is null */
-  private static Match getMatchFromEntity(Entity entity) {
-    if (entity == null) {
-      return null;
-    }
-
+  private static Match getMatchFromEntity(@Nonnull Entity entity) {
     String firstParticipantUsername =
         (String) entity.getProperty(PROPERTY_FIRSTPARTICIPANTUSERNAME);
     String secondParticipantUsername =

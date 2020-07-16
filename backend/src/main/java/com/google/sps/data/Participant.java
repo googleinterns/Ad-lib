@@ -46,36 +46,31 @@ public final class Participant {
     return startTimeAvailable;
   }
 
-  public void setStartTimeAvailable(long startTimeAvailable) {
-    this.startTimeAvailable = startTimeAvailable;
-  }
-
   public long getEndTimeAvailable() {
     return endTimeAvailable;
-  }
-
-  public void setEndTimeAvailable(long endTimeAvailable) {
-    this.endTimeAvailable = endTimeAvailable;
   }
 
   public int getDuration() {
     return duration;
   }
 
-  public void setDuration(int duration) {
-    this.duration = duration;
-  }
-
   public long getMatchId() {
     return matchId;
   }
 
-  public void setMatchId(long matchId) {
-    this.matchId = matchId;
-  }
-
   public long getTimestamp() {
     return timestamp;
+  }
+
+  /** Return participant with new matchId and nulled out availability */
+  public Participant foundMatch(long newMatchId) {
+    return new Participant(
+        username,
+        /* startTimeAvailable= */ 0,
+        /* endTimeAvailable= */ 0,
+        /* duration= */ 0,
+        newMatchId,
+        timestamp);
   }
 
   public String toString() {

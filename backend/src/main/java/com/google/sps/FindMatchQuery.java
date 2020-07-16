@@ -49,7 +49,7 @@ public final class FindMatchQuery {
 
     // Get list of unmatched participants with same duration as newParticipant
     List<Participant> sameDurationParticipants =
-        participantDatastore.getSameDurationParticipants(duration);
+        participantDatastore.getParticipantsWithDuration(duration);
 
     // Set reference date time using clock
     long currentTimeMillis = clock.millis();
@@ -60,7 +60,7 @@ public final class FindMatchQuery {
     for (Participant currParticipant : sameDurationParticipants) {
       // Check if participants are both free for that duration + extra
       long currEndTimeAvailable = currParticipant.getEndTimeAvailable();
-      long earliestEndTimeAvailable = getEarlier(newEndTimeAvailable, currEndTimeAvailable);
+      long earliestEndTimeAvailable = Math.min(newEndTimeAvailable, currEndTimeAvailable);
       boolean compatibleTime =
           (currentTimeMillis + (duration + PADDING_TIME) * MINUTES_TO_MILLIS)
               < earliestEndTimeAvailable;
@@ -76,10 +76,5 @@ public final class FindMatchQuery {
     }
     // No inital match found
     return null;
-  }
-
-  /** Return earlier of two long millis */
-  private long getEarlier(long first, long second) {
-    return (first < second) ? first : second;
   }
 }

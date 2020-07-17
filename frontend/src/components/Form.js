@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * Validates from inputs on submission and alerts user on error
- * @return {Boolean}  true or false based on validity of inputs
+ * @return {Boolean} true or false based on validity of inputs
  * @param {String} role
  * @param {String} productArea
  * @param {Number} duration
@@ -51,15 +51,13 @@ const useStyles = makeStyles((theme) => ({
  * @param {Number} currentTimeMilliseconds
  */
 export function validateFormInputs(role, productArea, duration,
-    timeAvailableUntil, currentTimeMilliseconds) {
-  if (!(timeAvailableUntil instanceof Date) ||
-    isNaN(timeAvailableUntil.getTime())) {
+    timeAvailableUntilMilliseconds, currentTimeMilliseconds) {
+  const durationMilliseconds = duration * 60000;
+  
+  if (isNaN(timeAvailableUntilMilliseconds)) {
     alert('Please select a valid date.');
     return false;
-  }
-  const timeAvailableUntilMilliseconds = timeAvailableUntil.getTime();
-  const durationMilliseconds = duration * 60000;
-  if (currentTimeMilliseconds + durationMilliseconds >=
+  } else if (currentTimeMilliseconds + durationMilliseconds >=
     timeAvailableUntilMilliseconds) {
     // Check if a meeting is possible with the provided inputs
     alert('Please select an larger time availability window');
@@ -94,7 +92,7 @@ export default function Form() {
   function handleFormSubmission(event) {
     const currentTimeInMilliseconds = new Date().getTime();
     if (validateFormInputs(role, productArea, duration,
-        timeAvailableUntil, currentTimeInMilliseconds)) {
+        timeAvailableUntil.getTime(), currentTimeInMilliseconds)) {
       // Override browser's default behvaior to execute POST request
       event.preventDefault();
 

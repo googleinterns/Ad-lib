@@ -49,46 +49,64 @@ describe('Form', () => {
 
 describe('Form Validation', () => {
   it('should return true', () => {
-    window.alert = jest.fn();
     const role = 'Intern';
     const productArea = 'Platforms and Ecosystems';
-    const timeAvailableUntilInMilliseconds = 1594846605591;
+    // Wed Jul 15 2020 20:56:45
+    const timeAvailableUntilMilliseconds = 1594846605591;
     const duration = 15;
-    const currentTimeInMilliseconds = 1594801800000;
+    // Wed Jul 15 2020 08:30:00
+    const currentTimeMilliseconds = 1594801800000;
     expect(validateFormInputs(role, productArea, duration,
-        timeAvailableUntilInMilliseconds, currentTimeInMilliseconds)).toBe(true);
+      timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(true);
   });
-
+  
   it('should return false since Role is not specified', () => {
     window.alert = jest.fn();
     const role = '';
     const productArea = 'Platforms and Ecosystems';
-    const timeAvailableUntilInMilliseconds = 1594846605591;
+    // Wed Jul 15 2020 20:56:45
+    const timeAvailableUntilMilliseconds = 1594846605591;
     const duration = 15;
-    const currentTimeInMilliseconds = 1594801800000;
+    // Wed Jul 15 2020 08:30:00
+    const currentTimeMilliseconds = 1594801800000;
     expect(validateFormInputs(role, productArea, duration,
-        timeAvailableUntilInMilliseconds, currentTimeInMilliseconds)).toBe(false);
+      timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(false);
   });
 
   it('should return false since PA is not specified', () => {
     window.alert = jest.fn();
     const role = 'Intern';
     const productArea = '';
-    const timeAvailableUntilInMilliseconds = 1594846605591;
+    // Wed Jul 15 2020 20:56:45
+    const timeAvailableUntilMilliseconds = 1594846605591;
     const duration = 15;
-    const currentTimeInMilliseconds = 1594801800000;
+    // Wed Jul 15 2020 08:30:00
+    const currentTimeMilliseconds = 1594801800000;
     expect(validateFormInputs(role, productArea, duration,
-        timeAvailableUntilInMilliseconds, currentTimeInMilliseconds)).toBe(false);
+      timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(false);
   });
 
   it('should return false since time is incompatible', () => {
     window.alert = jest.fn();
     const role = 'Intern';
     const productArea = 'Core';
-    const timeAvailableUntilInMilliseconds = 1594846605591;
+    // Wed Jul 15 2020 20:56:45    
+    const timeAvailableUntilMilliseconds = 1594846605591;
     const duration = 15;
-    const currentTimeInMilliseconds = 1594846605000;
+    // Wed Jul 15 2020 20:56:40
+    const currentTimeMilliseconds = 1594846600000;
     expect(validateFormInputs(role, productArea, duration,
-        timeAvailableUntilInMilliseconds, currentTimeInMilliseconds)).toBe(false);
+      timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(false);
+  });
+
+  it('should return false since time has invalid format', () => {
+    window.alert = jest.fn();
+    const role = 'Intern';
+    const productArea = 'Core';
+    const timeAvailableUntilMilliseconds = NaN;
+    const duration = 15;
+    const currentTimeMilliseconds = 1594846605000;
+    expect(validateFormInputs(role, productArea, duration,
+      timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(false);
   });
 });

@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-public class TestEmailNotifier {
+public class EmailNotifierTest {
 
   private EmailNotifier emailNotifier;
   private Gmail gmail;

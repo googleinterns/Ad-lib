@@ -66,16 +66,16 @@ public class EmailNotifier {
   /** The notification recipient */
   private final String recipientName;
 
+  private final Gmail service;
+
   /**
    * @param recipientName Name of the recipient of the user
    * @param toEmail The email address that this email is going to be sent to.
    */
-  public EmailNotifier(String recipientName, String toEmail) {
-    //    if (gmail == null) {
-    //      throw new InvalidParameterException("Gmail Cannot be Null");
-    //    }
+  public EmailNotifier(String recipientName, String toEmail, Gmail service) {
     this.recipientName = recipientName;
     this.toEmail = toEmail;
+    this.service = service;
   }
 
   /**
@@ -146,8 +146,8 @@ public class EmailNotifier {
   }
 
   /** Function that access its api and using it sends an email */
-  //    TODO(#35): Create a dummy email for ad lib itself to send emails.
-  //    TODO(#36): Replace body to send real link to user instead of generic.
+  //   TODO(#35): Create a dummy email for ad lib itself to send emails.
+  //   TODO(#36): Replace body to send real link to user instead of generic.
 
   public void notifyUser() throws MessagingException, IOException, GeneralSecurityException {
     NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -174,5 +174,9 @@ public class EmailNotifier {
   /** Getter function that returns the string representing the email recipients name . */
   public String getRecipientName() {
     return recipientName;
+  }
+
+  public Gmail getService() {
+    return service;
   }
 }

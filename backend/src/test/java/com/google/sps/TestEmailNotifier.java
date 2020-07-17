@@ -1,116 +1,157 @@
 package com.google.sps;
 
+import com.google.api.services.gmail.Gmail;
+import com.google.api.services.gmail.model.Message;
+import org.apache.commons.codec.binary.Base64;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import org.junit.Before;
 
 import com.google.sps.notifs.EmailNotifier;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
+import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import static org.mockito.Mockito.*;
 
 public class TestEmailNotifier {
 
-  public MimeMessage createTestMessage() {
-    Properties properties = System.getProperties();
-    Session session = Session.getDefaultInstance(properties);
-    return new MimeMessage(session);
+  private EmailNotifier emailNotifier;
+  private Gmail gmail;
+  private Gmail.Users users;
+  private Gmail.Users.Messages messages;
+  private Message testMessage;
+
+  @Before
+  public void setUp() throws MessagingException, IOException {
+    gmail = mock(Gmail.class);
+    // Mock to return list of users
+    users = mock(Gmail.Users.class);
+    // Mock to return list of messages.
+    messages = mock(Gmail.Users.Messages.class);
+    MimeMessage mimemessage = createTestMessage();
+    testMessage = createMessageFromMime(mimemessage);
+    // Test Instance of email notifier class.
+    emailNotifier = new EmailNotifier("John", "jdoe@gmail.com", gmail);
+    // Emulating real behavior due to when method, will return list of users.
+    when(gmail.users()).thenReturn(users);
+    // Emulating real behaviour due to when method, will return list of messages
+    when(users.messages()).thenReturn(messages);
   }
 
-  private String getTextFromMessage(MimeMessage message) throws MessagingException, IOException {
-    String result;
-    result = message.getContent().toString();
-    return result;
+  public MimeMessage createTestMessage() throws MessagingException {
+    Properties properties = System.getProperties();
+    Session session = Session.getDefaultInstance(properties);
+    MimeMessage message = new MimeMessage(session);
+    Address[] addresses =
+        new Address[] {
+          new InternetAddress("tcwang@google.com"),
+          new InternetAddress("grantjustice@google.com"),
+          new InternetAddress("kevinhowald@google.com")
+        };
+    message.setFrom(new InternetAddress("Adlib-Step@gmail.com"));
+    message.setSubject("Test Subject");
+    message.setText("Test Text");
+    message.setRecipients(javax.mail.Message.RecipientType.TO, addresses);
+    return message;
+  }
+
+  public Message createMessageFromMime(MimeMessage mimeMessage)
+      throws IOException, MessagingException {
+    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+    mimeMessage.writeTo(buffer);
+    byte[] bytes = buffer.toByteArray();
+    String encodedEmail = Base64.encodeBase64URLSafeString(bytes);
+    Message message = new Message();
+    message.setRaw(encodedEmail);
+    return message;
+  }
+
+  public MimeMessage convertToMimeMessage(Message msg) throws MessagingException {
+    Properties properties = System.getProperties();
+    Session session = Session.getDefaultInstance(properties);
+    byte[] bytes = msg.decodeRaw();
+    InputStream targetStream = new ByteArrayInputStream(bytes);
+    return new MimeMessage(session, targetStream);
   }
 
   @Test
   public void constructorShouldSetNameAndEmailTo() {
-    EmailNotifier emailNotifier = new EmailNotifier("John", "jdoe@gmail.com");
     assertEquals("John", emailNotifier.getRecipientName());
     assertEquals("jdoe@gmail.com", emailNotifier.getToEmail());
   }
 
   @Test
-  public void testMessageHasCorrectApplicationName() throws MessagingException {
-    EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu");
-    MimeMessage mimeMessage =
-        emailNotifier.createEmail("test@fakemail.com", "testSubject", "testBody");
-    MimeMessage message = createTestMessage();
-    message.setFrom(new InternetAddress("Adlib-Step@gmail.com"));
-    Assert.assertArrayEquals(
-        "The Application Name should be the same as the global variable in the Ad-lib class",
-        message.getFrom(),
-        mimeMessage.getFrom());
+  public void testMessageHasCorrectApplicationName() throws MessagingException, IOException {
+    ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
+    emailNotifier.getService().users().messages().send("anyString", testMessage);
+    verify(messages).send(anyString(), argument.capture());
+    String applicationName = convertToMimeMessage(argument.getValue()).getFrom()[0].toString();
+    Assert.assertEquals(
+        "These two strings should be the same", "Adlib-Step@gmail.com", applicationName);
   }
 
   @Test
-  public void testMessageHasCorrectSubject() throws MessagingException {
-    EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu");
-    MimeMessage mimeMessage =
-        emailNotifier.createEmail("test@fakemail.com", "testSubject", "testBody");
-    MimeMessage message = createTestMessage();
-    message.setSubject("testSubject");
-    assertEquals(
-        "These two subjects should be the same", message.getSubject(), mimeMessage.getSubject());
+  public void testMessageHasCorrectSubject() throws MessagingException, IOException {
+    ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
+    emailNotifier.getService().users().messages().send("anyString()", testMessage);
+    verify(messages).send(anyString(), argument.capture());
+    String subjectName = convertToMimeMessage(argument.getValue()).getSubject();
+    Assert.assertEquals("These Two strings should be the same ", "Test Subject", subjectName);
   }
 
   @Test
   public void testMessageShouldHaveCorrectBodyText() throws MessagingException, IOException {
-    EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu");
-    MimeMessage mimeMessage =
-        emailNotifier.createEmail("test@fakemail.com", "testSubject", "testBody");
-    MimeMessage message = createTestMessage();
-    message.setText("Random Text");
-    assertNotEquals(
-        "These two strings should not be the same ",
-        getTextFromMessage(message),
-        getTextFromMessage(mimeMessage));
+    ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
+    emailNotifier.getService().users().messages().send("", testMessage);
+    verify(messages).send(anyString(), argument.capture());
+    String bodyText = convertToMimeMessage(argument.getValue()).getContent().toString();
+    Assert.assertEquals("These Two strings should be the same ", "Test Text", bodyText);
   }
 
   @Test
   public void testMessageShouldHaveIncorrectBodyText() throws MessagingException, IOException {
-    EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu");
-    MimeMessage mimeMessage =
-        emailNotifier.createEmail("test@fakemail.com", "testSubject", "testBody");
-    MimeMessage message = createTestMessage();
-    message.setText("Please Leave Your Ad-lib event");
-    Assert.assertNotEquals(
-        "These two strings should not be the same",
-        getTextFromMessage(message),
-        getTextFromMessage(mimeMessage));
+    ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
+    emailNotifier.getService().users().messages().send("anyString", testMessage);
+    verify(messages).send(anyString(), argument.capture());
+    String realString = convertToMimeMessage(argument.getValue()).getContent().toString();
+    Assert.assertNotEquals("These Two strings should not be the same ", "anyString()", realString);
   }
 
   @Test
-  public void testMessageShouldHaveCorrectRecipients() throws MessagingException {
-    EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu");
-    MimeMessage mimeMessage =
-        emailNotifier.createEmail("jjgrant@buffalo.edu", "testSubject", "testBody");
-    MimeMessage message = createTestMessage();
-    message.addRecipient(MimeMessage.RecipientType.TO, new InternetAddress("jjgrant@buffalo.edu"));
+  public void testMessageShouldHaveCorrectRecipients() throws MessagingException, IOException {
+    ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
+    emailNotifier.getService().users().messages().send("anyString", testMessage);
+    verify(messages).send(anyString(), argument.capture());
+    Address[] allRecipients = convertToMimeMessage(argument.getValue()).getAllRecipients();
+    Address[] correctRecipients =
+        new Address[] {
+          new InternetAddress("tcwang@google.com"),
+          new InternetAddress("grantjustice@google.com"),
+          new InternetAddress("kevinhowald@google.com")
+        };
     Assert.assertArrayEquals(
-        "These two messages should have the same single recipient ",
-        message.getAllRecipients(),
-        mimeMessage.getAllRecipients());
+        "These Two arrays should be the same ", correctRecipients, allRecipients);
   }
 
   @Test
-  public void testMessageShouldNotHaveCorrectRecipients() throws MessagingException {
-    EmailNotifier emailNotifier = new EmailNotifier("Jordan", "jjgrant@buffalo.edu");
-    MimeMessage mimeMessage =
-        emailNotifier.createEmail(
-            "jjgrant@buffalo.edu", "Random Subject", "Welcome To  Your Ad-lib event");
-    MimeMessage message = createTestMessage();
-    message.addRecipient(MimeMessage.RecipientType.TO, new InternetAddress("jjgrant@buffalo.edu"));
-    message.addRecipient(MimeMessage.RecipientType.TO, new InternetAddress("jdoe@buffalo.edu"));
-    message.addRecipient(MimeMessage.RecipientType.TO, new InternetAddress("grantj@buffalo.edu"));
-
-    Assert.assertNotSame(
-        "These two messages should have different recipients ",
-        message.getAllRecipients(),
-        mimeMessage.getAllRecipients());
+  public void testMessageShouldNotHaveCorrectRecipients() throws MessagingException, IOException {
+    ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
+    emailNotifier.getService().users().messages().send("anyString", testMessage);
+    verify(messages).send(anyString(), argument.capture());
+    Address[] allRecipients = convertToMimeMessage(argument.getValue()).getAllRecipients();
+    Assert.assertNotEquals(
+        "These Two arrays should be the same ",
+        new InternetAddress[] {new InternetAddress()},
+        allRecipients);
   }
 }

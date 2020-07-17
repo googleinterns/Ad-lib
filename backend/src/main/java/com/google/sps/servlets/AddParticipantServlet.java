@@ -96,10 +96,8 @@ public class AddParticipantServlet extends HttpServlet {
     // Check if new participant already in datastore (unmatched, in queue)
     // TODO: FIX! What if matched but not returned yet
     Participant existingParticipant = participantDatastore.getParticipantFromUsername(username);
-    if (existingParticipant != null
-        && existingParticipant.getMatchStatus() == MatchStatus.UNMATCHED) {
-      response.sendError(
-          HttpServletResponse.SC_BAD_REQUEST, "Already submitted form. Wait for your match!");
+    if (existingParticipant != null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Already submitted form");
       return;
     }
 

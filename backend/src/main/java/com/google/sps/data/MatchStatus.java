@@ -2,8 +2,10 @@ package com.google.sps.data;
 
 /** Represent whether or not a Participant is matched */
 public enum MatchStatus {
-  UNMATCHED(0), // Not matched yet, waiting for match
-  MATCHED(1); // Matched, can't be matched again yet
+  /** Not matched yet, waiting for match */
+  UNMATCHED(0),
+  /** Matched, can't be matched again yet */
+  MATCHED(1);
 
   private final int value;
 
@@ -16,6 +18,7 @@ public enum MatchStatus {
   }
 
   public static MatchStatus forIntValue(int value) {
+    System.out.println(value);
     for (MatchStatus status : MatchStatus.values()) {
       if (status.value == value) {
         return status;

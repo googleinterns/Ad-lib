@@ -14,8 +14,8 @@ public final class MatchDatastore {
 
   // Datastore Key/Property constants
   private static final String KIND_MATCH = "Match";
-  private static final String PROPERTY_FIRSTPARTICIPANTUSERNAME = "firstParticipantUsername";
-  private static final String PROPERTY_SECONDPARTICIPANTUSERNAME = "secondParticipantUsername";
+  private static final String PROPERTY_FIRST_PARTICIPANT_USERNAME = "firstParticipantUsername";
+  private static final String PROPERTY_SECOND_PARTICIPANT_USERNAME = "secondParticipantUsername";
   private static final String PROPERTY_DURATION = "duration";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
 
@@ -28,11 +28,11 @@ public final class MatchDatastore {
   }
 
   /** Return entity of match */
-  private Entity getEntityFromMatch(Match match) {
+  private static Entity getEntityFromMatch(Match match) {
     // Set properties of entity
     Entity entity = new Entity(KIND_MATCH);
-    entity.setProperty(PROPERTY_FIRSTPARTICIPANTUSERNAME, match.getFirstParticipantUsername());
-    entity.setProperty(PROPERTY_SECONDPARTICIPANTUSERNAME, match.getSecondParticipantUsername());
+    entity.setProperty(PROPERTY_FIRST_PARTICIPANT_USERNAME, match.getFirstParticipantUsername());
+    entity.setProperty(PROPERTY_SECOND_PARTICIPANT_USERNAME, match.getSecondParticipantUsername());
     entity.setProperty(PROPERTY_DURATION, match.getDuration());
     entity.setProperty(PROPERTY_TIMESTAMP, match.getTimestamp());
     return entity;
@@ -51,8 +51,8 @@ public final class MatchDatastore {
   /** Return Match from entity, or null if entity is null */
   private static Match getMatchFromEntity(@Nonnull Entity entity) {
     return new Match(
-        (String) entity.getProperty(PROPERTY_FIRSTPARTICIPANTUSERNAME),
-        (String) entity.getProperty(PROPERTY_SECONDPARTICIPANTUSERNAME),
+        (String) entity.getProperty(PROPERTY_FIRST_PARTICIPANT_USERNAME),
+        (String) entity.getProperty(PROPERTY_SECOND_PARTICIPANT_USERNAME),
         ((Long) entity.getProperty(PROPERTY_DURATION)).intValue(),
         (long) entity.getProperty(PROPERTY_TIMESTAMP));
   }

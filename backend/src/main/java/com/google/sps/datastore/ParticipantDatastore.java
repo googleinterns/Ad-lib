@@ -23,11 +23,11 @@ public final class ParticipantDatastore {
   // Datastore Key/Property constants
   private static final String KIND_PARTICIPANT = "Participant";
   private static final String PROPERTY_USERNAME = "username";
-  private static final String PROPERTY_STARTTIMEAVAILABLE = "startTimeAvailable";
-  private static final String PROPERTY_ENDTIMEAVAILABLE = "endTimeAvailable";
+  private static final String PROPERTY_START_TIME_AVAILABLE = "startTimeAvailable";
+  private static final String PROPERTY_END_TIME_AVAILABLE = "endTimeAvailable";
   private static final String PROPERTY_DURATION = "duration";
-  private static final String PROPERTY_MATCHID = "matchId";
-  private static final String PROPERTY_MATCHSTATUS = "matchStatus";
+  private static final String PROPERTY_MATCH_ID = "matchId";
+  private static final String PROPERTY_MATCH_STATUS = "matchStatus";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
 
   /** Datastore */
@@ -39,15 +39,15 @@ public final class ParticipantDatastore {
   }
 
   /** Return entity of participant */
-  private Entity getEntityFromParticipant(Participant participant) {
+  private static Entity getEntityFromParticipant(Participant participant) {
     // Set properties of entity based on participant fields
     Entity entity = new Entity(KIND_PARTICIPANT, participant.getUsername());
     entity.setProperty(PROPERTY_USERNAME, participant.getUsername());
-    entity.setProperty(PROPERTY_STARTTIMEAVAILABLE, participant.getStartTimeAvailable());
-    entity.setProperty(PROPERTY_ENDTIMEAVAILABLE, participant.getEndTimeAvailable());
+    entity.setProperty(PROPERTY_START_TIME_AVAILABLE, participant.getStartTimeAvailable());
+    entity.setProperty(PROPERTY_END_TIME_AVAILABLE, participant.getEndTimeAvailable());
     entity.setProperty(PROPERTY_DURATION, participant.getDuration());
-    entity.setProperty(PROPERTY_MATCHID, participant.getMatchId());
-    entity.setProperty(PROPERTY_MATCHSTATUS, participant.getMatchStatus().getValue());
+    entity.setProperty(PROPERTY_MATCH_ID, participant.getMatchId());
+    entity.setProperty(PROPERTY_MATCH_STATUS, participant.getMatchStatus().getValue());
     entity.setProperty(PROPERTY_TIMESTAMP, participant.getTimestamp());
 
     return entity;
@@ -73,6 +73,19 @@ public final class ParticipantDatastore {
     }
   }
 
+  /** Return participant object from datastore participant entity, or null if entity is null */
+  @Nullable
+  private static Participant getParticipantFromEntity(@Nonnull Entity entity) {
+    return new Participant(
+        (String) entity.getProperty(PROPERTY_USERNAME),
+        (long) entity.getProperty(PROPERTY_START_TIME_AVAILABLE),
+        (long) entity.getProperty(PROPERTY_END_TIME_AVAILABLE),
+        ((Long) entity.getProperty(PROPERTY_DURATION)).intValue(),
+        (long) entity.getProperty(PROPERTY_MATCH_ID),
+        MatchStatus.forIntValue(((Long) entity.getProperty(PROPERTY_MATCH_STATUS)).intValue()),
+        (long) entity.getProperty(PROPERTY_TIMESTAMP));
+  }
+
   /** Return Participant from username, or null if participant with username not in datastore */
   @Nullable
   public Participant getParticipantFromUsername(String username) {
@@ -83,19 +96,6 @@ public final class ParticipantDatastore {
     return getParticipantFromEntity(entity);
   }
 
-  /** Return participant object from datastore participant entity, or null if entity is null */
-  @Nullable
-  private static Participant getParticipantFromEntity(@Nonnull Entity entity) {
-    return new Participant(
-        (String) entity.getProperty(PROPERTY_USERNAME),
-        (long) entity.getProperty(PROPERTY_STARTTIMEAVAILABLE),
-        (long) entity.getProperty(PROPERTY_ENDTIMEAVAILABLE),
-        ((Long) entity.getProperty(PROPERTY_DURATION)).intValue(),
-        (long) entity.getProperty(PROPERTY_MATCHID),
-        MatchStatus.forIntValue(((Long) entity.getProperty(PROPERTY_MATCHID)).intValue()),
-        (long) entity.getProperty(PROPERTY_TIMESTAMP));
-  }
-
   /** Return list of all unmatched participants with duration */
   public List<Participant> getParticipantsWithDuration(int duration) {
     Query query = new Query(KIND_PARTICIPANT);
@@ -103,7 +103,7 @@ public final class ParticipantDatastore {
     // Create filter to get only unmatched participants with same duration
     Filter unmatched =
         new FilterPredicate(
-            PROPERTY_MATCHSTATUS, FilterOperator.EQUAL, MatchStatus.UNMATCHED.getValue());
+            PROPERTY_MATCH_STATUS, FilterOperator.EQUAL, MatchStatus.UNMATCHED.getValue());
     Filter sameDuration = new FilterPredicate(PROPERTY_DURATION, FilterOperator.EQUAL, duration);
     query.setFilter(unmatched).setFilter(sameDuration);
 

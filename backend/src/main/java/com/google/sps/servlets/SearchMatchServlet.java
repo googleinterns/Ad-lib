@@ -19,6 +19,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.Match;
+import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
 import com.google.sps.datastore.MatchDatastore;
 import com.google.sps.datastore.ParticipantDatastore;
@@ -41,6 +42,7 @@ public class SearchMatchServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    System.out.println("Request received");
     // Get participant username
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
@@ -66,14 +68,14 @@ public class SearchMatchServlet extends HttpServlet {
     long matchId = participant.getMatchId();
 
     // Check if match exists and not returned yet
-    if (matchId == 0) {
+    if (participant.getMatchStatus() == MatchStatus.UNMATCHED) {
       // No match yet
-      JSONObject matchDoesNotExist = new JSONObject();
-      matchDoesNotExist.put(JSON_MATCHSTATUS, "false");
+      JSONObject noMatchYet = new JSONObject();
+      noMatchYet.put(JSON_MATCHSTATUS, "false");
 
       // Send the JSON back as the response
       response.setContentType("application/json");
-      response.getWriter().println(matchDoesNotExist.toString());
+      response.getWriter().println(noMatchYet.toString());
       return;
     }
 

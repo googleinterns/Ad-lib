@@ -48,8 +48,8 @@ public final class MatchDatastoreTest {
 
   // Datastore Key/Property constants
   private static final String KIND_MATCH = "Match";
-  private static final String PROPERTY_FIRSTPARTICIPANTUSERNAME = "firstParticipantUsername";
-  private static final String PROPERTY_SECONDPARTICIPANTUSERNAME = "secondParticipantUsername";
+  private static final String PROPERTY_FIRST_PARTICIPANT_USERNAME = "firstParticipantUsername";
+  private static final String PROPERTY_SECOND_PARTICIPANT_USERNAME = "secondParticipantUsername";
   private static final String PROPERTY_DURATION = "duration";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
 
@@ -78,8 +78,10 @@ public final class MatchDatastoreTest {
 
     Key key = KeyFactory.createKey(KIND_MATCH, id);
     Entity entity = datastore.get(key);
-    assertThat((String) entity.getProperty(PROPERTY_FIRSTPARTICIPANTUSERNAME)).isEqualTo(PERSON_A);
-    assertThat((String) entity.getProperty(PROPERTY_SECONDPARTICIPANTUSERNAME)).isEqualTo(PERSON_B);
+    assertThat((String) entity.getProperty(PROPERTY_FIRST_PARTICIPANT_USERNAME))
+        .isEqualTo(PERSON_A);
+    assertThat((String) entity.getProperty(PROPERTY_SECOND_PARTICIPANT_USERNAME))
+        .isEqualTo(PERSON_B);
     assertThat(((Long) entity.getProperty(PROPERTY_DURATION)).intValue())
         .isEqualTo(DURATION_DEFAULT);
     assertThat((long) entity.getProperty(PROPERTY_TIMESTAMP)).isEqualTo(TIMESTAMP_DEFAULT);
@@ -100,14 +102,16 @@ public final class MatchDatastoreTest {
     Key key2 = KeyFactory.createKey(KIND_MATCH, id2);
     Entity entity1 = datastore.get(key1);
     Entity entity2 = datastore.get(key2);
-    assertThat((String) entity1.getProperty(PROPERTY_FIRSTPARTICIPANTUSERNAME)).isEqualTo(PERSON_A);
-    assertThat((String) entity1.getProperty(PROPERTY_SECONDPARTICIPANTUSERNAME))
+    assertThat((String) entity1.getProperty(PROPERTY_FIRST_PARTICIPANT_USERNAME))
+        .isEqualTo(PERSON_A);
+    assertThat((String) entity1.getProperty(PROPERTY_SECOND_PARTICIPANT_USERNAME))
         .isEqualTo(PERSON_B);
     assertThat(((Long) entity1.getProperty(PROPERTY_DURATION)).intValue())
         .isEqualTo(DURATION_DEFAULT);
     assertThat((long) entity1.getProperty(PROPERTY_TIMESTAMP)).isEqualTo(TIMESTAMP_DEFAULT);
-    assertThat((String) entity2.getProperty(PROPERTY_FIRSTPARTICIPANTUSERNAME)).isEqualTo(PERSON_C);
-    assertThat((String) entity2.getProperty(PROPERTY_SECONDPARTICIPANTUSERNAME))
+    assertThat((String) entity2.getProperty(PROPERTY_FIRST_PARTICIPANT_USERNAME))
+        .isEqualTo(PERSON_C);
+    assertThat((String) entity2.getProperty(PROPERTY_SECOND_PARTICIPANT_USERNAME))
         .isEqualTo(PERSON_D);
     assertThat(((Long) entity2.getProperty(PROPERTY_DURATION)).intValue())
         .isEqualTo(DURATION_DEFAULT);

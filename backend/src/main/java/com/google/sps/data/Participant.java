@@ -89,6 +89,7 @@ public final class Participant {
         .add("endTimeAvailable", endTimeAvailable)
         .add("duration", duration)
         .add("matchId", matchId)
+        .add("matchStatus", matchStatus.getValue())
         .add("timestamp", timestamp)
         .toString();
   }

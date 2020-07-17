@@ -8,11 +8,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Install npm packages
-        run: npm install eslint@latest --save-dev
+      - name: Install yarn packages
+        run: yarn add eslint@latest
       - name: Install eslint React Plugin
-        run: npm install eslint-plugin-react@latest --save-dev
+        run: yarn add eslint-plugin-react@latest
       - name: Install Google style plugin
-        run: npm install eslint-config-google@latest --save-dev
+        run: yarn add eslint-config-google@latest
       - name: Lint with ESLint
         run: ./node_modules/.bin/eslint frontend/**/*.js

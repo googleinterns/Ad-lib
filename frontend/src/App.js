@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useEffect} from 'react';
+import axios from 'axios';
 import {makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -26,6 +27,32 @@ const useStyles = makeStyles((theme) => ({
  */
 export default function App() {
   const classes = useStyles();
+  const getMatchDataRefreshRate = 5000;
+  const [matchStatus, setMatchStatus] = React.useState("Unmatched");
+
+  /** Initiate GET request to search-match servlet */
+  function getMatch(interval) {
+    axios.get('/api/v1/search-match')
+        .then((response) => {
+          console.log(response);
+          if (response.status === 200 && response.data.matchStatus === 'true') {
+            console.log("Success!!!");
+            setMatchStatus("Matched");
+            clearInterval(interval);
+          } 
+        })
+        .catch ((error) => {
+          console.log(error);
+          //oops, something went wrong
+          //clearInterval(interval);
+        });
+  }
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getMatch(interval);
+    }, getMatchDataRefreshRate);
+  }, []);
 
   return (
     <div>
@@ -47,6 +74,7 @@ export default function App() {
           <Form />
         </Card>
       </div>
+      <p id="match-status">{matchStatus}</p>
     </div>
   );
 }

@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 
-/** Servlet that returns some example content. */
+/** Servlet that searches for the participant's current match */
 @WebServlet("/api/v1/search-match")
 public class SearchMatchServlet extends HttpServlet {
 

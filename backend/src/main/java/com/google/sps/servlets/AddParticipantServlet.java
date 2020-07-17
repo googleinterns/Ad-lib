@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
-/** Servlet that returns some example content. */
+/** Servlet that adds a participant to the queue and tries to find them a match immediately */
 @WebServlet("/api/v1/add-participant")
 public class AddParticipantServlet extends HttpServlet {
 

@@ -58,15 +58,13 @@ public class EmailNotifier {
    */
   private static final List<String> SCOPES = ImmutableList.of(GmailScopes.MAIL_GOOGLE_COM);
 
-  private static final String CREDENTIALS_FILE_PATH =
-      "backend/credentials.json";
+  private static final String CREDENTIALS_FILE_PATH = "backend/credentials.json";
 
   /** The email to be notified */
   private final String toEmail;
 
   /** The notification recipient */
   private final String recipientName;
-
 
   /**
    * @param recipientName Name of the recipient of the user

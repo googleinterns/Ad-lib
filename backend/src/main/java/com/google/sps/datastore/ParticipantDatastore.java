@@ -120,6 +120,13 @@ public final class ParticipantDatastore {
   /** Remove Participant from datastore */
   public void removeParticipant(String username) {
     Key participantKey = KeyFactory.createKey(KIND_PARTICIPANT, username);
-    datastore.delete(participantKey);
+    try {
+      datastore.delete(participantKey);
+    } catch (IllegalArgumentException e) {
+      System.out.println(
+          "Participant with username "
+              + username
+              + " cannot be removed because it is not in the datastore.");
+    }
   }
 }

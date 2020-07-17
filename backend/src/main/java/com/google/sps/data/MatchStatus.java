@@ -1,9 +1,9 @@
 package com.google.sps.data;
 
-/** Represent whether or not a participant is matched */
+/** Represent whether or not a Participant is matched */
 public enum MatchStatus {
-  UNMATCHED(0),
-  MATCHED(1);
+  UNMATCHED(0), // Not matched yet, waiting for match
+  MATCHED(1); // Matched, can't be matched again yet
 
   private final int value;
 

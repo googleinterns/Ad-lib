@@ -56,7 +56,7 @@ public class AddParticipantServlet extends HttpServlet {
     }
     JSONObject formDetails = obj.getJSONObject(REQUEST_FORM_DETAILS);
 
-    // Retrieve the timeAvailableUntil input and convert to a UTC milliseconds
+    // Get endTimeAvailable and startTimeAvailable in milliseconds
     long endTimeAvailable = formDetails.getLong(REQUEST_TIME_AVAILABLE_UNTIL);
     long startTimeAvailable = Instant.now().toEpochMilli();
 
@@ -109,8 +109,6 @@ public class AddParticipantServlet extends HttpServlet {
     if (match != null) {
       // Match found, add to match datastore, update participant datastore
       long matchId = matchDatastore.addMatch(match);
-
-      System.out.println(match);
 
       // Update current participant entity with new matchId and null availability
       Participant currParticipant =

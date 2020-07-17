@@ -70,6 +70,7 @@ public final class FindMatchQueryTest {
   // Some times available until on 1/1/2020
   private static final long TIME_1400ET = currentDateTimeET.toInstant().toEpochMilli();
   private static final long TIME_1450ET = getNewTimeToday(currentDateTimeET, 14, 50);
+  private static final long TIME_1455ET = getNewTimeToday(currentDateTimeET, 14, 55);
   private static final long TIME_1456ET = getNewTimeToday(currentDateTimeET, 14, 56);
   private static final long TIME_1500ET = getNewTimeToday(currentDateTimeET, 15, 0);
   private static final long TIME_1530ET = getNewTimeToday(currentDateTimeET, 15, 30);
@@ -183,7 +184,7 @@ public final class FindMatchQueryTest {
             PERSON_B,
             TIME_1400ET,
             TIME_1600ET,
-            DURATION_60_MINUTES,
+            DURATION_45_MINUTES,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -333,7 +334,7 @@ public final class FindMatchQueryTest {
         new Participant(
             PERSON_A,
             TIME_1400ET,
-            TIME_1450ET,
+            TIME_1455ET,
             DURATION_45_MINUTES,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,

@@ -10,7 +10,6 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
 import java.util.ArrayList;
@@ -99,10 +98,7 @@ public final class ParticipantDatastore {
 
   /** Return list of all unmatched participants with duration */
   public List<Participant> getParticipantsWithDuration(int duration) {
-    Query query =
-        new Query(KIND_PARTICIPANT)
-            .addSort(PROPERTY_MATCHSTATUS, SortDirection.ASCENDING)
-            .addSort(PROPERTY_DURATION, SortDirection.ASCENDING);
+    Query query = new Query(KIND_PARTICIPANT);
 
     // Create filter to get only unmatched participants with same duration
     Filter unmatched =

@@ -78,7 +78,7 @@ public final class Participant {
         endTimeAvailable,
         duration,
         newMatchId,
-        matchStatus,
+        MatchStatus.MATCHED,
         timestamp);
   }
 

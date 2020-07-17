@@ -19,6 +19,7 @@ import com.google.sps.data.Participant;
 import com.google.sps.datastore.ParticipantDatastore;
 import java.time.Clock;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 
 /** Class used to find a match for new Participant with unmatched Participants in datastore */
@@ -26,8 +27,6 @@ public final class FindMatchQuery {
 
   /** Extra padding time in minutes to ensure large enough meeting time block */
   private static final int PADDING_MINUTES = 10;
-  /** Conversion from minutes to milliseconds */
-  private static final int MINUTES_TO_MILLIS = 60000;
   /** Reference clock */
   private final Clock clock;
   /** Datastore of Participants */
@@ -62,7 +61,7 @@ public final class FindMatchQuery {
       long currEndTimeAvailable = currParticipant.getEndTimeAvailable();
       long earliestEndTimeAvailable = Math.min(newEndTimeAvailable, currEndTimeAvailable);
       boolean compatibleTime =
-          (currentTimeMillis + (duration + PADDING_MINUTES) * MINUTES_TO_MILLIS)
+          (currentTimeMillis + TimeUnit.MINUTES.toMillis(duration + PADDING_MINUTES))
               < earliestEndTimeAvailable;
 
       if (compatibleTime) {

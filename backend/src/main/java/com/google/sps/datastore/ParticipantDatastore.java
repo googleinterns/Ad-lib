@@ -11,6 +11,7 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ public final class ParticipantDatastore {
   private static final String PROPERTY_ENDTIMEAVAILABLE = "endTimeAvailable";
   private static final String PROPERTY_DURATION = "duration";
   private static final String PROPERTY_MATCHID = "matchId";
+  private static final String PROPERTY_MATCHSTATUS = "matchStatus";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
 
   /** Datastore */
@@ -46,6 +48,7 @@ public final class ParticipantDatastore {
     entity.setProperty(PROPERTY_ENDTIMEAVAILABLE, participant.getEndTimeAvailable());
     entity.setProperty(PROPERTY_DURATION, participant.getDuration());
     entity.setProperty(PROPERTY_MATCHID, participant.getMatchId());
+    entity.setProperty(PROPERTY_MATCHSTATUS, participant.getMatchStatus().getValue());
     entity.setProperty(PROPERTY_TIMESTAMP, participant.getTimestamp());
 
     return entity;
@@ -90,16 +93,23 @@ public final class ParticipantDatastore {
         (long) entity.getProperty(PROPERTY_ENDTIMEAVAILABLE),
         ((Long) entity.getProperty(PROPERTY_DURATION)).intValue(),
         (long) entity.getProperty(PROPERTY_MATCHID),
+        MatchStatus.forIntValue(((Long) entity.getProperty(PROPERTY_MATCHID)).intValue()),
         (long) entity.getProperty(PROPERTY_TIMESTAMP));
   }
 
   /** Return list of all unmatched participants with duration */
   public List<Participant> getParticipantsWithDuration(int duration) {
-    Query query = new Query(KIND_PARTICIPANT).addSort(PROPERTY_DURATION, SortDirection.ASCENDING);
+    Query query =
+        new Query(KIND_PARTICIPANT)
+            .addSort(PROPERTY_MATCHSTATUS, SortDirection.ASCENDING)
+            .addSort(PROPERTY_DURATION, SortDirection.ASCENDING);
 
-    // Create filter to get only participants with same duration
+    // Create filter to get only unmatched participants with same duration
+    Filter unmatched =
+        new FilterPredicate(
+            PROPERTY_MATCHSTATUS, FilterOperator.EQUAL, MatchStatus.UNMATCHED.getValue());
     Filter sameDuration = new FilterPredicate(PROPERTY_DURATION, FilterOperator.EQUAL, duration);
-    query.setFilter(sameDuration);
+    query.setFilter(unmatched).setFilter(sameDuration);
 
     PreparedQuery results = datastore.prepare(query);
 

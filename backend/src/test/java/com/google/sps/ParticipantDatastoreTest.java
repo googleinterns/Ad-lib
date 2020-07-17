@@ -24,6 +24,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
 import com.google.sps.datastore.ParticipantDatastore;
 import java.time.ZonedDateTime;
@@ -43,6 +44,7 @@ public final class ParticipantDatastoreTest {
       ZonedDateTime.now().toInstant().toEpochMilli();
   private static final int DURATION_DEFAULT = 30;
   private static final long MATCHID_DEFAULT = 0;
+  private static final MatchStatus MATCHSTATUS_DEFAULT = MatchStatus.UNMATCHED;
   private static final long TIMESTAMP_DEFAULT = 0;
 
   // Some usernames
@@ -58,6 +60,7 @@ public final class ParticipantDatastoreTest {
   private static final String PROPERTY_ENDTIMEAVAILABLE = "endTimeAvailable";
   private static final String PROPERTY_DURATION = "duration";
   private static final String PROPERTY_MATCHID = "matchId";
+  private static final String PROPERTY_MATCHSTATUS = "matchStatus";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
 
   private final LocalServiceTestHelper helper =
@@ -86,6 +89,7 @@ public final class ParticipantDatastoreTest {
             ENDTIMEAVAILABLE_DEFAULT,
             DURATION_DEFAULT,
             MATCHID_DEFAULT,
+            MATCHSTATUS_DEFAULT,
             TIMESTAMP_DEFAULT);
 
     participantDatastore.addParticipant(participant);
@@ -100,6 +104,9 @@ public final class ParticipantDatastoreTest {
     assertThat(((Long) entity.getProperty(PROPERTY_DURATION)).intValue())
         .isEqualTo(DURATION_DEFAULT);
     assertThat((long) entity.getProperty(PROPERTY_MATCHID)).isEqualTo(MATCHID_DEFAULT);
+    assertThat(
+            MatchStatus.forIntValue(((Long) entity.getProperty(PROPERTY_MATCHSTATUS)).intValue()))
+        .isEqualTo(MATCHSTATUS_DEFAULT);
     assertThat((long) entity.getProperty(PROPERTY_TIMESTAMP)).isEqualTo(TIMESTAMP_DEFAULT);
   }
 
@@ -115,6 +122,7 @@ public final class ParticipantDatastoreTest {
             ENDTIMEAVAILABLE_DEFAULT,
             DURATION_DEFAULT,
             MATCHID_DEFAULT,
+            MATCHSTATUS_DEFAULT,
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
@@ -123,6 +131,7 @@ public final class ParticipantDatastoreTest {
             ENDTIMEAVAILABLE_DEFAULT,
             DURATION_DEFAULT,
             MATCHID_DEFAULT,
+            MATCHSTATUS_DEFAULT,
             TIMESTAMP_DEFAULT);
 
     participantDatastore.addParticipant(participantA);
@@ -140,6 +149,9 @@ public final class ParticipantDatastoreTest {
     assertThat(((Long) entityA.getProperty(PROPERTY_DURATION)).intValue())
         .isEqualTo(DURATION_DEFAULT);
     assertThat((long) entityA.getProperty(PROPERTY_MATCHID)).isEqualTo(MATCHID_DEFAULT);
+    assertThat(
+            MatchStatus.forIntValue(((Long) entityA.getProperty(PROPERTY_MATCHSTATUS)).intValue()))
+        .isEqualTo(MATCHSTATUS_DEFAULT);
     assertThat((long) entityA.getProperty(PROPERTY_TIMESTAMP)).isEqualTo(TIMESTAMP_DEFAULT);
     assertThat((String) entityB.getProperty(PROPERTY_USERNAME)).isEqualTo(PERSON_B);
     assertThat((long) entityB.getProperty(PROPERTY_STARTTIMEAVAILABLE))
@@ -149,6 +161,9 @@ public final class ParticipantDatastoreTest {
     assertThat(((Long) entityB.getProperty(PROPERTY_DURATION)).intValue())
         .isEqualTo(DURATION_DEFAULT);
     assertThat((long) entityB.getProperty(PROPERTY_MATCHID)).isEqualTo(MATCHID_DEFAULT);
+    assertThat(
+            MatchStatus.forIntValue(((Long) entityB.getProperty(PROPERTY_MATCHSTATUS)).intValue()))
+        .isEqualTo(MATCHSTATUS_DEFAULT);
     assertThat((long) entityB.getProperty(PROPERTY_TIMESTAMP)).isEqualTo(TIMESTAMP_DEFAULT);
   }
 
@@ -164,6 +179,7 @@ public final class ParticipantDatastoreTest {
             ENDTIMEAVAILABLE_DEFAULT,
             DURATION_DEFAULT,
             MATCHID_DEFAULT,
+            MATCHSTATUS_DEFAULT,
             TIMESTAMP_DEFAULT);
 
     participantDatastore.addParticipant(participant);
@@ -175,6 +191,7 @@ public final class ParticipantDatastoreTest {
     assertThat(participantFromUsername.getEndTimeAvailable()).isEqualTo(ENDTIMEAVAILABLE_DEFAULT);
     assertThat(participantFromUsername.getDuration()).isEqualTo(DURATION_DEFAULT);
     assertThat(participantFromUsername.getMatchId()).isEqualTo(MATCHID_DEFAULT);
+    assertThat(participantFromUsername.getMatchStatus()).isEqualTo(MATCHSTATUS_DEFAULT);
     assertThat(participantFromUsername.getTimestamp()).isEqualTo(TIMESTAMP_DEFAULT);
   }
 
@@ -190,6 +207,7 @@ public final class ParticipantDatastoreTest {
             ENDTIMEAVAILABLE_DEFAULT,
             DURATION_DEFAULT,
             MATCHID_DEFAULT,
+            MATCHSTATUS_DEFAULT,
             TIMESTAMP_DEFAULT);
 
     Participant participantFromUsername = participantDatastore.getParticipantFromUsername(PERSON_A);
@@ -208,6 +226,7 @@ public final class ParticipantDatastoreTest {
             ENDTIMEAVAILABLE_DEFAULT,
             DURATION_DEFAULT,
             MATCHID_DEFAULT,
+            MATCHSTATUS_DEFAULT,
             TIMESTAMP_DEFAULT);
 
     participantDatastore.addParticipant(participant);

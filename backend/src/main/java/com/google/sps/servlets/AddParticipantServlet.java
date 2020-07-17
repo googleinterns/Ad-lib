@@ -20,6 +20,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.FindMatchQuery;
 import com.google.sps.data.Match;
+import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
 import com.google.sps.datastore.MatchDatastore;
 import com.google.sps.datastore.ParticipantDatastore;
@@ -36,17 +37,6 @@ import org.json.JSONObject;
 /** Servlet that returns some example content. */
 @WebServlet("/api/v1/add-participant")
 public class AddParticipantServlet extends HttpServlet {
-
-  // Datastore Key/Property constants
-  private static final String KEY_PARTICIPANT = "Participant";
-  private static final String KEY_MATCH = "Match";
-  private static final String PROPERTY_USERNAME = "username";
-  private static final String PROPERTY_START_TIME_AVAILABLE = "startTimeAvailable";
-  private static final String PROPERTY_END_TIME_AVAILABLE = "endTimeAvailable";
-  private static final String PROPERTY_DURATION = "duration";
-  private static final String PROPERTY_TIMESTAMP = "timestamp";
-  private static final String PROPERTY_FIRST_PARTICIPANT = "firstParticipant";
-  private static final String PROPERTY_SECOND_PARTICIPANT = "secondParticipant";
 
   // HTTP Request JSON key constants
   private static final String REQUEST_FORM_DETAILS = "formDetails";
@@ -90,7 +80,13 @@ public class AddParticipantServlet extends HttpServlet {
     // Create new Participant from input parameters
     Participant newParticipant =
         new Participant(
-            username, startTimeAvailable, endTimeAvailable, duration, /* matchId=*/ 0, timestamp);
+            username,
+            startTimeAvailable,
+            endTimeAvailable,
+            duration,
+            /* matchId=*/ 0,
+            MatchStatus.UNMATCHED,
+            timestamp);
 
     // Get DatastoreService and instiate Match and Participant Datastores
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -98,7 +94,7 @@ public class AddParticipantServlet extends HttpServlet {
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
 
     // Check if new participant already in datastore (unmatched, in queue)
-    if (participantDatastore.getParticipantFromUsername() == null) {
+    if (participantDatastore.getParticipantFromUsername(username) == null) {
       response.sendError(
           HttpServletResponse.SC_BAD_REQUEST, "Already submitted form. Wait for your match!");
       return;

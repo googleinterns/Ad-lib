@@ -16,6 +16,8 @@ public final class Participant {
   private final int duration;
   /** Id of match in datastore, 0 if never found a match (can assign 0 at construction) */
   private final long matchId;
+  /** Matched already or not yet */
+  private final MatchStatus matchStatus;
   /** Time of submitted form */
   private final long timestamp;
 
@@ -26,6 +28,7 @@ public final class Participant {
       long endTimeAvailable,
       int duration,
       long matchId,
+      MatchStatus matchStatus,
       long timestamp) {
     this.username = username;
     Preconditions.checkArgument(
@@ -35,6 +38,7 @@ public final class Participant {
     this.endTimeAvailable = endTimeAvailable;
     this.duration = duration;
     this.matchId = matchId;
+    this.matchStatus = matchStatus;
     this.timestamp = timestamp;
   }
 
@@ -58,6 +62,10 @@ public final class Participant {
     return matchId;
   }
 
+  public MatchStatus getMatchStatus() {
+    return matchStatus;
+  }
+
   public long getTimestamp() {
     return timestamp;
   }
@@ -66,10 +74,11 @@ public final class Participant {
   public Participant foundMatch(long newMatchId) {
     return new Participant(
         username,
-        /* startTimeAvailable= */ 0,
-        /* endTimeAvailable= */ 0,
-        /* duration= */ 0,
+        startTimeAvailable,
+        endTimeAvailable,
+        duration,
         newMatchId,
+        matchStatus,
         timestamp);
   }
 

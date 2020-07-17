@@ -21,6 +21,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.sps.data.Match;
+import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
 import com.google.sps.datastore.ParticipantDatastore;
 import java.time.Clock;
@@ -50,6 +51,9 @@ public final class FindMatchQueryTest {
   private static final int DURATION_30_MINUTES = 30;
   private static final int DURATION_45_MINUTES = 45;
   private static final int DURATION_60_MINUTES = 60;
+
+  // Initial value before matched
+  private static final MatchStatus MATCHSTATUS_UNMATCHED = MatchStatus.UNMATCHED;
 
   // Reference date time of 1/1/20 2pm ET
   private static final ZonedDateTime currentDateTimeET =
@@ -108,6 +112,7 @@ public final class FindMatchQueryTest {
             TIME_1600ET,
             DURATION_15_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
@@ -116,6 +121,7 @@ public final class FindMatchQueryTest {
             TIME_1800ET,
             DURATION_15_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -139,6 +145,7 @@ public final class FindMatchQueryTest {
             TIME_1600ET,
             DURATION_30_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
@@ -147,6 +154,7 @@ public final class FindMatchQueryTest {
             TIME_1800ET,
             DURATION_60_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -168,6 +176,7 @@ public final class FindMatchQueryTest {
             TIME_1450ET,
             DURATION_45_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
@@ -176,6 +185,7 @@ public final class FindMatchQueryTest {
             TIME_1600ET,
             DURATION_60_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -197,6 +207,7 @@ public final class FindMatchQueryTest {
             TIME_1600ET,
             DURATION_60_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
@@ -205,6 +216,7 @@ public final class FindMatchQueryTest {
             TIME_1450ET,
             DURATION_45_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     Participant participantC =
         new Participant(
@@ -213,6 +225,7 @@ public final class FindMatchQueryTest {
             TIME_1800ET,
             DURATION_60_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -237,6 +250,7 @@ public final class FindMatchQueryTest {
             TIME_1450ET,
             DURATION_30_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
@@ -245,6 +259,7 @@ public final class FindMatchQueryTest {
             TIME_1600ET,
             DURATION_60_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     Participant participantC =
         new Participant(
@@ -253,6 +268,7 @@ public final class FindMatchQueryTest {
             TIME_1800ET,
             DURATION_60_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -277,6 +293,7 @@ public final class FindMatchQueryTest {
             TIME_1600ET,
             DURATION_30_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
@@ -285,6 +302,7 @@ public final class FindMatchQueryTest {
             TIME_1800ET,
             DURATION_30_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     Participant participantC =
         new Participant(
@@ -293,6 +311,7 @@ public final class FindMatchQueryTest {
             TIME_2000ET,
             DURATION_30_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -317,6 +336,7 @@ public final class FindMatchQueryTest {
             TIME_1450ET,
             DURATION_45_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
@@ -325,6 +345,7 @@ public final class FindMatchQueryTest {
             TIME_1800ET,
             DURATION_45_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -347,6 +368,7 @@ public final class FindMatchQueryTest {
             TIME_1456ET,
             DURATION_45_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     Participant participantB =
         new Participant(
@@ -355,6 +377,7 @@ public final class FindMatchQueryTest {
             TIME_1800ET,
             DURATION_45_MINUTES,
             MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);

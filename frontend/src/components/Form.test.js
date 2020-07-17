@@ -57,9 +57,9 @@ describe('Form Validation', () => {
     // Wed Jul 15 2020 08:30:00
     const currentTimeMilliseconds = 1594801800000;
     expect(validateFormInputs(role, productArea, duration,
-      timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(true);
+        timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(true);
   });
-  
+
   it('should return false since Role is not specified', () => {
     window.alert = jest.fn();
     const role = '';
@@ -70,7 +70,7 @@ describe('Form Validation', () => {
     // Wed Jul 15 2020 08:30:00
     const currentTimeMilliseconds = 1594801800000;
     expect(validateFormInputs(role, productArea, duration,
-      timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(false);
+        timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(false);
   });
 
   it('should return false since PA is not specified', () => {
@@ -83,20 +83,20 @@ describe('Form Validation', () => {
     // Wed Jul 15 2020 08:30:00
     const currentTimeMilliseconds = 1594801800000;
     expect(validateFormInputs(role, productArea, duration,
-      timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(false);
+        timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(false);
   });
 
   it('should return false since time is incompatible', () => {
     window.alert = jest.fn();
     const role = 'Intern';
     const productArea = 'Core';
-    // Wed Jul 15 2020 20:56:45    
+    // Wed Jul 15 2020 20:56:45
     const timeAvailableUntilMilliseconds = 1594846605591;
     const duration = 15;
     // Wed Jul 15 2020 20:56:40
     const currentTimeMilliseconds = 1594846600000;
     expect(validateFormInputs(role, productArea, duration,
-      timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(false);
+        timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(false);
   });
 
   it('should return false since time has invalid format', () => {
@@ -107,6 +107,6 @@ describe('Form Validation', () => {
     const duration = 15;
     const currentTimeMilliseconds = 1594846605000;
     expect(validateFormInputs(role, productArea, duration,
-      timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(false);
+        timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(false);
   });
 });

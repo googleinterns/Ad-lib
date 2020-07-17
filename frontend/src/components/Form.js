@@ -47,13 +47,13 @@ const useStyles = makeStyles((theme) => ({
  * @param {String} role
  * @param {String} productArea
  * @param {Number} duration
- * @param {Date} timeAvailableUntil
+ * @param {Number} timeAvailableUntilMilliseconds
  * @param {Number} currentTimeMilliseconds
  */
 export function validateFormInputs(role, productArea, duration,
     timeAvailableUntilMilliseconds, currentTimeMilliseconds) {
   const durationMilliseconds = duration * 60000;
-  
+
   if (isNaN(timeAvailableUntilMilliseconds)) {
     alert('Please select a valid date.');
     return false;

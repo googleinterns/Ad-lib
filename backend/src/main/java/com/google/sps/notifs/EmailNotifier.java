@@ -61,20 +61,21 @@ public class EmailNotifier {
   private static final String CREDENTIALS_FILE_PATH = "backend/credentials.json";
 
   /** The email to be notified */
-  private final String toEmail;
+  private final String recipientEmail;
 
   /** The notification recipient */
   private final String recipientName;
-
+  /** The gmail service */
   private final Gmail service;
 
   /**
-   * @param recipientName Name of the recipient of the user
-   * @param toEmail The email address that this email is going to be sent to.
+   * @param recipientName Name of the recipient of the user.
+   * @param recipientEmail The email address that this email is going to be sent to.
+   * @param service Gmail service dependency.
    */
-  public EmailNotifier(String recipientName, String toEmail, Gmail service) {
+  public EmailNotifier(String recipientName, String recipientEmail, Gmail service) {
     this.recipientName = recipientName;
-    this.toEmail = toEmail;
+    this.recipientEmail = recipientEmail;
     this.service = service;
   }
 
@@ -85,7 +86,7 @@ public class EmailNotifier {
    * @return An authorized Credential object.
    * @throws IOException If the credentials.json file cannot be found.
    */
-  public static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
+  private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
       throws IOException {
     // Load client secrets.
     InputStream in = new FileInputStream(CREDENTIALS_FILE_PATH);
@@ -110,7 +111,7 @@ public class EmailNotifier {
    * @throws IOException if an error occurs writing to the stream
    * @throws MessagingException for other failures
    */
-  public static Message createMessageWithEmail(MimeMessage emailContent)
+  private static Message createMessageWithEmail(MimeMessage emailContent)
       throws MessagingException, IOException {
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     emailContent.writeTo(buffer);
@@ -124,14 +125,12 @@ public class EmailNotifier {
   /**
    * Create a MimeMessage using the parameters provided.
    *
-   * @param toEmail email address of the receiver
    * @param subject subject of the email
    * @param bodyText body text of the email
    * @return the MimeMessage to be used to send email
    * @throws MessagingException if there was a problem accessing the Store
    */
-  public MimeMessage createEmail(String toEmail, String subject, String bodyText)
-      throws MessagingException {
+  private MimeMessage createEmail(String subject, String bodyText) throws MessagingException {
 
     Properties props = new Properties();
     Session session = Session.getDefaultInstance(props, /* authenticator= */ null);
@@ -139,7 +138,7 @@ public class EmailNotifier {
     MimeMessage email = new MimeMessage(session);
 
     email.setFrom(new InternetAddress(APPLICATION_EMAIL));
-    email.addRecipient(RecipientType.TO, new InternetAddress(toEmail));
+    email.addRecipient(RecipientType.TO, new InternetAddress(recipientEmail));
     email.setSubject(subject);
     email.setText(bodyText);
     return email;
@@ -153,30 +152,22 @@ public class EmailNotifier {
     NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
     MimeMessage email =
         createEmail(
-            getToEmail(),
             "Ad-Lib Meeting Found",
             " Hey "
-                + getRecipientName()
+                + recipientName
                 + " Please Join your Ad-Lib meeting via the link below : \n"
                 + " http://meet.google.com/new");
     Message messageWithEmail = createMessageWithEmail(email);
-    Gmail service =
-        new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-            .setApplicationName(APPLICATION_NAME)
-            .build();
     service.users().messages().send("me", messageWithEmail).execute();
   }
 
-  public String getToEmail() {
-    return toEmail;
+  /** Getter function that returns the email of the person who is to receive an email */
+  public String getRecipientEmail() {
+    return recipientEmail;
   }
 
   /** Getter function that returns the string representing the email recipients name . */
   public String getRecipientName() {
     return recipientName;
-  }
-
-  public Gmail getService() {
-    return service;
   }
 }

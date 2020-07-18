@@ -59,12 +59,10 @@ public class EmailNotifier {
   private static final List<String> SCOPES = ImmutableList.of(GmailScopes.MAIL_GOOGLE_COM);
 
   private static final String CREDENTIALS_FILE_PATH = "backend/credentials.json";
-
   /** The email to be notified */
-  private final String recipientEmail;
-
+  public final String recipientEmail;
   /** The notification recipient */
-  private final String recipientName;
+  public final String recipientName;
   /** The gmail service */
   private final Gmail service;
 
@@ -159,15 +157,5 @@ public class EmailNotifier {
                 + " http://meet.google.com/new");
     Message messageWithEmail = createMessageWithEmail(email);
     service.users().messages().send("me", messageWithEmail).execute();
-  }
-
-  /** Getter function that returns the email of the person who is to receive an email */
-  public String getRecipientEmail() {
-    return recipientEmail;
-  }
-
-  /** Getter function that returns the string representing the email recipients name . */
-  public String getRecipientName() {
-    return recipientName;
   }
 }

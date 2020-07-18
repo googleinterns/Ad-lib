@@ -53,7 +53,9 @@ public class EmailNotifierTest {
     when(gmail.users()).thenReturn(users);
     // Emulating real behaviour due to when method, will return list of messages
     when(users.messages()).thenReturn(messages);
+    //    Emulating sending messages, when sent will return send mock.
     when(messages.send(anyString(), any(Message.class))).thenReturn(send);
+    //    When send mock is executed will return test message.
     when(send.execute()).thenReturn(testMessage);
   }
 
@@ -95,8 +97,8 @@ public class EmailNotifierTest {
 
   @Test
   public void constructorShouldSetNameAndEmail() {
-    assertEquals("John", emailNotifier.getRecipientName());
-    assertEquals("jdoe@gmail.com ", emailNotifier.getRecipientEmail());
+    assertEquals("John", emailNotifier.recipientName);
+    assertEquals("jdoe@gmail.com ", emailNotifier.recipientEmail);
   }
 
   @Test

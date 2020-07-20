@@ -72,9 +72,10 @@ export function validateFormInputs(role, productArea, duration,
 
 /**
  * Create form component with time and match preference inputs
+ * @param {Object} props
  * @return {Form} Form component
  */
-export default function Form() {
+export default function Form(props) {
   const classes = useStyles();
 
   // Declare state variables for each input field and set default states
@@ -114,6 +115,8 @@ export default function Form() {
               alert('Successful');
             }
           });
+
+      // TO-DO: call getMatch() to initiate GET request to search-match servlet
     }
   }
 

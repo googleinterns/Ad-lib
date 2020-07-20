@@ -153,16 +153,4 @@ public class EmailNotifierTest {
     Truth.assertThat(allRecipients).isEqualTo(correctRecipients);
     Truth.assertThat(allRecipients).asList().containsExactly(new InternetAddress(testEmail));
   }
-
-  @Test
-  public void testMessageShouldHaveIncorrectRecipients()
-      throws MessagingException, IOException, GeneralSecurityException {
-    ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
-
-    emailNotifier.notifyUser();
-
-    verify(messages).send(any(), argument.capture());
-    Address[] allRecipients = convertToMimeMessage(argument.getValue()).getAllRecipients();
-    Truth.assertThat(new InternetAddress[] {new InternetAddress()}).isNotEqualTo(allRecipients);
-  }
 }

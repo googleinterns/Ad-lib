@@ -14,6 +14,12 @@ public final class Participant {
   private final long endTimeAvailable;
   /** How long user wants to chat */
   private final int duration;
+  /** Role at Google */
+  private final String role;
+  /** Product area at Google */
+  private final String productArea;
+  /** Whether they want to be matched with a similar, any, or different Googler */
+  private final String matchPreference;
   /** Id of match in datastore, 0 if never found a match (can assign 0 at construction) */
   private final long matchId;
   /** Matched already or not yet */
@@ -27,6 +33,9 @@ public final class Participant {
       long startTimeAvailable,
       long endTimeAvailable,
       int duration,
+      String role,
+      String productArea,
+      String matchPreference,
       long matchId,
       MatchStatus matchStatus,
       long timestamp) {
@@ -37,6 +46,9 @@ public final class Participant {
     this.startTimeAvailable = startTimeAvailable;
     this.endTimeAvailable = endTimeAvailable;
     this.duration = duration;
+    this.role = role;
+    this.productArea = productArea;
+    this.matchPreference = matchPreference;
     this.matchId = matchId;
     this.matchStatus = matchStatus;
     this.timestamp = timestamp;
@@ -56,6 +68,18 @@ public final class Participant {
 
   public int getDuration() {
     return duration;
+  }
+
+  public String getRole() {
+    return role;
+  }
+
+  public String getProductArea() {
+    return productArea;
+  }
+
+  public String getMatchPreference() {
+    return matchPreference;
   }
 
   public long getMatchId() {

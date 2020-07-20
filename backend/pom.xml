@@ -55,7 +55,15 @@
       <version>1.0.1</version>
       <scope>test</scope>
     </dependency>
-    
+
+    <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>3.4.2</version>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
@@ -96,6 +104,42 @@
       <version>1.9.60</version>
       <scope>test</scope>
     </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.google.apis/google-api-services-gmail -->
+<dependency>
+    <groupId>com.google.apis</groupId>
+    <artifactId>google-api-services-gmail</artifactId>
+    <version>v1-rev110-1.25.0</version>
+</dependency>
+
+
+    <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+<dependency>
+    <groupId>commons-codec</groupId>
+    <artifactId>commons-codec</artifactId>
+    <version>1.14</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-java6 -->
+<dependency>
+    <groupId>com.google.oauth-client</groupId>
+    <artifactId>google-oauth-client-java6</artifactId>
+    <version>1.31.0</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-jetty -->
+<dependency>
+    <groupId>com.google.oauth-client</groupId>
+    <artifactId>google-oauth-client-jetty</artifactId>
+    <version>1.31.0</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/javax.activation/activation -->
+<dependency>
+    <groupId>javax.activation</groupId>
+    <artifactId>activation</artifactId>
+    <version>1.1.1</version>
+</dependency>
     
     <dependency>
       <groupId>com.google.code.findbugs</groupId>

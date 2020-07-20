@@ -18,7 +18,6 @@ public enum MatchStatus {
   }
 
   public static MatchStatus forIntValue(int value) {
-    System.out.println(value);
     for (MatchStatus status : MatchStatus.values()) {
       if (status.value == value) {
         return status;

@@ -5,6 +5,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.sps.data.MatchPreference;
 import com.google.sps.data.User;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,6 +16,10 @@ public final class UserDatastore {
   // Datastore Key/Property constants
   private static final String KIND_USER = "User";
   private static final String PROPERTY_USERNAME = "username";
+  private static final String PROPERTY_DURATION = "duration";
+  private static final String PROPERTY_ROLE = "role";
+  private static final String PROPERTY_PRODUCT_AREA = "productArea";
+  private static final String PROPERTY_MATCH_PREFERENCE = "matchPreference";
 
   /** Datastore */
   private final DatastoreService datastore;
@@ -27,11 +32,15 @@ public final class UserDatastore {
   /** Put user in datastore. Overwrite user entity if user with same username already exists. */
   public void addUser(User user) {
     // Set properties of entity based on user fields
-    Entity userEntity = new Entity(KIND_USER, user.getUsername());
-    userEntity.setProperty(PROPERTY_USERNAME, user.getUsername());
+    Entity entity = new Entity(KIND_USER, user.getUsername());
+    entity.setProperty(PROPERTY_USERNAME, user.getUsername());
+    entity.setProperty(PROPERTY_DURATION, user.getDuration());
+    entity.setProperty(PROPERTY_ROLE, user.getRole());
+    entity.setProperty(PROPERTY_PRODUCT_AREA, user.getProductArea());
+    entity.setProperty(PROPERTY_MATCH_PREFERENCE, user.getMatchPreference().getValue());
 
     // Insert entity into datastore
-    datastore.put(userEntity);
+    datastore.put(entity);
   }
 
   /** Return User Entity from username, or null if entity is not found */
@@ -48,12 +57,13 @@ public final class UserDatastore {
   /** Return user object from datastore user entity, or null if entity is null */
   @Nullable
   private static User getUserFromEntity(@Nonnull Entity entity) {
-    // Get entity properties
-    long id = (long) entity.getKey().getId();
-    String username = (String) entity.getProperty(PROPERTY_USERNAME);
-
-    // Create and return new User
-    return new User(id, username);
+    return new User(
+        (String) entity.getProperty(PROPERTY_USERNAME),
+        ((Long) entity.getProperty(PROPERTY_DURATION)).intValue(),
+        (String) entity.getProperty(PROPERTY_ROLE),
+        (String) entity.getProperty(PROPERTY_PRODUCT_AREA),
+        MatchPreference.forIntValue(
+            ((Long) entity.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()));
   }
 
   /** Return User from username, or null if user with username not in datastore */

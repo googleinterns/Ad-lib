@@ -20,6 +20,7 @@ public final class Match {
       String secondParticipantUsername,
       int duration,
       long timestamp) {
+    // TODO (#58): Add shared interests
     this.firstParticipantUsername = firstParticipantUsername;
     this.secondParticipantUsername = secondParticipantUsername;
     this.duration = duration;

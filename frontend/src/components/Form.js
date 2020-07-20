@@ -50,7 +50,7 @@ export default function Form() {
   const classes = useStyles();
 
   // Declare state variables for each input field and set default states
-  const [timeAvailableUntil, setTimeAvailableUntil] =
+  const [endTimeAvailable, setEndTimeAvailable] =
     React.useState(new Date());
   const [duration, setDuration] = React.useState(15);
   const [productArea, setProductArea] = React.useState('');
@@ -70,7 +70,7 @@ export default function Form() {
 
     // Gather all form inputs into one object
     const formDetails = {
-      timeAvailableUntil: timeAvailableUntil.getTime(),
+      endTimeAvailable: endTimeAvailable.getTime(),
       duration: duration,
       role: role,
       productArea: productArea,
@@ -101,7 +101,7 @@ export default function Form() {
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardTimePicker
                 id="time-field"
-                value={timeAvailableUntil}
+                value={endTimeAvailable}
                 onChange={(value) => setTimeAvailableUntil(value)}
                 KeyboardButtonProps={{'aria-label': 'time-field'}}
               />
@@ -131,7 +131,7 @@ export default function Form() {
         <div className={classes.flexEndDiv}>
           <Button variant="contained" color="primary"
             onClick={handleFormSubmission}>
-            Submit
+            Match me!
           </Button>
         </div>
       </div>

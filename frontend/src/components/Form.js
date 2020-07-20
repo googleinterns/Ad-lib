@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
@@ -40,6 +41,12 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(2),
   },
 }));
+
+// Add onSubmit to props validation
+Form.propTypes = {
+  onSubmit: PropTypes.func,
+};
+
 
 /**
  * Validates from inputs on submission and alerts user on error
@@ -116,7 +123,7 @@ export default function Form(props) {
             }
           });
 
-      // TO-DO: call getMatch() to initiate GET request to search-match servlet
+      props.onSubmit();
     }
   }
 

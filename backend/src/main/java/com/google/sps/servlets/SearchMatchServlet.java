@@ -73,7 +73,7 @@ public class SearchMatchServlet extends HttpServlet {
 
     // Check if match exists and not returned yet
     if (participant.getMatchStatus() == MatchStatus.UNMATCHED) {
-      if (checkExpired(participant)) {
+      if (isExpired(participant)) {
         participantDatastore.removeParticipant(username);
         sendExpiredResponse(response);
         return;
@@ -100,44 +100,43 @@ public class SearchMatchServlet extends HttpServlet {
     sendMatchResponse(response, match);
   }
 
-  /** Return true if expired and should be removed, false if still valid */
-  private boolean checkExpired(Participant participant) {
+  /**
+   * Check if participant is expired (not enough time before endTimeAvailable to have a meeting of
+   * duration with padding time)
+   *
+   * @return true if expired and should be removed, false if still valid
+   */
+  private boolean isExpired(Participant participant) {
     long currentTimeMillis = System.currentTimeMillis();
-    return (participant.getEndTimeAvailable()
-            - TimeUnit.MINUTES.toMillis(participant.getDuration() + PADDING_MINUTES))
-        < currentTimeMillis;
+    // Participant is expired if the current time plus duration and padding time is after their
+    // endTimeAvailable
+    return (currentTimeMillis
+            + TimeUnit.MINUTES.toMillis(participant.getDuration() + PADDING_MINUTES))
+        > participant.getEndTimeAvailable();
   }
 
   /** Send JSON response for expired participant that has been removed from datastore */
-  private void sendExpiredResponse(HttpServletResponse response) {
+  private void sendExpiredResponse(HttpServletResponse response) throws IOException {
     JSONObject expired = new JSONObject();
     expired.put(JSON_MATCH_STATUS, "expired");
 
     // Send the JSON back as the response
     response.setContentType("application/json");
-    try {
-      response.getWriter().println(expired.toString());
-    } catch (IOException e) {
-      System.out.println("Failed to return expired participant response.");
-    }
+    response.getWriter().println(expired.toString());
   }
 
   /** Send JSON response for no match yet */
-  private void sendNoMatchResponse(HttpServletResponse response) {
+  private void sendNoMatchResponse(HttpServletResponse response) throws IOException {
     JSONObject noMatchYet = new JSONObject();
     noMatchYet.put(JSON_MATCH_STATUS, "false");
 
     // Send the JSON back as the response
     response.setContentType("application/json");
-    try {
-      response.getWriter().println(noMatchYet.toString());
-    } catch (IOException e) {
-      System.out.println("Failed to return no match response.");
-    }
+    response.getWriter().println(noMatchYet.toString());
   }
 
   /** Send JSON response for found a match */
-  private void sendMatchResponse(HttpServletResponse response, Match match) {
+  private void sendMatchResponse(HttpServletResponse response, Match match) throws IOException {
     JSONObject matchExists = new JSONObject();
     matchExists.put(JSON_MATCH_STATUS, "true");
     matchExists.put(JSON_FIRST_PARTICIPANT_USERNAME, match.getFirstParticipantUsername());
@@ -146,10 +145,6 @@ public class SearchMatchServlet extends HttpServlet {
 
     // Send the JSON back as the response
     response.setContentType("application/json");
-    try {
-      response.getWriter().println(matchExists.toString());
-    } catch (IOException e) {
-      System.out.println("Failed to return match found response.");
-    }
+    response.getWriter().println(matchExists.toString());
   }
 }

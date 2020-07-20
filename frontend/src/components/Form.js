@@ -10,6 +10,7 @@ import MatchPreference from './MatchPreference';
 import Checkbox from './PreferencesCheckbox';
 import RoleDropdown from './RoleDropdown';
 import ProductAreaDropdown from './ProductAreaDropdown';
+import InterestsDropdown from './InterestsDropdown';
 import DurationDropdown from './DurationDropdown';
 
 /** Establishes style to use on rendering form component */
@@ -54,6 +55,7 @@ export default function Form() {
   const [duration, setDuration] = React.useState(15);
   const [productArea, setProductArea] = React.useState('');
   const [role, setRole] = React.useState('');
+  const [interests, setInterests] = React.useState([]);
   const [savePreference, setSavePreference] = React.useState(true);
   const [matchPreference, setMatchPreference] = React.useState('none');
 
@@ -72,6 +74,7 @@ export default function Form() {
       duration: duration,
       role: role,
       productArea: productArea,
+      interests: interests,
       matchPreference: matchPreference,
       savePreference: savePreference,
     };
@@ -117,6 +120,7 @@ export default function Form() {
         <div className={classes.flexStartDiv}>
           <RoleDropdown onChange={(value) => setRole(value)} />
           <ProductAreaDropdown onChange={(value) => setProductArea(value)} />
+          <InterestsDropdown onChange={(value) => setInterests(value)} />
         </div>
         <div className={classes.padding}>
           <MatchPreference onChange={(value) => setMatchPreference(value)} />

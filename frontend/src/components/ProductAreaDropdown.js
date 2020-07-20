@@ -43,8 +43,8 @@ ProductAreaDropdown.propTypes = {
 
 /**
  * Create product area dropdown component using productAreas array
- * @return {ProductAreaDropdown} ProductAreaDropdown component
  * @param {Object} props
+ * @return {ProductAreaDropdown} ProductAreaDropdown component
  */
 export default function ProductAreaDropdown(props) {
   return (

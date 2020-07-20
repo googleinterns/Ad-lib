@@ -17,8 +17,8 @@ DurationDropdown.propTypes = {
 
 /**
  * Create duration dropdown component using durations array
- * @return {DurationDropdown} DurationDropdown component
  * @param {Object} props
+ * @return {DurationDropdown} DurationDropdown component
  */
 export default function DurationDropdown(props) {
   return (

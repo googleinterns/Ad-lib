@@ -25,8 +25,8 @@ RoleDropdown.propTypes = {
 
 /**
  * Create role dropdown component using roles array
- * @return {RoleDropdown} RoleDropdown component
  * @param {Object} props
+ * @return {RoleDropdown} RoleDropdown component
  */
 export default function RoleDropdown(props) {
   return (

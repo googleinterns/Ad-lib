@@ -12,8 +12,8 @@ MatchPreference.propTypes = {
 
 /**
  * Create match preference radio group component
- * @return {MatchPreference} MatchPreference component
  * @param {Object} props
+ * @return {MatchPreference} MatchPreference component
  */
 export default function MatchPreference(props) {
   return (

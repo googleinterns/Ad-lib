@@ -462,4 +462,157 @@ public final class FindMatchQueryTest {
     assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);
     assertThat(match.getDuration()).isEqualTo(DURATION_45_MINUTES);
   }
+
+  @Test
+  public void areDifferentPreferSimilar() {
+    // Two participants that are different but prefer to be matched with someone similar
+    Participant participantA =
+        new Participant(
+            PERSON_A,
+            TIME_1400ET,
+            TIME_1456ET,
+            DURATION_45_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
+            MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
+            TIMESTAMP_DEFAULT);
+    Participant participantB =
+        new Participant(
+            PERSON_B,
+            TIME_1400ET,
+            TIME_1800ET,
+            DURATION_45_MINUTES,
+            ROLE_PRODUCT_MANAGER,
+            PRODUCT_AREA_CLOUD,
+            MATCH_PREFERENCE_SIMILAR,
+            MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
+            TIMESTAMP_DEFAULT);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
+    participantDatastore.addParticipant(participantA);
+
+    FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
+    Match match = query.findMatch(participantB);
+
+    assertThat(match).isNull();
+  }
+
+  @Test
+  public void areSimilarPreferDifferent() {
+    // Two participants that are similar but prefer to be matched with someone different
+    Participant participantA =
+        new Participant(
+            PERSON_A,
+            TIME_1400ET,
+            TIME_1456ET,
+            DURATION_45_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_DIFFERENT,
+            MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
+            TIMESTAMP_DEFAULT);
+    Participant participantB =
+        new Participant(
+            PERSON_B,
+            TIME_1400ET,
+            TIME_1800ET,
+            DURATION_45_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_DIFFERENT,
+            MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
+            TIMESTAMP_DEFAULT);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
+    participantDatastore.addParticipant(participantA);
+
+    FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
+    Match match = query.findMatch(participantB);
+
+    assertThat(match).isNull();
+  }
+
+  @Test
+  public void areDifferentPreferDifferent() {
+    // Two participants that are different and prefer to be matched with someone different
+    Participant participantA =
+        new Participant(
+            PERSON_A,
+            TIME_1400ET,
+            TIME_1456ET,
+            DURATION_45_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_DIFFERENT,
+            MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
+            TIMESTAMP_DEFAULT);
+    Participant participantB =
+        new Participant(
+            PERSON_B,
+            TIME_1400ET,
+            TIME_1800ET,
+            DURATION_45_MINUTES,
+            ROLE_PRODUCT_MANAGER,
+            PRODUCT_AREA_CLOUD,
+            MATCH_PREFERENCE_DIFFERENT,
+            MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
+            TIMESTAMP_DEFAULT);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
+    participantDatastore.addParticipant(participantA);
+
+    FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
+    Match match = query.findMatch(participantB);
+
+    assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_B);
+    assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);
+    assertThat(match.getDuration()).isEqualTo(DURATION_45_MINUTES);
+  }
+
+  @Test
+  public void oneFieldMatches() {
+    // Two participants with one matching field prefer to be matched with someone similar
+    // TODO: change num matching fields threshold when interests are added
+    Participant participantA =
+        new Participant(
+            PERSON_A,
+            TIME_1400ET,
+            TIME_1456ET,
+            DURATION_45_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
+            MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
+            TIMESTAMP_DEFAULT);
+    Participant participantB =
+        new Participant(
+            PERSON_B,
+            TIME_1400ET,
+            TIME_1800ET,
+            DURATION_45_MINUTES,
+            ROLE_PRODUCT_MANAGER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
+            MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
+            TIMESTAMP_DEFAULT);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
+    participantDatastore.addParticipant(participantA);
+
+    FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
+    Match match = query.findMatch(participantB);
+
+    assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_B);
+    assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);
+    assertThat(match.getDuration()).isEqualTo(DURATION_45_MINUTES);
+  }
 }

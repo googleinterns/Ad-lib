@@ -35,9 +35,9 @@ import org.json.simple.JSONObject;
 public class SearchMatchServlet extends HttpServlet {
 
   // JSON key constants
-  private static final String JSON_MATCHSTATUS = "matchStatus";
-  private static final String JSON_FIRSTPARTICIPANTUSERNAME = "firstParticipantUsername";
-  private static final String JSON_SECONDPARTICIPANTUSERNAME = "secondParticipantUsername";
+  private static final String JSON_MATCH_STATUS = "matchStatus";
+  private static final String JSON_FIRST_PARTICIPANT_USERNAME = "firstParticipantUsername";
+  private static final String JSON_SECOND_PARTICIPANT_USERNAME = "secondParticipantUsername";
   private static final String JSON_DURATION = "duration";
 
   @Override
@@ -71,7 +71,7 @@ public class SearchMatchServlet extends HttpServlet {
     if (participant.getMatchStatus() == MatchStatus.UNMATCHED) {
       // No match yet
       JSONObject noMatchYet = new JSONObject();
-      noMatchYet.put(JSON_MATCHSTATUS, "false");
+      noMatchYet.put(JSON_MATCH_STATUS, "false");
 
       // Send the JSON back as the response
       response.setContentType("application/json");
@@ -93,9 +93,9 @@ public class SearchMatchServlet extends HttpServlet {
     participantDatastore.removeParticipant(match.getSecondParticipantUsername());
 
     JSONObject matchExists = new JSONObject();
-    matchExists.put(JSON_MATCHSTATUS, "true");
-    matchExists.put(JSON_FIRSTPARTICIPANTUSERNAME, match.getFirstParticipantUsername());
-    matchExists.put(JSON_SECONDPARTICIPANTUSERNAME, match.getSecondParticipantUsername());
+    matchExists.put(JSON_MATCH_STATUS, "true");
+    matchExists.put(JSON_FIRST_PARTICIPANT_USERNAME, match.getFirstParticipantUsername());
+    matchExists.put(JSON_SECOND_PARTICIPANT_USERNAME, match.getSecondParticipantUsername());
     matchExists.put(JSON_DURATION, match.getDuration());
 
     // Send the JSON back as the response

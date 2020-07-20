@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Duration Dropdown should render correctly 1`] = `
+<div>
+  <div
+    className="MuiFormControl-root"
+    style={
+      Object {
+        "width": 180,
+      }
+    }
+  >
+    <div
+      className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
+      onClick={[Function]}
+    >
+      <select
+        aria-invalid={false}
+        aria-label="duration"
+        className="MuiNativeSelect-root MuiNativeSelect-select MuiInputBase-input MuiInput-input"
+        disabled={false}
+        id="duration-input"
+        name="duration"
+        onAnimationStart={[Function]}
+        onBlur={[Function]}
+        onChange={[Function]}
+        onFocus={[Function]}
+        required={false}
+      >
+        <option
+          value={15}
+        >
+          15 minutes
+        </option>
+        <option
+          value={30}
+        >
+          30 minutes
+        </option>
+        <option
+          value={45}
+        >
+          45 minutes
+        </option>
+        <option
+          value={60}
+        >
+          60 minutes
+        </option>
+      </select>
+      <svg
+        aria-hidden={true}
+        className="MuiSvgIcon-root MuiNativeSelect-icon"
+        focusable="false"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M7 10l5 5 5-5z"
+        />
+      </svg>
+    </div>
+  </div>
+</div>
+`;

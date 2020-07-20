@@ -143,7 +143,7 @@ public class EmailNotifierTest {
     String realString = convertToMimeMessage(argument.getValue()).getContent().toString();
     Truth.assertWithMessage("These Two strings should not be the same ")
         .that("anyString()")
-        .isEqualTo(realString);
+        .isNotEqualTo(realString);
   }
 
   @Test
@@ -164,7 +164,7 @@ public class EmailNotifierTest {
   }
 
   @Test
-  public void testMessageShouldNotHaveCorrectRecipients()
+  public void testMessageShouldHaveIncorrectRecipients()
       throws MessagingException, IOException, GeneralSecurityException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
     emailNotifier.notifyUser();
@@ -172,6 +172,6 @@ public class EmailNotifierTest {
     Address[] allRecipients = convertToMimeMessage(argument.getValue()).getAllRecipients();
     Truth.assertWithMessage("These Two arrays should be the same ")
         .that(new InternetAddress[] {new InternetAddress()})
-        .isEqualTo(allRecipients);
+        .isNotEqualTo(allRecipients);
   }
 }

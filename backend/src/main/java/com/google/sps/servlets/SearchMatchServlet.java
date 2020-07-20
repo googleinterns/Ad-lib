@@ -16,42 +16,33 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.Match;
+import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
+import com.google.sps.datastore.MatchDatastore;
+import com.google.sps.datastore.ParticipantDatastore;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 
-/** Servlet that returns some example content. */
+/** Servlet that searches for the participant's current match */
 @WebServlet("/api/v1/search-match")
 public class SearchMatchServlet extends HttpServlet {
 
-  // Datastore Key/Property constants
-  private static final String KEY_MATCH = "Match";
-  private static final String PROPERTY_FIRSTPARTICIPANT = "firstParticipant";
-  private static final String PROPERTY_SECONDPARTICIPANT = "secondParticipant";
-  private static final String PROPERTY_DURATION = "duration";
-  private static final String PROPERTY_TIMESTAMP = "timestamp";
-
   // JSON key constants
-  private static final String KEY_MATCHSTATUS = "matchStatus";
-  private static final String KEY_FIRSTPARTICIPANTUSERNAME = "firstParticipantUsername";
-  private static final String KEY_SECONDPARTICIPANTUSERNAME = "secondParticipantUsername";
-  private static final String KEY_DURATION = "duration";
+  private static final String JSON_MATCHSTATUS = "matchStatus";
+  private static final String JSON_FIRSTPARTICIPANTUSERNAME = "firstParticipantUsername";
+  private static final String JSON_SECONDPARTICIPANTUSERNAME = "secondParticipantUsername";
+  private static final String JSON_DURATION = "duration";
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    System.out.println("Request received");
     // Get participant username
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
@@ -61,47 +52,54 @@ public class SearchMatchServlet extends HttpServlet {
     }
     String username = email.split("@")[0];
 
-    // Create and sort queries by time
-    // TODO: eventually sort by startTimeAvailable
-    Query query = new Query(KEY_MATCH).addSort(PROPERTY_TIMESTAMP, SortDirection.DESCENDING);
-
+    // Get DatastoreService and instiate Match and Participant Datastores
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
+    MatchDatastore matchDatastore = new MatchDatastore(datastore);
+    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
 
-    // Convert list of entities to list of matches
-    List<Match> matches = new ArrayList<Match>();
-    for (Entity entity : results.asIterable()) {
-      long id = (long) entity.getKey().getId();
-      Participant firstParticipant = (Participant) entity.getProperty(PROPERTY_FIRSTPARTICIPANT);
-      Participant secondParticipant = (Participant) entity.getProperty(PROPERTY_SECONDPARTICIPANT);
-      int duration = (int) entity.getProperty(PROPERTY_DURATION);
-      long timestamp = (long) entity.getProperty(PROPERTY_TIMESTAMP);
-      Match match = new Match(id, firstParticipant, secondParticipant, duration, timestamp);
-      matches.add(match);
+    // Find participant's match, if exists and not returned yet
+    Participant participant = participantDatastore.getParticipantFromUsername(username);
+    if (participant == null) {
+      response.sendError(
+          HttpServletResponse.SC_BAD_REQUEST,
+          "Participant with username " + username + "does not exist.");
+      return;
+    }
+    long matchId = participant.getMatchId();
+
+    // Check if match exists and not returned yet
+    if (participant.getMatchStatus() == MatchStatus.UNMATCHED) {
+      // No match yet
+      JSONObject noMatchYet = new JSONObject();
+      noMatchYet.put(JSON_MATCHSTATUS, "false");
+
+      // Send the JSON back as the response
+      response.setContentType("application/json");
+      response.getWriter().println(noMatchYet.toString());
+      return;
     }
 
-    JSONObject matchDoesNotExist = new JSONObject();
-    matchDoesNotExist.put(KEY_MATCHSTATUS, "false");
-    String matchDetails = matchDoesNotExist.toString(); // default if no match found
-
-    // Brute force search for match
-    for (Match match : matches) {
-      String firstParticipantUsername = match.getFirstParticipant().getUsername();
-      String secondParticipantUsername = match.getSecondParticipant().getUsername();
-      if (username.equals(firstParticipantUsername) || username.equals(secondParticipantUsername)) {
-        JSONObject matchExists = new JSONObject();
-        matchExists.put(KEY_MATCHSTATUS, "true");
-        matchExists.put(KEY_FIRSTPARTICIPANTUSERNAME, firstParticipantUsername);
-        matchExists.put(KEY_SECONDPARTICIPANTUSERNAME, secondParticipantUsername);
-        matchExists.put(KEY_DURATION, match.getDuration());
-        matchDetails = matchExists.toString();
-
-        break;
-      }
+    // Match found
+    Match match = matchDatastore.getMatchFromId(matchId);
+    if (match == null) {
+      response.sendError(
+          HttpServletResponse.SC_BAD_REQUEST,
+          "No match entity in datastore with match id " + matchId + ".");
+      return;
     }
+
+    // Remove matched participants from datastore
+    participantDatastore.removeParticipant(match.getFirstParticipantUsername());
+    participantDatastore.removeParticipant(match.getSecondParticipantUsername());
+
+    JSONObject matchExists = new JSONObject();
+    matchExists.put(JSON_MATCHSTATUS, "true");
+    matchExists.put(JSON_FIRSTPARTICIPANTUSERNAME, match.getFirstParticipantUsername());
+    matchExists.put(JSON_SECONDPARTICIPANTUSERNAME, match.getSecondParticipantUsername());
+    matchExists.put(JSON_DURATION, match.getDuration());
 
     // Send the JSON back as the response
     response.setContentType("application/json");
-    response.getWriter().println(matchDetails);
+    response.getWriter().println(matchExists.toString());
   }
 }

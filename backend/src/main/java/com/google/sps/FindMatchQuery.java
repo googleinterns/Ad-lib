@@ -16,71 +16,64 @@ package com.google.sps;
 
 import com.google.sps.data.Match;
 import com.google.sps.data.Participant;
+import com.google.sps.datastore.ParticipantDatastore;
 import java.time.Clock;
-import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Nullable;
 
-/** Class used to find a match in a list of Participants with the most recently added Participant */
+/** Class used to find a match for new Participant with unmatched Participants in datastore */
 public final class FindMatchQuery {
 
-  /** Maximum difference in duration to be compatible */
-  private static int MAX_DURATION_DIFF = 15;
-  /** extra padding time to ensure large enough meeting time block */
-  private static int PADDING_TIME = 15;
+  /** Extra padding time in minutes to ensure large enough meeting time block */
+  private static final int PADDING_MINUTES = 10;
   /** Reference clock */
-  private Clock clock;
+  private final Clock clock;
+  /** Datastore of Participants */
+  private final ParticipantDatastore participantDatastore;
 
   /** Constructor */
-  public FindMatchQuery(Clock clock) {
+  public FindMatchQuery(Clock clock, ParticipantDatastore participantDatastore) {
     this.clock = clock;
+    this.participantDatastore = participantDatastore;
   }
 
   /**
-   * Find match of new participant or add to list of participants, return whether or not match was
-   * found right after being added
+   * @return Match of new participant with unmatched participants by comparing duration and
+   *     availibility, or null if no match yet
    */
-  public Match findMatch(List<Participant> participants, Participant newParticipant) {
+  @Nullable
+  public Match findMatch(Participant newParticipant) {
+    int duration = newParticipant.getDuration();
+
+    // Get list of unmatched participants with same duration as newParticipant
+    List<Participant> sameDurationParticipants =
+        participantDatastore.getParticipantsWithDuration(duration);
+
     // Set reference date time using clock
-    ZonedDateTime dateTime = ZonedDateTime.now(clock);
-    System.out.println(dateTime);
+    long currentTimeMillis = clock.millis();
 
-    // Compare new participant preferences with others in list to find match
-    for (Participant currParticipant : participants) {
+    long newEndTimeAvailable = newParticipant.getEndTimeAvailable();
 
-      // Check if participants are looking for similar meeting duration
-      int newDuration = newParticipant.getDuration();
-      int currDuration = currParticipant.getDuration();
-      boolean compatibleDuration = Math.abs(newDuration - currDuration) <= MAX_DURATION_DIFF;
-
-      if (!compatibleDuration) {
-        continue;
-      }
-      int duration = Math.min(newDuration, currDuration);
-
+    // Compare new participant preferences with other participants to find match
+    for (Participant currParticipant : sameDurationParticipants) {
       // Check if participants are both free for that duration + extra
-      ZonedDateTime newEndTimeAvailable = newParticipant.getEndTimeAvailable();
-      ZonedDateTime currEndTimeAvailable = currParticipant.getEndTimeAvailable();
-      ZonedDateTime earliestEndTimeAvailable =
-          getEarlier(newEndTimeAvailable, currEndTimeAvailable);
+      long currEndTimeAvailable = currParticipant.getEndTimeAvailable();
+      long earliestEndTimeAvailable = Math.min(newEndTimeAvailable, currEndTimeAvailable);
       boolean compatibleTime =
-          dateTime.plusMinutes(duration + PADDING_TIME).isBefore(earliestEndTimeAvailable);
+          (currentTimeMillis + TimeUnit.MINUTES.toMillis(duration + PADDING_MINUTES))
+              < earliestEndTimeAvailable;
 
       if (compatibleTime) {
-        // TODO: change match ID (currently -1 for easy error checking)
+        // Create and return match
         return new Match(
-            /* id= */ -1L,
-            newParticipant,
-            currParticipant,
+            newParticipant.getUsername(),
+            currParticipant.getUsername(),
             duration,
-            dateTime.toInstant().toEpochMilli());
+            currentTimeMillis);
       }
     }
     // No inital match found
     return null;
-  }
-
-  /** Return earlier of two ZonedDateTime objects */
-  private ZonedDateTime getEarlier(ZonedDateTime first, ZonedDateTime second) {
-    return first.isBefore(second) ? first : second;
   }
 }

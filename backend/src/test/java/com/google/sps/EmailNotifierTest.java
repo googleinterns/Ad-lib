@@ -1,15 +1,14 @@
 package com.google.sps;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
+import com.google.common.truth.Truth;
 import com.google.sps.notifs.EmailNotifier;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,12 +22,14 @@ import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.apache.commons.codec.binary.Base64;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
+@RunWith(JUnit4.class)
 public class EmailNotifierTest {
   private EmailNotifier emailNotifier;
   @Mock private Gmail gmail;
@@ -54,7 +55,7 @@ public class EmailNotifierTest {
     // Emulating real behaviour due to when method, will return list of messages
     when(users.messages()).thenReturn(messages);
     //    Emulating sending messages, when sent will return send mock.
-    when(messages.send(anyString(), any(Message.class))).thenReturn(send);
+    when(messages.send(any(), any())).thenReturn(send);
     //    When send mock is executed will return test message.
     when(send.execute()).thenReturn(testMessage);
   }
@@ -96,20 +97,15 @@ public class EmailNotifierTest {
   }
 
   @Test
-  public void constructorShouldSetNameAndEmail() {
-    assertEquals("John", emailNotifier.recipientName);
-    assertEquals("jdoe@gmail.com ", emailNotifier.recipientEmail);
-  }
-
-  @Test
   public void testMessageHasCorrectApplicationName()
       throws MessagingException, IOException, GeneralSecurityException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
     emailNotifier.notifyUser();
-    verify(messages).send(anyString(), argument.capture());
+    verify(messages).send(any(), argument.capture());
     String applicationName = convertToMimeMessage(argument.getValue()).getFrom()[0].toString();
-    Assert.assertEquals(
-        "These two strings should be the same", "Adlib-Step@gmail.com", applicationName);
+    Truth.assertWithMessage("These two strings should be the same")
+        .that("Adlib-Step@gmail.com")
+        .isEqualTo(applicationName);
   }
 
   @Test
@@ -117,10 +113,11 @@ public class EmailNotifierTest {
       throws MessagingException, IOException, GeneralSecurityException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
     emailNotifier.notifyUser();
-    verify(messages).send(anyString(), argument.capture());
+    verify(messages).send(any(), argument.capture());
     String subjectName = convertToMimeMessage(argument.getValue()).getSubject();
-    Assert.assertEquals(
-        "These Two strings should be the same ", "Ad-Lib Meeting Found", subjectName);
+    Truth.assertWithMessage("These Two strings should be the same ")
+        .that("Ad-Lib Meeting Found")
+        .isEqualTo(subjectName);
   }
 
   @Test
@@ -128,13 +125,13 @@ public class EmailNotifierTest {
       throws MessagingException, IOException, GeneralSecurityException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
     emailNotifier.notifyUser();
-    verify(messages).send(anyString(), argument.capture());
+    verify(messages).send(any(), argument.capture());
     String bodyText = convertToMimeMessage(argument.getValue()).getContent().toString();
-    Assert.assertEquals(
-        "These Two strings should be the same ",
-        " Hey John Please Join your Ad-Lib meeting via the link below : \n"
-            + " http://meet.google.com/new",
-        bodyText);
+    Truth.assertWithMessage("These Two strings should be the same ")
+        .that(
+            " Hey John Please Join your Ad-Lib meeting via the link below : \n"
+                + " http://meet.google.com/new")
+        .isEqualTo(bodyText);
   }
 
   @Test
@@ -144,7 +141,9 @@ public class EmailNotifierTest {
     emailNotifier.notifyUser();
     verify(messages).send(eq("me"), argument.capture());
     String realString = convertToMimeMessage(argument.getValue()).getContent().toString();
-    Assert.assertNotEquals("These Two strings should not be the same ", "anyString()", realString);
+    Truth.assertWithMessage("These Two strings should not be the same ")
+        .that("anyString()")
+        .isEqualTo(realString);
   }
 
   @Test
@@ -152,15 +151,16 @@ public class EmailNotifierTest {
       throws MessagingException, IOException, GeneralSecurityException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
     emailNotifier.notifyUser();
-    verify(messages).send(anyString(), argument.capture());
+    verify(messages).send(any(), argument.capture());
     Address[] allRecipients = convertToMimeMessage(argument.getValue()).getAllRecipients();
     Address[] correctRecipients =
         new Address[] {
           new InternetAddress("jdoe@gmail.com "),
         };
-    Assert.assertArrayEquals(
-        "These Two arrays should be the same ", correctRecipients, allRecipients);
-    Assert.assertEquals(allRecipients[0], correctRecipients[0]);
+    Truth.assertWithMessage("These Two arrays should be the same ")
+        .that(correctRecipients)
+        .isEqualTo(allRecipients);
+    Truth.assertThat(allRecipients[0]).isEqualTo(correctRecipients[0]);
   }
 
   @Test
@@ -168,11 +168,10 @@ public class EmailNotifierTest {
       throws MessagingException, IOException, GeneralSecurityException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
     emailNotifier.notifyUser();
-    verify(messages).send(anyString(), argument.capture());
+    verify(messages).send(any(), argument.capture());
     Address[] allRecipients = convertToMimeMessage(argument.getValue()).getAllRecipients();
-    Assert.assertNotEquals(
-        "These Two arrays should be the same ",
-        new InternetAddress[] {new InternetAddress()},
-        allRecipients);
+    Truth.assertWithMessage("These Two arrays should be the same ")
+        .that(new InternetAddress[] {new InternetAddress()})
+        .isEqualTo(allRecipients);
   }
 }

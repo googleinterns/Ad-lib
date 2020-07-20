@@ -60,9 +60,9 @@ public class EmailNotifier {
 
   private static final String CREDENTIALS_FILE_PATH = "backend/credentials.json";
   /** The email to be notified */
-  public final String recipientEmail;
+  private final String recipientEmail;
   /** The notification recipient */
-  public final String recipientName;
+  private final String recipientName;
   /** The gmail service */
   private final Gmail service;
 
@@ -145,7 +145,6 @@ public class EmailNotifier {
   /** Function that access its api and using it sends an email */
   //   TODO(#35): Create a dummy email for ad lib itself to send emails.
   //   TODO(#36): Replace body to send real link to user instead of generic.
-
   public void notifyUser() throws MessagingException, IOException, GeneralSecurityException {
     NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
     MimeMessage email =

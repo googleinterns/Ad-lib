@@ -10,6 +10,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.sps.data.MatchPreference;
 import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ public final class ParticipantDatastore {
   private static final String PROPERTY_START_TIME_AVAILABLE = "startTimeAvailable";
   private static final String PROPERTY_END_TIME_AVAILABLE = "endTimeAvailable";
   private static final String PROPERTY_DURATION = "duration";
+  private static final String PROPERTY_ROLE = "role";
+  private static final String PROPERTY_PRODUCT_AREA = "productArea";
+  private static final String PROPERTY_MATCH_PREFERENCE = "matchPreference";
   private static final String PROPERTY_MATCH_ID = "matchId";
   private static final String PROPERTY_MATCH_STATUS = "matchStatus";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
@@ -46,6 +50,9 @@ public final class ParticipantDatastore {
     entity.setProperty(PROPERTY_START_TIME_AVAILABLE, participant.getStartTimeAvailable());
     entity.setProperty(PROPERTY_END_TIME_AVAILABLE, participant.getEndTimeAvailable());
     entity.setProperty(PROPERTY_DURATION, participant.getDuration());
+    entity.setProperty(PROPERTY_ROLE, participant.getRole());
+    entity.setProperty(PROPERTY_PRODUCT_AREA, participant.getProductArea());
+    entity.setProperty(PROPERTY_MATCH_PREFERENCE, participant.getMatchPreference().getValue());
     entity.setProperty(PROPERTY_MATCH_ID, participant.getMatchId());
     entity.setProperty(PROPERTY_MATCH_STATUS, participant.getMatchStatus().getValue());
     entity.setProperty(PROPERTY_TIMESTAMP, participant.getTimestamp());
@@ -81,6 +88,10 @@ public final class ParticipantDatastore {
         (long) entity.getProperty(PROPERTY_START_TIME_AVAILABLE),
         (long) entity.getProperty(PROPERTY_END_TIME_AVAILABLE),
         ((Long) entity.getProperty(PROPERTY_DURATION)).intValue(),
+        (String) entity.getProperty(PROPERTY_ROLE),
+        (String) entity.getProperty(PROPERTY_PRODUCT_AREA),
+        MatchPreference.forIntValue(
+            ((Long) entity.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()),
         (long) entity.getProperty(PROPERTY_MATCH_ID),
         MatchStatus.forIntValue(((Long) entity.getProperty(PROPERTY_MATCH_STATUS)).intValue()),
         (long) entity.getProperty(PROPERTY_TIMESTAMP));

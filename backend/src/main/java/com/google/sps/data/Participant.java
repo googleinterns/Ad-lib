@@ -19,7 +19,7 @@ public final class Participant {
   /** Product area at Google */
   private final String productArea;
   /** Whether they want to be matched with a similar, any, or different Googler */
-  private final String matchPreference;
+  private final MatchPreference matchPreference;
   /** Id of match in datastore, 0 if never found a match (can assign 0 at construction) */
   private final long matchId;
   /** Matched already or not yet */
@@ -35,7 +35,7 @@ public final class Participant {
       int duration,
       String role,
       String productArea,
-      String matchPreference,
+      MatchPreference matchPreference,
       long matchId,
       MatchStatus matchStatus,
       long timestamp) {
@@ -78,7 +78,7 @@ public final class Participant {
     return productArea;
   }
 
-  public String getMatchPreference() {
+  public MatchPreference getMatchPreference() {
     return matchPreference;
   }
 
@@ -101,6 +101,9 @@ public final class Participant {
         startTimeAvailable,
         endTimeAvailable,
         duration,
+        role,
+        productArea,
+        matchPreference,
         newMatchId,
         MatchStatus.MATCHED,
         timestamp);
@@ -112,6 +115,9 @@ public final class Participant {
         .add("startTimeAvailable", startTimeAvailable)
         .add("endTimeAvailable", endTimeAvailable)
         .add("duration", duration)
+        .add("role", role)
+        .add("productArea", productArea)
+        .add("matchPreference", matchPreference.getValue())
         .add("matchId", matchId)
         .add("matchStatus", matchStatus.getValue())
         .add("timestamp", timestamp)

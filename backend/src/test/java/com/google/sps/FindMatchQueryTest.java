@@ -21,6 +21,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.sps.data.Match;
+import com.google.sps.data.MatchPreference;
 import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
 import com.google.sps.datastore.ParticipantDatastore;
@@ -45,6 +46,19 @@ public final class FindMatchQueryTest {
   // Default parameters unused in query
   private static final long MATCHID_DEFAULT = 0;
   private static final long TIMESTAMP_DEFAULT = 0;
+
+  // Role constants
+  private static final String ROLE_SOFTWARE_ENGINEER = "Software engineer";
+  private static final String ROLE_PRODUCT_MANAGER = "Product manager";
+
+  // Product area constants
+  private static final String PRODUCT_AREA_ADS = "Ads";
+  private static final String PRODUCT_AREA_CLOUD = "Cloud";
+
+  // Match preference constants
+  private static final MatchPreference MATCH_PREFERENCE_DIFFERENT = MatchPreference.DIFFERENT;
+  private static final MatchPreference MATCH_PREFERENCE_ANY = MatchPreference.ANY;
+  private static final MatchPreference MATCH_PREFERENCE_SIMILAR = MatchPreference.SIMILAR;
 
   // Duration constants
   private static final int DURATION_15_MINUTES = 15;
@@ -112,6 +126,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1600ET,
             DURATION_15_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -121,6 +138,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1800ET,
             DURATION_15_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -145,6 +165,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1600ET,
             DURATION_30_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -154,6 +177,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1800ET,
             DURATION_60_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -176,6 +202,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1450ET,
             DURATION_45_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -185,6 +214,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1600ET,
             DURATION_45_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -207,6 +239,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1600ET,
             DURATION_60_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -216,6 +251,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1450ET,
             DURATION_45_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -225,6 +263,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1800ET,
             DURATION_60_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -250,6 +291,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1450ET,
             DURATION_30_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -259,6 +303,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1600ET,
             DURATION_60_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -268,6 +315,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1800ET,
             DURATION_60_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -293,6 +343,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1600ET,
             DURATION_30_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -302,6 +355,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1800ET,
             DURATION_30_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -311,6 +367,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_2000ET,
             DURATION_30_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -336,6 +395,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1455ET,
             DURATION_45_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -345,6 +407,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1800ET,
             DURATION_45_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -368,6 +433,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1456ET,
             DURATION_45_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);
@@ -377,6 +445,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1800ET,
             DURATION_45_MINUTES,
+            ROLE_SOFTWARE_ENGINEER,
+            PRODUCT_AREA_ADS,
+            MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
             TIMESTAMP_DEFAULT);

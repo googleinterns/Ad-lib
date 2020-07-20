@@ -1,5 +1,6 @@
 package com.google.sps;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -8,7 +9,6 @@ import static org.mockito.Mockito.when;
 
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
-import com.google.common.truth.Truth;
 import com.google.sps.notifs.EmailNotifier;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -39,7 +39,7 @@ public class EmailNotifierTest {
   @Mock private Gmail.Users.Messages.Send send;
 
   @Before
-  public void setUp() throws MessagingException, IOException {
+  public void setUp() throws IOException {
     testEmail = "jdoe@gmail.com";
     testName = "John";
     testString = "Text Text";
@@ -49,7 +49,6 @@ public class EmailNotifierTest {
     // Mock to return list of messages.
     messages = mock(Gmail.Users.Messages.class);
     send = mock(Gmail.Users.Messages.Send.class);
-    MimeMessage mimemessage = createTestMessage();
     // Test Instance of email notifier class.
     emailNotifier = new EmailNotifier(testName, testEmail, gmail);
     // Emulating real behavior due to when method, will return list of users.
@@ -58,23 +57,6 @@ public class EmailNotifierTest {
     when(users.messages()).thenReturn(messages);
     //    Emulating sending messages, when sent will return send mock.
     when(messages.send(any(), any())).thenReturn(send);
-  }
-
-  public MimeMessage createTestMessage() throws MessagingException {
-    Properties properties = System.getProperties();
-    Session session = Session.getDefaultInstance(properties);
-    MimeMessage message = new MimeMessage(session);
-    Address[] addresses =
-        new Address[] {
-          new InternetAddress("tcwang@google.com"),
-          new InternetAddress("grantjustice@google.com"),
-          new InternetAddress("kevinhowald@google.com")
-        };
-    message.setFrom(new InternetAddress(testEmail));
-    message.setSubject(testString);
-    message.setText(testString);
-    message.setRecipients(javax.mail.Message.RecipientType.TO, addresses);
-    return message;
   }
 
   public MimeMessage convertToMimeMessage(Message msg) throws MessagingException {
@@ -94,7 +76,7 @@ public class EmailNotifierTest {
 
     verify(messages).send(any(), argument.capture());
     String applicationName = convertToMimeMessage(argument.getValue()).getFrom()[0].toString();
-    Truth.assertThat(applicationName).isEqualTo("Adlib-Step@gmail.com");
+    assertThat(applicationName).isEqualTo("Adlib-Step@gmail.com");
   }
 
   @Test
@@ -106,7 +88,7 @@ public class EmailNotifierTest {
 
     verify(messages).send(any(), argument.capture());
     String subjectName = convertToMimeMessage(argument.getValue()).getSubject();
-    Truth.assertThat(subjectName).isEqualTo("Ad-Lib Meeting Found");
+    assertThat(subjectName).isEqualTo("Ad-Lib Meeting Found");
   }
 
   @Test
@@ -118,7 +100,7 @@ public class EmailNotifierTest {
 
     verify(messages).send(any(), argument.capture());
     String bodyText = convertToMimeMessage(argument.getValue()).getContent().toString();
-    Truth.assertThat(bodyText)
+    assertThat(bodyText)
         .isEqualTo(
             " Hey John Please Join your Ad-Lib meeting via the link below : \n"
                 + " http://meet.google.com/new");
@@ -134,7 +116,7 @@ public class EmailNotifierTest {
     verify(messages).send(eq("me"), argument.capture());
 
     String realString = convertToMimeMessage(argument.getValue()).getContent().toString();
-    Truth.assertThat(realString).isNotEqualTo(testString);
+    assertThat(realString).isNotEqualTo(testString);
   }
 
   @Test
@@ -150,7 +132,7 @@ public class EmailNotifierTest {
         new Address[] {
           new InternetAddress(testEmail),
         };
-    Truth.assertThat(allRecipients).isEqualTo(correctRecipients);
-    Truth.assertThat(allRecipients).asList().containsExactly(new InternetAddress(testEmail));
+    assertThat(allRecipients).isEqualTo(correctRecipients);
+    assertThat(allRecipients).asList().containsExactly(new InternetAddress(testEmail));
   }
 }

@@ -114,7 +114,6 @@ public class EmailNotifierTest {
     emailNotifier.notifyUser();
 
     verify(messages).send(eq("me"), argument.capture());
-
     String realString = convertToMimeMessage(argument.getValue()).getContent().toString();
     assertThat(realString).isNotEqualTo(testString);
   }

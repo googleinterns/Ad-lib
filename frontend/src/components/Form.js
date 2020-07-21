@@ -96,35 +96,37 @@ export default function Form(props) {
    */
   function handleFormSubmission(event) {
     const currentTimeInMilliseconds = new Date().getTime();
-    if (validateFormInputs(
+    if (!validateFormInputs(
         role,
         productArea,
         duration,
         timeAvailableUntil.getTime(),
         currentTimeInMilliseconds)) {
-      // Override browser's default behvaior to execute POST request
-      event.preventDefault();
+      return;
+    }
+    // Override browser's default behvaior to execute POST request
+    event.preventDefault();
 
-      // Gather all form inputs into one object
-      const formDetails = {
-        timeAvailableUntil: timeAvailableUntil.getTime(),
-        duration: duration,
-        role: role,
-        productArea: productArea,
-        matchPreference: matchPreference,
-        savePreference: savePreference,
-      };
+    // Gather all form inputs into one object
+    const formDetails = {
+      timeAvailableUntil: timeAvailableUntil.getTime(),
+      duration: duration,
+      role: role,
+      productArea: productArea,
+      matchPreference: matchPreference,
+      savePreference: savePreference,
+    };
 
-      // Send form details to AddParticipantServlet and alert user on success
-      axios.post('/api/v1/add-participant', {formDetails})
-          .then((response) => {
-            if (response.data != null) {
-              // TODO(#33): change alert to a redirection to loading page view
-              alert('Successful');
-            }
-          });
+    // Send form details to AddParticipantServlet and alert user on success
+    axios.post('/api/v1/add-participant', {formDetails})
+        .then((response) => {
+          if (response.data != null) {
+            // TODO(#33): change alert to a redirection to loading page view
+            alert('Successful');
+          }
+        });
 
-      // TO-DO(#57): call getMatch() to initiate servlet GET request
+    // TO-DO(#57): call getMatch() to initiate servlet GET request
     }
   }
 

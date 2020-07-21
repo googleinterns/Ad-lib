@@ -67,9 +67,6 @@ export function validateFormInputs(
     // Check if a meeting is possible with the provided inputs
     alert('Please select an larger time availability window');
     return false;
-  } else if (productArea === '' || role === '') {
-    alert('Please select options for all form fields to submit!');
-    return false;
   }
   return true;
 }

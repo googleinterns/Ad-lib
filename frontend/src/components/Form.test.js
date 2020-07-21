@@ -62,34 +62,6 @@ describe('Form Validation', () => {
             endTimeAvailableMilliseconds, currentTimeMilliseconds)).toBe(true);
       });
 
-  it('should return false when Role is not specified', () => {
-    window.alert = jest.fn();
-    const role = '';
-    const productArea = 'Platforms and Ecosystems';
-    // Wed Jul 15 2020 20:56:45
-    const endTimeAvailableMilliseconds = 1594846605591;
-    const duration = 15;
-    // Wed Jul 15 2020 08:30:00
-    const currentTimeMilliseconds = 1594801800000;
-    
-    expect(validateFormInputs(role, productArea, duration,
-        endTimeAvailableMilliseconds, currentTimeMilliseconds)).toBe(false);
-  });
-
-  it('should return false when PA is not specified', () => {
-    window.alert = jest.fn();
-    const role = 'Intern';
-    const productArea = '';
-    // Wed Jul 15 2020 20:56:45
-    const endTimeAvailableMilliseconds = 1594846605591;
-    const duration = 15;
-    // Wed Jul 15 2020 08:30:00
-    const currentTimeMilliseconds = 1594801800000;
-    
-    expect(validateFormInputs(role, productArea, duration,
-        endTimeAvailableMilliseconds, currentTimeMilliseconds)).toBe(false);
-  });
-
   it('should return false when time is incompatible', () => {
     window.alert = jest.fn();
     const role = 'Intern';

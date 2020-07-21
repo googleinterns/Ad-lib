@@ -57,6 +57,7 @@ describe('Form Validation', () => {
         const duration = 15;
         // Wed Jul 15 2020 08:30:00
         const currentTimeMilliseconds = 1594801800000;
+        
         expect(validateFormInputs(role, productArea, duration,
             endTimeAvailableMilliseconds, currentTimeMilliseconds)).toBe(true);
       });
@@ -70,6 +71,7 @@ describe('Form Validation', () => {
     const duration = 15;
     // Wed Jul 15 2020 08:30:00
     const currentTimeMilliseconds = 1594801800000;
+    
     expect(validateFormInputs(role, productArea, duration,
         endTimeAvailableMilliseconds, currentTimeMilliseconds)).toBe(false);
   });
@@ -83,6 +85,7 @@ describe('Form Validation', () => {
     const duration = 15;
     // Wed Jul 15 2020 08:30:00
     const currentTimeMilliseconds = 1594801800000;
+    
     expect(validateFormInputs(role, productArea, duration,
         endTimeAvailableMilliseconds, currentTimeMilliseconds)).toBe(false);
   });
@@ -96,6 +99,7 @@ describe('Form Validation', () => {
     const duration = 15;
     // Wed Jul 15 2020 20:56:40
     const currentTimeMilliseconds = 1594846600000;
+    
     expect(validateFormInputs(role, productArea, duration,
         endTimeAvailableMilliseconds, currentTimeMilliseconds)).toBe(false);
   });
@@ -107,6 +111,7 @@ describe('Form Validation', () => {
     const endTimeAvailableMilliseconds = NaN;
     const duration = 15;
     const currentTimeMilliseconds = 1594846605000;
+    
     expect(validateFormInputs(role, productArea, duration,
         endTimeAvailableMilliseconds, currentTimeMilliseconds)).toBe(false);
   });

@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
  * Validates from inputs on submission and alerts user on error
  * @param {String} role
  * @param {String} productArea
- * @param {Number} duration
+ * @param {Number} duration in minutes
  * @param {Number} timeAvailableUntilMilliseconds
  * @param {Number} currentTimeMilliseconds
  * @return {Boolean} true or false based on validity of inputs

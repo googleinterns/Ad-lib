@@ -133,7 +133,7 @@ exports[`Match Preferences Radio Group should render correctly 1`] = `
       <span
         className="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
       >
-        No Preference
+        Any Googler
       </span>
     </label>
     <label

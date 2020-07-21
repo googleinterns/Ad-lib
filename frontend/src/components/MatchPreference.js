@@ -27,14 +27,16 @@ export default function MatchPreference(props) {
       >
         <FormControlLabel
           value="similar"
+          disabled={props.checkPersonalPreferenceFields}
           control={<Radio color="primary" />}
           label="Similar Googler" />
         <FormControlLabel
           value="none"
           control={<Radio color="primary" />}
-          label="No Preference" />
+          label="Any Googler" />
         <FormControlLabel
           value="different"
+          disabled={props.checkPersonalPreferenceFields}
           control={<Radio color="primary" />}
           label="Different Googler" />
       </RadioGroup>

@@ -91,6 +91,14 @@ export default function Form(props) {
   const [savePreference, setSavePreference] = React.useState(true);
   const [matchPreference, setMatchPreference] = React.useState('none');
 
+  /**
+   * @return {Boolean} true/false based on completion status of personal fields
+   */
+  function checkPersonalPreferenceFields() {
+    // TO-DO(#65): Add interests to this validation
+    return role === '' || productArea === '';
+  }
+
   /** Gather user inputs from form and send POST request to backend
     * @param {Event} event
    */
@@ -162,7 +170,10 @@ export default function Form(props) {
           <ProductAreaDropdown onChange={(value) => setProductArea(value)} />
         </div>
         <div className={classes.padding}>
-          <MatchPreference onChange={(value) => setMatchPreference(value)} />
+          <MatchPreference 
+            onChange={(value) => setMatchPreference(value)}
+            checkPersonalPreferenceFields={checkPersonalPreferenceFields()}
+          />
         </div>
       </div>
       <div className={classes.flexEndDiv}>

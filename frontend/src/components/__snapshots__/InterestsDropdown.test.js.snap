@@ -45,6 +45,7 @@ exports[`Interests Dropdown should render correctly 1`] = `
       <input
         aria-hidden={true}
         className="MuiSelect-nativeInput"
+        name="interests"
         onAnimationStart={[Function]}
         onChange={[Function]}
         required={false}

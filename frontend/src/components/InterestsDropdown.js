@@ -6,7 +6,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
-import Checkbox from '@material-ui/core/Checkbox';
+// import Checkbox from '@material-ui/core/Checkbox';
 
 const interestsList = [
   'Anime/Manga',
@@ -56,6 +56,7 @@ export default function InterestsDropdown(props) {
         <InputLabel id="interests">Interests</InputLabel>
         <Select
           id="interests"
+          name="interests"
           multiple
           value={interests}
           onChange={handleChange}
@@ -65,7 +66,6 @@ export default function InterestsDropdown(props) {
         >
           {interestsList.map((currentInterest) => (
             <MenuItem key={currentInterest} value={currentInterest}>
-              <Checkbox checked={interests.includes(currentInterest)} />
               <ListItemText primary={currentInterest} />
             </MenuItem>
           ))}

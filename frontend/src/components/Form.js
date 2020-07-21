@@ -78,7 +78,7 @@ export default function Form() {
       matchPreference: matchPreference,
       savePreference: savePreference,
     };
-
+    
     // Send form details to AddParticipantServlet and alert user on success
     axios.post('/api/v1/add-participant', {formDetails})
         .then((response) => {
@@ -102,7 +102,7 @@ export default function Form() {
               <KeyboardTimePicker
                 id="time-field"
                 value={endTimeAvailable}
-                onChange={(value) => setTimeAvailableUntil(value)}
+                onChange={(value) => setEndTimeAvailable(value)}
                 KeyboardButtonProps={{'aria-label': 'time-field'}}
               />
             </MuiPickersUtilsProvider>

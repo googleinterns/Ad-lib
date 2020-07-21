@@ -1,21 +1,67 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
+import {makeStyles} from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
-import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
 
-// TO-DO: Add more role options to this array
+/** Establishes style to use on rendering component */
+const useStyles = makeStyles((theme) => ({
+  padding: {
+    margin: theme.spacing(2),
+    marginBottom: theme.spacing(3),
+  },
+}));
+
 const roles = [
-  'Software Engineer',
-  'Product Manager',
-  'UI/UX Designer',
-  'Recruiter',
-  'Intern',
-  'VP',
-  'Director',
-  'CEO',
+  'Accountant',
+  'Administrative',
+  'Analyst',
+  'Attorney',
+  'Business strategy consultant',
+  'Communications',
+  'Coordinator',
+  'Corporate development/M&A',
+  'Corporate engineer',
+  'Creative editorial',
+  'Data warehousing',
+  'Developer relations',
+  'General program manager',
+  'Hardware',
+  'HR professional',
+  'Learning and development',
+  'Legal support',
+  'Marketing',
+  'Network engineer and ops',
+  'Ops - business processes',
+  'Ops - data center',
+  'Ops - hardware',
+  'Ops - supply chain and manufacturing',
+  'Partnerships and business development',
+  'Physical security',
+  'Policy',
+  'Product manager',
+  'Quant',
+  'Real estate',
+  'Research scientist',
+  'Sales - account executive',
+  'Sales - account management',
+  'Sales - enterprise',
+  'Sales - new client acquisition',
+  'Sales - services',
+  'Security engineer',
+  'Site reliability engineer',
+  'Software engineer',
+  'Software engineer, tools and infrastructure',
+  'Specialty roles',
+  'Staffing',
+  'System integrator',
+  'Technical client facing',
+  'Technical program manager',
+  'Technical writer',
+  'User experience',
+  'Web developer',
+  'Workplace services',
 ];
 
 // Add onChange to props validation
@@ -29,6 +75,8 @@ RoleDropdown.propTypes = {
  * @return {RoleDropdown} RoleDropdown component
  */
 export default function RoleDropdown(props) {
+  const classes = useStyles();
+
   return (
     <div>
       <FormControl style={{width: 180}}>
@@ -40,9 +88,13 @@ export default function RoleDropdown(props) {
           inputProps={{'aria-label': 'role'}}
         >
           {roles.map((currentRole) => (
-            <MenuItem key={currentRole} value={currentRole}>
-              <ListItemText primary={currentRole} />
-            </MenuItem>
+            <option
+              className={classes.padding}
+              key={currentRole}
+              value={currentRole}
+            >
+              {currentRole}
+            </option>
           ))}
         </Select>
       </FormControl>

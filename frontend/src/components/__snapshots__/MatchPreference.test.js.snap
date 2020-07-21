@@ -200,5 +200,10 @@ exports[`Match Preferences Radio Group should render correctly 1`] = `
       </span>
     </label>
   </div>
+  <p
+    className="MuiFormHelperText-root"
+  >
+    You must input all personal preferences to select a match preference
+  </p>
 </fieldset>
 `;

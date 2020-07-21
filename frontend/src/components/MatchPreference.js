@@ -4,10 +4,12 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 // Add onChange to props validation
 MatchPreference.propTypes = {
   onChange: PropTypes.func,
+  checkPersonalPreferenceFields: PropTypes.bool,
 };
 
 /**
@@ -40,6 +42,8 @@ export default function MatchPreference(props) {
           control={<Radio color="primary" />}
           label="Different Googler" />
       </RadioGroup>
+      <FormHelperText>You must input all personal preferences to
+         select a match preference</FormHelperText>
     </FormControl>
   );
 }

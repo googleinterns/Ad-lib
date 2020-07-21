@@ -167,7 +167,7 @@ export default function Form(props) {
           <ProductAreaDropdown onChange={(value) => setProductArea(value)} />
         </div>
         <div className={classes.padding}>
-          <MatchPreference 
+          <MatchPreference
             onChange={(value) => setMatchPreference(value)}
             checkPersonalPreferenceFields={checkPersonalPreferenceFields()}
           />

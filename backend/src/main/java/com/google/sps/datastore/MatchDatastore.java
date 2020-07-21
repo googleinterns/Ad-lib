@@ -41,8 +41,8 @@ public final class MatchDatastore {
     this.datastore = datastore;
   }
 
-  /** Return entity of match */
-  private static Entity getEntityFromMatch(Match match) {
+  /** Return entity created from match */
+  private static Entity createEntityFromMatch(Match match) {
     // Set properties of entity
     Entity entity = new Entity(KIND_MATCH);
     entity.setProperty(PROPERTY_FIRST_PARTICIPANT_USERNAME, match.getFirstParticipantUsername());
@@ -55,7 +55,7 @@ public final class MatchDatastore {
   /** Put Match in datastore and return the match key id */
   public long addMatch(Match match) {
     // Create and insert entity into datastore
-    Entity entity = getEntityFromMatch(match);
+    Entity entity = createEntityFromMatch(match);
     datastore.put(entity);
 
     // Return match key id

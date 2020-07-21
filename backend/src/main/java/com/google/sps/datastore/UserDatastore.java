@@ -43,8 +43,8 @@ public final class UserDatastore {
     this.datastore = datastore;
   }
 
-  /** Return entity of user */
-  private Entity getEntityFromUser(User user) {
+  /** Return entity created from user */
+  private Entity createEntityFromUser(User user) {
     // Set properties of entity based on user fields
     Entity entity = new Entity(KIND_USER, user.getUsername());
     entity.setProperty(PROPERTY_USERNAME, user.getUsername());
@@ -60,7 +60,7 @@ public final class UserDatastore {
   public void addUser(User user) {
     ;
     // Insert entity into datastore
-    datastore.put(getEntityFromUser(user));
+    datastore.put(createEntityFromUser(user));
   }
 
   /** Return User Entity from username, or null if entity is not found */

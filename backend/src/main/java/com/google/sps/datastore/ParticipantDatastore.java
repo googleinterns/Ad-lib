@@ -56,8 +56,8 @@ public final class ParticipantDatastore {
     this.datastore = datastore;
   }
 
-  /** Return entity of participant */
-  private static Entity getEntityFromParticipant(Participant participant) {
+  /** Return entity created from participant */
+  private static Entity createEntityFromParticipant(Participant participant) {
     // Set properties of entity based on participant fields
     Entity entity = new Entity(KIND_PARTICIPANT, participant.getUsername());
     entity.setProperty(PROPERTY_USERNAME, participant.getUsername());
@@ -80,7 +80,7 @@ public final class ParticipantDatastore {
    */
   public void addParticipant(Participant participant) {
     // Insert entity into datastore
-    datastore.put(getEntityFromParticipant(participant));
+    datastore.put(createEntityFromParticipant(participant));
   }
 
   /** Return Participant Entity from username, or null if entity is not found */

@@ -78,7 +78,7 @@ export default function Form() {
       matchPreference: matchPreference,
       savePreference: savePreference,
     };
-    
+
     // Send form details to AddParticipantServlet and alert user on success
     axios.post('/api/v1/add-participant', {formDetails})
         .then((response) => {

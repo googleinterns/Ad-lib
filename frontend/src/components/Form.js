@@ -127,7 +127,6 @@ export default function Form(props) {
         });
 
     // TO-DO(#57): call getMatch() to initiate servlet GET request
-    }
   }
 
   return (

@@ -48,65 +48,66 @@ describe('Form', () => {
 });
 
 describe('Form Validation', () => {
-  it('should return true', () => {
-    const role = 'Intern';
-    const productArea = 'Platforms and Ecosystems';
-    // Wed Jul 15 2020 20:56:45
-    const timeAvailableUntilMilliseconds = 1594846605591;
-    const duration = 15;
-    // Wed Jul 15 2020 08:30:00
-    const currentTimeMilliseconds = 1594801800000;
-    expect(validateFormInputs(role, productArea, duration,
-        timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(true);
-  });
+  it('should return true when all fields are provided and time is compatible',
+      () => {
+        const role = 'Intern';
+        const productArea = 'Platforms and Ecosystems';
+        // Wed Jul 15 2020 20:56:45
+        const endTimeAvailableMilliseconds = 1594846605591;
+        const duration = 15;
+        // Wed Jul 15 2020 08:30:00
+        const currentTimeMilliseconds = 1594801800000;
+        expect(validateFormInputs(role, productArea, duration,
+            endTimeAvailableMilliseconds, currentTimeMilliseconds)).toBe(false);
+      });
 
-  it('should return false since Role is not specified', () => {
+  it('should return false when Role is not specified', () => {
     window.alert = jest.fn();
     const role = '';
     const productArea = 'Platforms and Ecosystems';
     // Wed Jul 15 2020 20:56:45
-    const timeAvailableUntilMilliseconds = 1594846605591;
+    const endTimeAvailableMilliseconds = 1594846605591;
     const duration = 15;
     // Wed Jul 15 2020 08:30:00
     const currentTimeMilliseconds = 1594801800000;
     expect(validateFormInputs(role, productArea, duration,
-        timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(false);
+        endTimeAvailableMilliseconds, currentTimeMilliseconds)).toBe(false);
   });
 
-  it('should return false since PA is not specified', () => {
+  it('should return false when PA is not specified', () => {
     window.alert = jest.fn();
     const role = 'Intern';
     const productArea = '';
     // Wed Jul 15 2020 20:56:45
-    const timeAvailableUntilMilliseconds = 1594846605591;
+    const endTimeAvailableMilliseconds = 1594846605591;
     const duration = 15;
     // Wed Jul 15 2020 08:30:00
     const currentTimeMilliseconds = 1594801800000;
     expect(validateFormInputs(role, productArea, duration,
-        timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(false);
+        endTimeAvailableMilliseconds, currentTimeMilliseconds)).toBe(false);
   });
 
-  it('should return false since time is incompatible', () => {
+  it('should return false when time is incompatible', () => {
     window.alert = jest.fn();
     const role = 'Intern';
     const productArea = 'Core';
     // Wed Jul 15 2020 20:56:45
-    const timeAvailableUntilMilliseconds = 1594846605591;
+    const endTimeAvailableMilliseconds = 1594846605591;
     const duration = 15;
     // Wed Jul 15 2020 20:56:40
     const currentTimeMilliseconds = 1594846600000;
     expect(validateFormInputs(role, productArea, duration,
-        timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(false);
+        endTimeAvailableMilliseconds, currentTimeMilliseconds)).toBe(false);
   });
 
-  it('should return false since time has invalid format', () => {
+  it('should return false when time has invalid format', () => {
     window.alert = jest.fn();
     const role = 'Intern';
     const productArea = 'Core';
-    const timeAvailableUntilMilliseconds = NaN;
+    const endTimeAvailableMilliseconds = NaN;
     const duration = 15;
     const currentTimeMilliseconds = 1594846605000;
     expect(validateFormInputs(role, productArea, duration,
-        timeAvailableUntilMilliseconds, currentTimeMilliseconds)).toBe(false);
+        endTimeAvailableMilliseconds, currentTimeMilliseconds)).toBe(false);
   });
 });

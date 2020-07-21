@@ -43,15 +43,20 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * Validates from inputs on submission and alerts user on error
- * @return {Boolean} true or false based on validity of inputs
  * @param {String} role
  * @param {String} productArea
  * @param {Number} duration
  * @param {Number} timeAvailableUntilMilliseconds
  * @param {Number} currentTimeMilliseconds
+ * @return {Boolean} true or false based on validity of inputs
  */
-export function validateFormInputs(role, productArea, duration,
-    timeAvailableUntilMilliseconds, currentTimeMilliseconds) {
+export function validateFormInputs(
+    role,
+    productArea,
+    duration,
+    timeAvailableUntilMilliseconds,
+    currentTimeMilliseconds,
+) {
   const durationMilliseconds = duration * 60000;
 
   if (isNaN(timeAvailableUntilMilliseconds)) {
@@ -65,9 +70,8 @@ export function validateFormInputs(role, productArea, duration,
   } else if (productArea === '' || role === '') {
     alert('Please select options for all form fields to submit!');
     return false;
-  } else {
-    return true;
   }
+  return true;
 }
 
 /**
@@ -92,8 +96,12 @@ export default function Form(props) {
    */
   function handleFormSubmission(event) {
     const currentTimeInMilliseconds = new Date().getTime();
-    if (validateFormInputs(role, productArea, duration,
-        timeAvailableUntil.getTime(), currentTimeInMilliseconds)) {
+    if (validateFormInputs(
+        role,
+        productArea,
+        duration,
+        timeAvailableUntil.getTime(),
+        currentTimeInMilliseconds)) {
       // Override browser's default behvaior to execute POST request
       event.preventDefault();
 
@@ -116,7 +124,7 @@ export default function Form(props) {
             }
           });
 
-      // TO-DO: call getMatch() to initiate GET request to search-match servlet
+      // TO-DO(#57): call getMatch() to initiate servlet GET request
     }
   }
 

@@ -58,7 +58,7 @@ describe('Form Validation', () => {
         // Wed Jul 15 2020 08:30:00
         const currentTimeMilliseconds = 1594801800000;
         expect(validateFormInputs(role, productArea, duration,
-            endTimeAvailableMilliseconds, currentTimeMilliseconds)).toBe(false);
+            endTimeAvailableMilliseconds, currentTimeMilliseconds)).toBe(true);
       });
 
   it('should return false when Role is not specified', () => {

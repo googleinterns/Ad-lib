@@ -9,12 +9,15 @@
 /coverage
 
 # production
-/build
+
+/frontend/build
+**/.gcloudignore
+
 # misc
 .idea
 lib
 google-java-format-1.8-all-deps.jar
-backend/credentials.json
+credentials.json
 .DS_Store
 .env.local
 .env.development.local
@@ -24,4 +27,3 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 tokens
-tokens/StoredCredential

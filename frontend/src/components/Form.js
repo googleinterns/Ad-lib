@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import {MuiPickersUtilsProvider,
@@ -56,6 +57,35 @@ export default function Form() {
   const [savePreference, setSavePreference] = React.useState(true);
   const [matchPreference, setMatchPreference] = React.useState('none');
 
+  /** Gather user inputs from form and send POST request to backend
+    * @param {Event} event
+   */
+  function handleFormSubmission(event) {
+    // TODO(#34): Validate input values (before allowing to submit)
+
+    // Override browser's default behvaior to execute POST request
+    event.preventDefault();
+
+    // Gather all form inputs into one object
+    const formDetails = {
+      timeAvailableUntil: timeAvailableUntil.getTime(),
+      duration: duration,
+      role: role,
+      productArea: productArea,
+      matchPreference: matchPreference,
+      savePreference: savePreference,
+    };
+
+    // Send form details to AddParticipantServlet and alert user on success
+    axios.post('/api/v1/add-participant', {formDetails})
+        .then((response) => {
+          if (response.data != null) {
+            // TODO(#33): change alert to a redirection to the loading page view
+            alert('Successful');
+          }
+        });
+  }
+
   return (
     <div>
       <div className={classes.heading}>
@@ -95,12 +125,8 @@ export default function Form() {
       <div className={classes.flexEndDiv}>
         <Checkbox onChange={(value) => setSavePreference(value)} />
         <div className={classes.flexEndDiv}>
-          { /* TO-DO: change alert to JSON object and send to backend */ }
-          <Button variant="contained" color="primary" onClick={() => {
-            alert('Availability: ' + timeAvailableUntil + '\nDuration: ' +
-            duration + '\nRole: ' + role + '\nPA: ' + productArea +
-            '\nSave: ' + savePreference + '\nMatch: ' + matchPreference);
-          }}>
+          <Button variant="contained" color="primary"
+            onClick={handleFormSubmission}>
             Submit
           </Button>
         </div>

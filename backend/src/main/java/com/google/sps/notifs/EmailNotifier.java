@@ -58,21 +58,23 @@ public class EmailNotifier {
    */
   private static final List<String> SCOPES = ImmutableList.of(GmailScopes.MAIL_GOOGLE_COM);
 
-  private static final String CREDENTIALS_FILE_PATH = "credentials.json";
-
+  private static final String CREDENTIALS_FILE_PATH = "backend/credentials.json";
   /** The email to be notified */
-  private final String toEmail;
-
+  private final String recipientEmail;
   /** The notification recipient */
   private final String recipientName;
+  /** The gmail service */
+  private final Gmail service;
 
   /**
-   * @param recipientName Name of the recipient of the user
-   * @param toEmail The email addresse that this email is going to be sent to.
+   * @param recipientName Name of the recipient of the user.
+   * @param recipientEmail The email address that this email is going to be sent to.
+   * @param service Gmail service dependency.
    */
-  public EmailNotifier(String recipientName, String toEmail) {
+  public EmailNotifier(String recipientName, String recipientEmail, Gmail service) {
     this.recipientName = recipientName;
-    this.toEmail = toEmail;
+    this.recipientEmail = recipientEmail;
+    this.service = service;
   }
 
   /**
@@ -100,30 +102,6 @@ public class EmailNotifier {
   }
 
   /**
-   * Create a MimeMessage using the parameters provided.
-   *
-   * @param toEmail email address of the receiver
-   * @param subject subject of the email
-   * @param bodyText body text of the email
-   * @return the MimeMessage to be used to send email
-   * @throws MessagingException for other failures
-   */
-  public static MimeMessage createEmail(String toEmail, String subject, String bodyText)
-      throws MessagingException {
-
-    Properties props = new Properties();
-    Session session = Session.getDefaultInstance(props, /* authenticator= */ null);
-
-    MimeMessage email = new MimeMessage(session);
-
-    email.setFrom(new InternetAddress(APPLICATION_EMAIL));
-    email.addRecipient(RecipientType.TO, new InternetAddress(toEmail));
-    email.setSubject(subject);
-    email.setText(bodyText);
-    return email;
-  }
-
-  /**
    * Create a message from an email.
    *
    * @param emailContent Email to be sent to raw of message
@@ -131,7 +109,7 @@ public class EmailNotifier {
    * @throws IOException if an error occurs writing to the stream
    * @throws MessagingException for other failures
    */
-  public static Message createMessageWithEmail(MimeMessage emailContent)
+  private static Message createMessageWithEmail(MimeMessage emailContent)
       throws MessagingException, IOException {
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     emailContent.writeTo(buffer);
@@ -142,35 +120,41 @@ public class EmailNotifier {
     return message;
   }
 
-  /** Getter function that returns the string representing the email recipients name . */
-  private String getRecipientName() {
-    return recipientName;
+  /**
+   * Create a MimeMessage using the parameters provided.
+   *
+   * @param subject subject of the email
+   * @param bodyText body text of the email
+   * @return the MimeMessage to be used to send email
+   * @throws MessagingException if there was a problem accessing the Store
+   */
+  private MimeMessage createEmail(String subject, String bodyText) throws MessagingException {
+
+    Properties props = new Properties();
+    Session session = Session.getDefaultInstance(props, /* authenticator= */ null);
+
+    MimeMessage email = new MimeMessage(session);
+
+    email.setFrom(new InternetAddress(APPLICATION_EMAIL));
+    email.addRecipient(RecipientType.TO, new InternetAddress(recipientEmail));
+    email.setSubject(subject);
+    email.setText(bodyText);
+    return email;
   }
 
   /** Function that access its api and using it sends an email */
-  //    TODO(): Create a dummy email for ad lib itself to send emails.
-  //    TODO(): Replace body to send real link to user instead of generic.
-
-  public void notifyUser() throws MessagingException, GeneralSecurityException, IOException {
-
+  //   TODO(#35): Create a dummy email for ad lib itself to send emails.
+  //   TODO(#36): Replace body to send real link to user instead of generic.
+  public void notifyUser() throws MessagingException, IOException, GeneralSecurityException {
+    NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
     MimeMessage email =
         createEmail(
-            getToEmail(),
             "Ad-Lib Meeting Found",
             " Hey "
-                + getRecipientName()
+                + recipientName
                 + " Please Join your Ad-Lib meeting via the link below : \n"
                 + " http://meet.google.com/new");
-    NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-    Gmail service =
-        new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-            .setApplicationName(APPLICATION_NAME)
-            .build();
     Message messageWithEmail = createMessageWithEmail(email);
     service.users().messages().send("me", messageWithEmail).execute();
-  }
-
-  private String getToEmail() {
-    return toEmail;
   }
 }

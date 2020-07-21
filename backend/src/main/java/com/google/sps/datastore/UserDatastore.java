@@ -43,8 +43,8 @@ public final class UserDatastore {
     this.datastore = datastore;
   }
 
-  /** Put user in datastore. Overwrite user entity if user with same username already exists. */
-  public void addUser(User user) {
+  /** Return entity of user */
+  private Entity getEntityFromUser(User user) {
     // Set properties of entity based on user fields
     Entity entity = new Entity(KIND_USER, user.getUsername());
     entity.setProperty(PROPERTY_USERNAME, user.getUsername());
@@ -53,8 +53,14 @@ public final class UserDatastore {
     entity.setProperty(PROPERTY_PRODUCT_AREA, user.getProductArea());
     entity.setProperty(PROPERTY_MATCH_PREFERENCE, user.getMatchPreference().getValue());
 
+    return entity;
+  }
+
+  /** Put user in datastore. Overwrite user entity if user with same username already exists. */
+  public void addUser(User user) {
+    ;
     // Insert entity into datastore
-    datastore.put(entity);
+    datastore.put(getEntityFromUser(user));
   }
 
   /** Return User Entity from username, or null if entity is not found */

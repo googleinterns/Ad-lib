@@ -72,7 +72,7 @@ public class AddParticipantServlet extends HttpServlet {
     String productArea = formDetails.getString(REQUEST_PRODUCT_AREA);
     boolean savePreference = formDetails.getBoolean(REQUEST_SAVE_PREFERENCE);
     String matchPreferenceString = formDetails.getString(REQUEST_MATCH_PREFERENCE);
-    MatchPreference matchPreference = MatchPreference.ANY;
+    MatchPreference matchPreference;
     switch (matchPreferenceString) {
       case "different":
         matchPreference = MatchPreference.DIFFERENT;
@@ -83,6 +83,9 @@ public class AddParticipantServlet extends HttpServlet {
       case "similar":
         matchPreference = MatchPreference.SIMILAR;
         break;
+      default:
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid match preference.");
+        return;
     }
     long timestamp = System.currentTimeMillis();
 

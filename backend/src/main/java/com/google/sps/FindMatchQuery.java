@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.common.primitives.Booleans;
 import com.google.sps.data.Match;
 import com.google.sps.data.MatchPreference;
 import com.google.sps.data.Participant;
@@ -53,9 +54,6 @@ public final class FindMatchQuery {
     List<Participant> sameDurationParticipants =
         participantDatastore.getParticipantsWithDuration(duration);
 
-    // Set reference date time using clock
-    long currentTimeMillis = clock.millis();
-
     long newEndTimeAvailable = newParticipant.getEndTimeAvailable();
     MatchPreference newMatchPreference = newParticipant.getMatchPreference();
     String newRole = newParticipant.getRole();
@@ -65,8 +63,7 @@ public final class FindMatchQuery {
     for (Participant currParticipant : sameDurationParticipants) {
       // Check if participants are both free for that duration + extra
       long currEndTimeAvailable = currParticipant.getEndTimeAvailable();
-      if (!isCompatibleTime(
-          currentTimeMillis, duration, newEndTimeAvailable, currEndTimeAvailable)) {
+      if (!isCompatibleTime(duration, newEndTimeAvailable, currEndTimeAvailable)) {
         System.out.println("not compatible time");
         continue;
       }
@@ -92,7 +89,7 @@ public final class FindMatchQuery {
       }
       System.out.println("found a match");
       return new Match(
-          newParticipant.getUsername(), currParticipant.getUsername(), duration, currentTimeMillis);
+          newParticipant.getUsername(), currParticipant.getUsername(), duration, clock.millis());
     }
     // No inital match found
     return null;
@@ -100,9 +97,9 @@ public final class FindMatchQuery {
 
   /** Return true if compatible endTimeAvailable considering duration and padding */
   private boolean isCompatibleTime(
-      long currentTimeMillis, int duration, long newEndTimeAvailable, long currEndTimeAvailable) {
+      int duration, long newEndTimeAvailable, long currEndTimeAvailable) {
     long earliestEndTimeAvailable = Math.min(newEndTimeAvailable, currEndTimeAvailable);
-    return (currentTimeMillis + TimeUnit.MINUTES.toMillis(duration + PADDING_MINUTES))
+    return (clock.millis() + TimeUnit.MINUTES.toMillis(duration + PADDING_MINUTES))
         < earliestEndTimeAvailable;
   }
 
@@ -125,13 +122,9 @@ public final class FindMatchQuery {
 
   /** Return the number of fields that both participants have in common */
   private int getNumSameFields(Participant newParticipant, Participant currParticipant) {
-    int numSameFields = 0;
-    if (newParticipant.getRole().equals(currParticipant.getRole())) {
-      numSameFields++;
-    }
-    if (newParticipant.getProductArea().equals(currParticipant.getProductArea())) {
-      numSameFields++;
-    }
-    return numSameFields;
+    boolean sameRole = newParticipant.getRole().equals(currParticipant.getRole());
+    boolean sameProductArea =
+        newParticipant.getProductArea().equals(currParticipant.getProductArea());
+    return Booleans.countTrue(sameRole, sameProductArea);
   }
 }

@@ -579,7 +579,7 @@ public final class FindMatchQueryTest {
   @Test
   public void oneFieldMatches() {
     // Two participants with one matching field prefer to be matched with someone similar
-    // TODO: change num matching fields threshold when interests are added
+    // TODO (#67): change num matching fields threshold when interests are added
     Participant participantA =
         new Participant(
             PERSON_A,

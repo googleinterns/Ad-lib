@@ -32,6 +32,8 @@ public final class Participant {
   private final String role;
   /** Product area at Google */
   private final String productArea;
+  /** List of interests delimited by commas */
+  private final String interests;
   /** Whether they want to be matched with a similar, any, or different Googler */
   private final MatchPreference matchPreference;
   /** Id of match in datastore, 0 if never found a match (can assign 0 at construction) */
@@ -49,6 +51,7 @@ public final class Participant {
       int duration,
       String role,
       String productArea,
+      String interests,
       MatchPreference matchPreference,
       long matchId,
       MatchStatus matchStatus,
@@ -62,6 +65,7 @@ public final class Participant {
     this.duration = duration;
     this.role = role;
     this.productArea = productArea;
+    this.interests = interests;
     this.matchPreference = matchPreference;
     this.matchId = matchId;
     this.matchStatus = matchStatus;
@@ -92,6 +96,10 @@ public final class Participant {
     return productArea;
   }
 
+  public String getInterests() {
+    return interests;
+  }
+
   public MatchPreference getMatchPreference() {
     return matchPreference;
   }
@@ -117,6 +125,7 @@ public final class Participant {
         duration,
         role,
         productArea,
+        interests,
         matchPreference,
         newMatchId,
         MatchStatus.MATCHED,
@@ -132,6 +141,7 @@ public final class Participant {
         .add("role", role)
         .add("productArea", productArea)
         .add("matchPreference", matchPreference.getValue())
+        .add("interests", interests)
         .add("matchId", matchId)
         .add("matchStatus", matchStatus.getValue())
         .add("timestamp", timestamp)

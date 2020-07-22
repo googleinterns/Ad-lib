@@ -21,14 +21,18 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.CompositeFilter;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.sps.data.MatchPreference;
 import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -121,16 +125,26 @@ public final class ParticipantDatastore {
     return getParticipantFromEntity(entity);
   }
 
-  /** Return list of all unmatched participants with duration */
-  public List<Participant> getParticipantsWithDuration(int duration) {
+  /** Return list of all unmatched participants with duration and compatible endTimeAvailable */
+  public List<Participant> getParticipantsCompatibleTimeAvailibility(
+      int duration, long endTimeAvailable, int paddingTime, Clock clock) {
     Query query = new Query(KIND_PARTICIPANT);
 
-    // Create filter to get only unmatched participants with same duration
+    // Create filters to get only unmatched participants with compatible time availability
     Filter unmatched =
         new FilterPredicate(
             PROPERTY_MATCH_STATUS, FilterOperator.EQUAL, MatchStatus.UNMATCHED.getValue());
     Filter sameDuration = new FilterPredicate(PROPERTY_DURATION, FilterOperator.EQUAL, duration);
-    query.setFilter(unmatched).setFilter(sameDuration);
+    Filter compatibleTime =
+        new FilterPredicate(
+            PROPERTY_END_TIME_AVAILABLE,
+            FilterOperator.GREATER_THAN,
+            clock.millis() + TimeUnit.MINUTES.toMillis(duration + paddingTime));
+
+    // Combine filters into one, and filter query
+    CompositeFilter composite =
+        CompositeFilterOperator.and(unmatched, sameDuration, compatibleTime);
+    query.setFilter(composite);
 
     PreparedQuery results = datastore.prepare(query);
 

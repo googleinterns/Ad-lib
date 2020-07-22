@@ -50,30 +50,20 @@ public final class FindMatchQuery {
   public Match findMatch(Participant newParticipant) {
     int duration = newParticipant.getDuration();
 
-    // Get list of unmatched participants with same duration as newParticipant
-    List<Participant> sameDurationParticipants =
-        participantDatastore.getParticipantsWithDuration(duration);
-
-    long firstEndTimeAvailable = newParticipant.getEndTimeAvailable();
-    MatchPreference firstMatchPreference = newParticipant.getMatchPreference();
-    String firstRole = newParticipant.getRole();
-    String firstProductArea = newParticipant.getProductArea();
+    // Get list of unmatched participants with same duration as and compatible time availaiblity
+    // with newParticipant
+    List<Participant> compatibleTimeAvailabilityParticipants =
+        participantDatastore.getParticipantsCompatibleTimeAvailibility(
+            duration, newParticipant.getEndTimeAvailable(), PADDING_MINUTES, clock);
 
     // Compare new participant preferences with other participants to find match
-    for (Participant currParticipant : sameDurationParticipants) {
-      // Check if participants are both free for that duration + extra
-      long secondEndTimeAvailable = currParticipant.getEndTimeAvailable();
-      if (!isCompatibleTime(duration, firstEndTimeAvailable, secondEndTimeAvailable)) {
-        System.out.println("not compatible time");
-        continue;
-      }
-
+    for (Participant currParticipant : compatibleTimeAvailabilityParticipants) {
       // Check match preference compatibility and get combined preference if compatible
-      MatchPreference secondMatchPreference = currParticipant.getMatchPreference();
       MatchPreference combinedMatchPreference =
-          getCombinedMatchPreference(firstMatchPreference, secondMatchPreference);
+          getCombinedMatchPreference(
+              newParticipant.getMatchPreference(), currParticipant.getMatchPreference());
       if (combinedMatchPreference == null) {
-        System.out.println("not compatible match pref");
+        // Not compatible match pref
         continue;
       }
 
@@ -84,7 +74,6 @@ public final class FindMatchQuery {
       }
 
       // Found a match
-      System.out.println("found a match");
       return new Match(
           newParticipant.getUsername(), currParticipant.getUsername(), duration, clock.millis());
     }
@@ -101,21 +90,21 @@ public final class FindMatchQuery {
   }
 
   /**
-   * @return combined MatchPreference similar = both are similar OR one is similar and one is any;
-   *     any = both are any; different = both are different = one is different and one is any. or
+   * @return combined MatchPreference SIMILAR = both are SIMILAR OR one is SIMILAR and one is ANY;
+   *     ANY = both are ANY; DIFFERENT = both are DIFFERENT = one is DIFFERENT and one is ANY. or
    *     null if match preferences are not compatible
    */
   private MatchPreference getCombinedMatchPreference(
       MatchPreference firstMatchPreference, MatchPreference secondMatchPreference) {
-    if ((firstMatchPreference == secondMatchPreference)
-        || (firstMatchPreference == MatchPreference.ANY)
-        || (secondMatchPreference == MatchPreference.ANY)) {
-      return (firstMatchPreference == MatchPreference.ANY)
-          ? secondMatchPreference
-          : firstMatchPreference;
-    } else {
+    if ((firstMatchPreference != secondMatchPreference)
+        && (firstMatchPreference != MatchPreference.ANY)
+        && (secondMatchPreference != MatchPreference.ANY)) {
+      // One user is SIMILAR, other is DIFFERENT. Incompatible.
       return null;
     }
+    return (firstMatchPreference == MatchPreference.ANY)
+        ? secondMatchPreference
+        : firstMatchPreference;
   }
 
   /**
@@ -126,23 +115,26 @@ public final class FindMatchQuery {
       MatchPreference combinedMatchPreference,
       Participant newParticipant,
       Participant currParticipant) {
-    if (combinedMatchPreference != MatchPreference.ANY) {
-      // Count number of same fields between the two participants
-      boolean sameRole = newParticipant.getRole().equals(currParticipant.getRole());
-      boolean sameProductArea =
-          newParticipant.getProductArea().equals(currParticipant.getProductArea());
-      int numSameFields = Booleans.countTrue(sameRole, sameProductArea);
-      System.out.println("number of same fields: " + numSameFields);
+    if (combinedMatchPreference == MatchPreference.ANY) {
+      return true;
+    }
 
-      // If match preference = similar, numSameFields must be at least MIN_SAME_FIELDS to satisfy
-      // preference
-      // If match preference = different, numSameFields must be less than MIN_SAME_FIELDS to satisfy
-      // preference
-      if ((combinedMatchPreference == MatchPreference.SIMILAR && numSameFields < MIN_SAME_FIELDS)
-          || (combinedMatchPreference == MatchPreference.DIFFERENT
-              && numSameFields >= MIN_SAME_FIELDS)) {
-        return false;
-      }
+    // Count number of same fields between the two participants
+    boolean sameRole = newParticipant.getRole().equals(currParticipant.getRole());
+    boolean sameProductArea =
+        newParticipant.getProductArea().equals(currParticipant.getProductArea());
+    int numSameFields = Booleans.countTrue(sameRole, sameProductArea);
+    System.out.println("number of same fields: " + numSameFields);
+
+    // If match preference = SIMILAR, numSameFields must be at least MIN_SAME_FIELDS to satisfy
+    // preference
+    if (combinedMatchPreference == MatchPreference.SIMILAR && numSameFields < MIN_SAME_FIELDS) {
+      return false;
+    }
+    // If match preference = DIFFERENT, numSameFields must be less than MIN_SAME_FIELDS to satisfy
+    // preference
+    if (combinedMatchPreference == MatchPreference.DIFFERENT && numSameFields >= MIN_SAME_FIELDS) {
+      return false;
     }
     return true;
   }

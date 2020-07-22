@@ -105,7 +105,7 @@ public final class FindMatchQuery {
    *     any = both are any; different = both are different = one is different and one is any. or
    *     null if match preferences are not compatible
    */
-  private MatchPreference getCompatibleMatchPreference(
+  private MatchPreference getCombinedMatchPreference(
       MatchPreference firstMatchPreference, MatchPreference secondMatchPreference) {
     if ((firstMatchPreference == secondMatchPreference)
         || (firstMatchPreference == MatchPreference.ANY)
@@ -116,17 +116,6 @@ public final class FindMatchQuery {
     } else {
       return null;
     }
-  }
-
-  /**
-   * @return combined MatchPreference similar: both are similar, one is similar and one is any any:
-   *     both are any different: both are different, one is different and one is any
-   */
-  private MatchPreference getCombinedMatchPreference(
-      MatchPreference firstMatchPreference, MatchPreference secondMatchPreference) {
-    return (firstMatchPreference == MatchPreference.ANY)
-        ? secondMatchPreference
-        : firstMatchPreference;
   }
 
   /**

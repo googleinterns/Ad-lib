@@ -506,7 +506,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
         <p
           className="MuiFormHelperText-root"
         >
-          You must input all personal preferences to select a match preference
+          You must select at least one personal preference field to select a match preference 
         </p>
       </fieldset>
     </div>

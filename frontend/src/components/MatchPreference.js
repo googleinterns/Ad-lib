@@ -42,8 +42,8 @@ export default function MatchPreference(props) {
           control={<Radio color="primary" />}
           label="Different Googler" />
       </RadioGroup>
-      <FormHelperText>You must input all personal preferences to
-         select a match preference</FormHelperText>
+      <FormHelperText>You must select at least one personal preference
+        field to select a match preference </FormHelperText>
     </FormControl>
   );
 }

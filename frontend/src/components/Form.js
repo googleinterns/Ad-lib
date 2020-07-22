@@ -89,11 +89,14 @@ export default function Form(props) {
   const [matchPreference, setMatchPreference] = React.useState('none');
 
   /**
-   * @return {Boolean} true/false based on completion status of personal fields
+   * Method that controls the disabled attribute of MatchPreference radio group
+   * based on the completion status of the personal preference fields
+   * @return {Boolean} true/false where true means the MatchPreference options
+   * will be disabled and false means that the options will be enabled.
    */
-  function checkPersonalPreferenceFields() {
+  function toggleMatchPreferenceOptions() {
     // TO-DO(#65): Add interests to this validation
-    return role === '' || productArea === '';
+    return role === '' && productArea === '';
   }
 
   /** Gather user inputs from form and send POST request to backend
@@ -169,7 +172,7 @@ export default function Form(props) {
         <div className={classes.padding}>
           <MatchPreference
             onChange={(value) => setMatchPreference(value)}
-            checkPersonalPreferenceFields={checkPersonalPreferenceFields()}
+            checkPersonalPreferenceFields={toggleMatchPreferenceOptions()}
           />
         </div>
       </div>

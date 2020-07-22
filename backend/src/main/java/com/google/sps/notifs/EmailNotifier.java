@@ -18,17 +18,17 @@ import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
 import com.google.common.collect.ImmutableList;
-import org.apache.commons.codec.binary.Base64;
-import javax.mail.Message.RecipientType;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Properties;
+import javax.mail.Message.RecipientType;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import org.apache.commons.codec.binary.Base64;
 
 /** Class representing the notification system capable of sending mail to the user. */
 public class EmailNotifier {
@@ -115,7 +115,7 @@ public class EmailNotifier {
           new InternetAddress(firstRecipientUsername + "@google.com"),
           new InternetAddress(secondRecipientUsername + "@google.com")
         });
-    email.setSubject("Ad-lib Match Found");
+    email.setSubject("Ad-lib: Match Found");
     email.setText(bodyText);
     return email;
   }
@@ -141,7 +141,7 @@ public class EmailNotifier {
     MimeMessage email =
         createEmailWithSingleRecipient(
             expiredRecipientName,
-            "Ad-Lib Meeting Found",
+            "Ad-lib: Meeting Query Expired",
             " We apologize "
                 + expiredRecipientName
                 + "\n"
@@ -158,7 +158,7 @@ public class EmailNotifier {
     MimeMessage noMatchEmail =
         createEmailWithSingleRecipient(
             noMatchParticipantName,
-            "Ad-Lib Not Meeting Found",
+            "Ad-lib: No Match Found",
             " Sorry "
                 + noMatchParticipantName
                 + " We could'nt find you a Match :( \n"

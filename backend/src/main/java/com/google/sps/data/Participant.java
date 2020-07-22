@@ -14,7 +14,6 @@
 
 package com.google.sps.data;
 
-import com.google.sps.data.MatchStatus;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 
@@ -38,7 +37,7 @@ public final class Participant {
   /** Id of match in datastore, 0 if never found a match (can assign 0 at construction) */
   private final long matchId;
   /** Matched already or not yet */
-  private final com.google.sps.data.MatchStatus matchStatus;
+  private final MatchStatus matchStatus;
   /** Time of submitted form */
   private final long timestamp;
 
@@ -52,7 +51,7 @@ public final class Participant {
       String productArea,
       MatchPreference matchPreference,
       long matchId,
-      com.google.sps.data.MatchStatus matchStatus,
+      MatchStatus matchStatus,
       long timestamp) {
     this.username = username;
     Preconditions.checkArgument(
@@ -101,7 +100,7 @@ public final class Participant {
     return matchId;
   }
 
-  public com.google.sps.data.MatchStatus getMatchStatus() {
+  public MatchStatus getMatchStatus() {
     return matchStatus;
   }
 
@@ -120,7 +119,7 @@ public final class Participant {
         productArea,
         matchPreference,
         newMatchId,
-        com.google.sps.data.MatchStatus.MATCHED,
+        MatchStatus.MATCHED,
         timestamp);
   }
 

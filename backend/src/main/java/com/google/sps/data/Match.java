@@ -1,19 +1,14 @@
 package com.google.sps.data;
 
-/**
- * A match of two participants. Note: Match includes entire Participants (with unique ID per
- * submitted form) instead of just usernames because a username may be involved in multiple matches
- * over time. This issue can be resolved if we delete matches from the datastore after the users are
- * notified of the match.
- */
+import com.google.common.base.MoreObjects;
+
+/** A match between two participants. */
 public final class Match {
 
-  /** Datastore entity ID */
-  private final long id;
-  /** First participant */
-  private final Participant firstParticipant;
-  /** Second participant */
-  private final Participant secondParticipant;
+  /** First participant username (datastore key name) */
+  private final String firstParticipantUsername;
+  /** Second participant username (datastore key name) */
+  private final String secondParticipantUsername;
   /** Duration of meeting */
   private final int duration;
   /** Time match found */
@@ -21,28 +16,22 @@ public final class Match {
 
   /** Constructor */
   public Match(
-      long id,
-      Participant firstParticipant,
-      Participant secondParticipant,
+      String firstParticipantUsername,
+      String secondParticipantUsername,
       int duration,
       long timestamp) {
-    this.id = id;
-    this.firstParticipant = firstParticipant;
-    this.secondParticipant = secondParticipant;
+    this.firstParticipantUsername = firstParticipantUsername;
+    this.secondParticipantUsername = secondParticipantUsername;
     this.duration = duration;
     this.timestamp = timestamp;
   }
 
-  public long getId() {
-    return id;
+  public String getFirstParticipantUsername() {
+    return firstParticipantUsername;
   }
 
-  public Participant getFirstParticipant() {
-    return firstParticipant;
-  }
-
-  public Participant getSecondParticipant() {
-    return secondParticipant;
+  public String getSecondParticipantUsername() {
+    return secondParticipantUsername;
   }
 
   public int getDuration() {
@@ -51,5 +40,14 @@ public final class Match {
 
   public long getTimestamp() {
     return timestamp;
+  }
+
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("firstParticipantUsername", firstParticipantUsername)
+        .add("secondParticipantUsername", secondParticipantUsername)
+        .add("duration", duration)
+        .add("timestamp", timestamp)
+        .toString();
   }
 }

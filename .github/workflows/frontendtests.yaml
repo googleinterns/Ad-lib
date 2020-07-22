@@ -1,0 +1,29 @@
+name: Frontend CI
+
+on: [pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x] # Only run the 10.x build version
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm install -g yarn
+      working-directory: ./frontend
+    - name: yarn install, build, and test
+      run: |
+        yarn
+        yarn build
+        yarn test
+      working-directory: ./frontend  
+      env:
+        CI: true

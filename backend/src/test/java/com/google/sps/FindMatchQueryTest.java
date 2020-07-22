@@ -23,7 +23,6 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.sps.data.Match;
 import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
-import com.google.sps.FindMatchQuery;
 import com.google.sps.datastore.ParticipantDatastore;
 import java.time.Clock;
 import java.time.ZoneId;
@@ -41,6 +40,7 @@ public final class FindMatchQueryTest {
   private static final String PERSON_A = "Person A";
   private static final String PERSON_B = "Person B";
   private static final String PERSON_C = "Person C";
+  private static final String PERSON_D = "Person D";
 
   // Default parameters unused in query
   private static final long MATCHID_DEFAULT = 0;
@@ -72,19 +72,16 @@ public final class FindMatchQueryTest {
   private static final long TIME_1450ET = getNewTimeToday(currentDateTimeET, 14, 50);
   private static final long TIME_1455ET = getNewTimeToday(currentDateTimeET, 14, 55);
   private static final long TIME_1456ET = getNewTimeToday(currentDateTimeET, 14, 56);
+  private static final long TIME_1500ET = getNewTimeToday(currentDateTimeET, 15, 0);
+  private static final long TIME_1530ET = getNewTimeToday(currentDateTimeET, 15, 30);
   private static final long TIME_1600ET = getNewTimeToday(currentDateTimeET, 16, 0);
   private static final long TIME_1800ET = getNewTimeToday(currentDateTimeET, 18, 0);
   private static final long TIME_2000ET = getNewTimeToday(currentDateTimeET, 20, 0);
-  private final LocalServiceTestHelper helper =
-      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+
   private Clock clock;
 
-  /** Return today's date with time of hour:minute */
-  private static long getNewTimeToday(ZonedDateTime dateTime, int hour, int minute) {
-    // Calculate current date but with hour:minute time
-    // TODO: All times are currently today, wrap around times?
-    return dateTime.withHour(hour).withMinute(minute).withNano(0).toInstant().toEpochMilli();
-  }
+  private final LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
   @Before
   public void setUp() {
@@ -97,6 +94,13 @@ public final class FindMatchQueryTest {
   @After
   public void tearDown() {
     helper.tearDown();
+  }
+
+  /** Return today's date with time of hour:minute */
+  private static long getNewTimeToday(ZonedDateTime dateTime, int hour, int minute) {
+    // Calculate current date but with hour:minute time
+    // TODO: All times are currently today, wrap around times?
+    return dateTime.withHour(hour).withMinute(minute).withNano(0).toInstant().toEpochMilli();
   }
 
   @Test

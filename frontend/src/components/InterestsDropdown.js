@@ -6,7 +6,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
-// import Checkbox from '@material-ui/core/Checkbox';
 
 const interestsList = [
   'Anime/Manga',
@@ -42,6 +41,7 @@ InterestsDropdown.propTypes = {
  * @return {InterestsDropdown} InterestsDropdown component
  */
 export default function InterestsDropdown(props) {
+  debugger
   const [interests, interestsSelected] = React.useState([]);
 
   const handleChange = (event) => {
@@ -65,7 +65,11 @@ export default function InterestsDropdown(props) {
           inputProps={{'aria-label': 'interests'}}
         >
           {interestsList.map((currentInterest) => (
-            <MenuItem key={currentInterest} value={currentInterest}>
+            <MenuItem
+              data-testid="menu-option"
+              key={currentInterest}
+              value={currentInterest}
+            >
               <ListItemText primary={currentInterest} />
             </MenuItem>
           ))}

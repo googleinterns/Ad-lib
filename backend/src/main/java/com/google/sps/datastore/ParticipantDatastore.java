@@ -106,6 +106,7 @@ public final class ParticipantDatastore {
         ((Long) entity.getProperty(PROPERTY_DURATION)).intValue(),
         (String) entity.getProperty(PROPERTY_ROLE),
         (String) entity.getProperty(PROPERTY_PRODUCT_AREA),
+        (String) entity.getProperty(PROPERTY_INTERESTS),
         MatchPreference.forIntValue(
             ((Long) entity.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()),
         (long) entity.getProperty(PROPERTY_MATCH_ID),

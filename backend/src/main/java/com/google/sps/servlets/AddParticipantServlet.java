@@ -47,6 +47,7 @@ public class AddParticipantServlet extends HttpServlet {
   private static final String REQUEST_DURATION = "duration";
   private static final String REQUEST_ROLE = "role";
   private static final String REQUEST_PRODUCT_AREA = "productArea";
+  private static final String REQUEST_INTERESTS = "interests";
   private static final String REQUEST_SAVE_PREFERENCE = "savePreference";
   private static final String REQUEST_MATCH_PREFERENCE = "matchPreference";
 
@@ -70,6 +71,9 @@ public class AddParticipantServlet extends HttpServlet {
     }
     String role = formDetails.getString(REQUEST_ROLE);
     String productArea = formDetails.getString(REQUEST_PRODUCT_AREA);
+    // TODO: get correct interests format
+    String[] interests = formDetails.getString(REQUEST_INTERESTS);
+
     boolean savePreference = formDetails.getBoolean(REQUEST_SAVE_PREFERENCE);
     String matchPreferenceString = formDetails.getString(REQUEST_MATCH_PREFERENCE);
     MatchPreference matchPreference;
@@ -104,6 +108,7 @@ public class AddParticipantServlet extends HttpServlet {
             duration,
             role,
             productArea,
+            interests,
             matchPreference,
             /* matchId=*/ 0,
             MatchStatus.UNMATCHED,

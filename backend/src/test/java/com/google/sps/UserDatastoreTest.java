@@ -41,6 +41,7 @@ public final class UserDatastoreTest {
   private static final int DURATION_DEFAULT = 30;
   private static final String ROLE_DEFAULT = "Software engineer";
   private static final String PRODUCT_AREA_DEFAULT = "Ads";
+  private static final String INTERESTS_DEFAULT = "Books,Travel";
   private static final MatchPreference MATCH_PREFERENCE_DEFAULT = MatchPreference.SIMILAR;
 
   // Some usernames
@@ -53,6 +54,7 @@ public final class UserDatastoreTest {
   private static final String PROPERTY_DURATION = "duration";
   private static final String PROPERTY_ROLE = "role";
   private static final String PROPERTY_PRODUCT_AREA = "productArea";
+  private static final String PROPERTY_INTERESTS = "interests";
   private static final String PROPERTY_MATCH_PREFERENCE = "matchPreference";
 
   private final LocalServiceTestHelper helper =
@@ -80,6 +82,7 @@ public final class UserDatastoreTest {
             DURATION_DEFAULT,
             ROLE_DEFAULT,
             PRODUCT_AREA_DEFAULT,
+            INTERESTS_DEFAULT,
             MATCH_PREFERENCE_DEFAULT);
 
     userDatastore.addUser(user);
@@ -91,6 +94,7 @@ public final class UserDatastoreTest {
         .isEqualTo(DURATION_DEFAULT);
     assertThat((String) entity.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
     assertThat((String) entity.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
+    assertThat((String) entity.getProperty(PROPERTY_INTERESTS)).isEqualTo(INTERESTS_DEFAULT);
     assertThat(
             MatchPreference.forIntValue(
                 ((Long) entity.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()))
@@ -108,6 +112,7 @@ public final class UserDatastoreTest {
             DURATION_DEFAULT,
             ROLE_DEFAULT,
             PRODUCT_AREA_DEFAULT,
+            INTERESTS_DEFAULT,
             MATCH_PREFERENCE_DEFAULT);
     User userB =
         new User(
@@ -115,6 +120,7 @@ public final class UserDatastoreTest {
             DURATION_DEFAULT,
             ROLE_DEFAULT,
             PRODUCT_AREA_DEFAULT,
+            INTERESTS_DEFAULT,
             MATCH_PREFERENCE_DEFAULT);
 
     userDatastore.addUser(userA);
@@ -129,6 +135,7 @@ public final class UserDatastoreTest {
         .isEqualTo(DURATION_DEFAULT);
     assertThat((String) entityA.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
     assertThat((String) entityA.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
+    assertThat((String) entityA.getProperty(PROPERTY_INTERESTS)).isEqualTo(INTERESTS_DEFAULT);
     assertThat(
             MatchPreference.forIntValue(
                 ((Long) entityA.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()))
@@ -138,6 +145,7 @@ public final class UserDatastoreTest {
         .isEqualTo(DURATION_DEFAULT);
     assertThat((String) entityB.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
     assertThat((String) entityB.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
+    assertThat((String) entityB.getProperty(PROPERTY_INTERESTS)).isEqualTo(INTERESTS_DEFAULT);
     assertThat(
             MatchPreference.forIntValue(
                 ((Long) entityB.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()))
@@ -155,6 +163,7 @@ public final class UserDatastoreTest {
             DURATION_DEFAULT,
             ROLE_DEFAULT,
             PRODUCT_AREA_DEFAULT,
+            INTERESTS_DEFAULT,
             MATCH_PREFERENCE_DEFAULT);
 
     userDatastore.addUser(user);

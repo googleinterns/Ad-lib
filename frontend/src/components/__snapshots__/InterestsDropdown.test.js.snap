@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Interests Dropdown should render correctly 1`] = `
+exports[`Interests Dropdown should be populated with interests in alaphabetical order 1`] = `
 <div>
   <div
     className="MuiFormControl-root"

@@ -24,6 +24,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.sps.data.MatchPreference;
 import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
 import com.google.sps.datastore.ParticipantDatastore;
@@ -38,11 +39,13 @@ import org.junit.runners.JUnit4;
 public final class ParticipantDatastoreTest {
 
   // Default values
-  private static final long ID_DEFAULT = 123456;
   private static final long START_TIME_AVAILABLE_DEFAULT = 0;
   private static final long END_TIME_AVAILABLE_DEFAULT =
       ZonedDateTime.now().toInstant().toEpochMilli();
   private static final int DURATION_DEFAULT = 30;
+  private static final String ROLE_DEFAULT = "Software engineer";
+  private static final String PRODUCT_AREA_DEFAULT = "Ads";
+  private static final MatchPreference MATCH_PREFERENCE_DEFAULT = MatchPreference.SIMILAR;
   private static final long MATCH_ID_DEFAULT = 0;
   private static final MatchStatus MATCH_STATUS_DEFAULT = MatchStatus.UNMATCHED;
   private static final long TIMESTAMP_DEFAULT = 0;
@@ -59,6 +62,9 @@ public final class ParticipantDatastoreTest {
   private static final String PROPERTY_START_TIME_AVAILABLE = "startTimeAvailable";
   private static final String PROPERTY_END_TIME_AVAILABLE = "endTimeAvailable";
   private static final String PROPERTY_DURATION = "duration";
+  private static final String PROPERTY_ROLE = "role";
+  private static final String PROPERTY_PRODUCT_AREA = "productArea";
+  private static final String PROPERTY_MATCH_PREFERENCE = "matchPreference";
   private static final String PROPERTY_MATCH_ID = "matchId";
   private static final String PROPERTY_MATCH_STATUS = "matchStatus";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
@@ -88,6 +94,9 @@ public final class ParticipantDatastoreTest {
             START_TIME_AVAILABLE_DEFAULT,
             END_TIME_AVAILABLE_DEFAULT,
             DURATION_DEFAULT,
+            ROLE_DEFAULT,
+            PRODUCT_AREA_DEFAULT,
+            MATCH_PREFERENCE_DEFAULT,
             MATCH_ID_DEFAULT,
             MATCH_STATUS_DEFAULT,
             TIMESTAMP_DEFAULT);
@@ -103,6 +112,12 @@ public final class ParticipantDatastoreTest {
         .isEqualTo(END_TIME_AVAILABLE_DEFAULT);
     assertThat(((Long) entity.getProperty(PROPERTY_DURATION)).intValue())
         .isEqualTo(DURATION_DEFAULT);
+    assertThat((String) entity.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
+    assertThat((String) entity.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
+    assertThat(
+            MatchPreference.forIntValue(
+                ((Long) entity.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()))
+        .isEqualTo(MATCH_PREFERENCE_DEFAULT);
     assertThat((long) entity.getProperty(PROPERTY_MATCH_ID)).isEqualTo(MATCH_ID_DEFAULT);
     assertThat(
             MatchStatus.forIntValue(((Long) entity.getProperty(PROPERTY_MATCH_STATUS)).intValue()))
@@ -121,6 +136,9 @@ public final class ParticipantDatastoreTest {
             START_TIME_AVAILABLE_DEFAULT,
             END_TIME_AVAILABLE_DEFAULT,
             DURATION_DEFAULT,
+            ROLE_DEFAULT,
+            PRODUCT_AREA_DEFAULT,
+            MATCH_PREFERENCE_DEFAULT,
             MATCH_ID_DEFAULT,
             MATCH_STATUS_DEFAULT,
             TIMESTAMP_DEFAULT);
@@ -130,6 +148,9 @@ public final class ParticipantDatastoreTest {
             START_TIME_AVAILABLE_DEFAULT,
             END_TIME_AVAILABLE_DEFAULT,
             DURATION_DEFAULT,
+            ROLE_DEFAULT,
+            PRODUCT_AREA_DEFAULT,
+            MATCH_PREFERENCE_DEFAULT,
             MATCH_ID_DEFAULT,
             MATCH_STATUS_DEFAULT,
             TIMESTAMP_DEFAULT);
@@ -148,6 +169,12 @@ public final class ParticipantDatastoreTest {
         .isEqualTo(END_TIME_AVAILABLE_DEFAULT);
     assertThat(((Long) entityA.getProperty(PROPERTY_DURATION)).intValue())
         .isEqualTo(DURATION_DEFAULT);
+    assertThat((String) entityA.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
+    assertThat((String) entityA.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
+    assertThat(
+            MatchPreference.forIntValue(
+                ((Long) entityA.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()))
+        .isEqualTo(MATCH_PREFERENCE_DEFAULT);
     assertThat((long) entityA.getProperty(PROPERTY_MATCH_ID)).isEqualTo(MATCH_ID_DEFAULT);
     assertThat(
             MatchStatus.forIntValue(((Long) entityA.getProperty(PROPERTY_MATCH_STATUS)).intValue()))
@@ -160,6 +187,12 @@ public final class ParticipantDatastoreTest {
         .isEqualTo(END_TIME_AVAILABLE_DEFAULT);
     assertThat(((Long) entityB.getProperty(PROPERTY_DURATION)).intValue())
         .isEqualTo(DURATION_DEFAULT);
+    assertThat((String) entityB.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
+    assertThat((String) entityB.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
+    assertThat(
+            MatchPreference.forIntValue(
+                ((Long) entityB.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()))
+        .isEqualTo(MATCH_PREFERENCE_DEFAULT);
     assertThat((long) entityB.getProperty(PROPERTY_MATCH_ID)).isEqualTo(MATCH_ID_DEFAULT);
     assertThat(
             MatchStatus.forIntValue(((Long) entityB.getProperty(PROPERTY_MATCH_STATUS)).intValue()))
@@ -178,6 +211,9 @@ public final class ParticipantDatastoreTest {
             START_TIME_AVAILABLE_DEFAULT,
             END_TIME_AVAILABLE_DEFAULT,
             DURATION_DEFAULT,
+            ROLE_DEFAULT,
+            PRODUCT_AREA_DEFAULT,
+            MATCH_PREFERENCE_DEFAULT,
             MATCH_ID_DEFAULT,
             MATCH_STATUS_DEFAULT,
             TIMESTAMP_DEFAULT);
@@ -190,6 +226,9 @@ public final class ParticipantDatastoreTest {
         .isEqualTo(START_TIME_AVAILABLE_DEFAULT);
     assertThat(participantFromUsername.getEndTimeAvailable()).isEqualTo(END_TIME_AVAILABLE_DEFAULT);
     assertThat(participantFromUsername.getDuration()).isEqualTo(DURATION_DEFAULT);
+    assertThat(participantFromUsername.getRole()).isEqualTo(ROLE_DEFAULT);
+    assertThat(participantFromUsername.getProductArea()).isEqualTo(PRODUCT_AREA_DEFAULT);
+    assertThat(participantFromUsername.getMatchPreference()).isEqualTo(MATCH_PREFERENCE_DEFAULT);
     assertThat(participantFromUsername.getMatchId()).isEqualTo(MATCH_ID_DEFAULT);
     assertThat(participantFromUsername.getMatchStatus()).isEqualTo(MATCH_STATUS_DEFAULT);
     assertThat(participantFromUsername.getTimestamp()).isEqualTo(TIMESTAMP_DEFAULT);
@@ -206,6 +245,9 @@ public final class ParticipantDatastoreTest {
             START_TIME_AVAILABLE_DEFAULT,
             END_TIME_AVAILABLE_DEFAULT,
             DURATION_DEFAULT,
+            ROLE_DEFAULT,
+            PRODUCT_AREA_DEFAULT,
+            MATCH_PREFERENCE_DEFAULT,
             MATCH_ID_DEFAULT,
             MATCH_STATUS_DEFAULT,
             TIMESTAMP_DEFAULT);
@@ -225,6 +267,9 @@ public final class ParticipantDatastoreTest {
             START_TIME_AVAILABLE_DEFAULT,
             END_TIME_AVAILABLE_DEFAULT,
             DURATION_DEFAULT,
+            ROLE_DEFAULT,
+            PRODUCT_AREA_DEFAULT,
+            MATCH_PREFERENCE_DEFAULT,
             MATCH_ID_DEFAULT,
             MATCH_STATUS_DEFAULT,
             TIMESTAMP_DEFAULT);

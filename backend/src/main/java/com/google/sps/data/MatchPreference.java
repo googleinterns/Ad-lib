@@ -15,15 +15,17 @@
 package com.google.sps.data;
 
 /** Represent whether or not a Participant is matched */
-public enum MatchStatus {
-  /** Not matched yet, waiting for match */
-  UNMATCHED(0),
-  /** Matched, can't be matched again yet */
-  MATCHED(1);
+public enum MatchPreference {
+  /** Prefer to be matched with different Googler */
+  DIFFERENT(0),
+  /** No preference on match similarity */
+  ANY(1),
+  /** Prefer to be matched with similar Googler */
+  SIMILAR(2);
 
   private final int value;
 
-  MatchStatus(int value) {
+  MatchPreference(int value) {
     this.value = value;
   }
 
@@ -31,10 +33,10 @@ public enum MatchStatus {
     return value;
   }
 
-  public static MatchStatus forIntValue(int value) {
-    for (MatchStatus status : MatchStatus.values()) {
-      if (status.value == value) {
-        return status;
+  public static MatchPreference forIntValue(int value) {
+    for (MatchPreference preference : MatchPreference.values()) {
+      if (preference.value == value) {
+        return preference;
       }
     }
     throw new IllegalStateException("Unknown enum value.");

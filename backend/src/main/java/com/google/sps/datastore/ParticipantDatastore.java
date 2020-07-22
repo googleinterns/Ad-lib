@@ -1,3 +1,17 @@
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package com.google.sps.datastore;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -7,13 +21,18 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.CompositeFilter;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.sps.data.MatchPreference;
 import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -26,6 +45,9 @@ public final class ParticipantDatastore {
   private static final String PROPERTY_START_TIME_AVAILABLE = "startTimeAvailable";
   private static final String PROPERTY_END_TIME_AVAILABLE = "endTimeAvailable";
   private static final String PROPERTY_DURATION = "duration";
+  private static final String PROPERTY_ROLE = "role";
+  private static final String PROPERTY_PRODUCT_AREA = "productArea";
+  private static final String PROPERTY_MATCH_PREFERENCE = "matchPreference";
   private static final String PROPERTY_MATCH_ID = "matchId";
   private static final String PROPERTY_MATCH_STATUS = "matchStatus";
   private static final String PROPERTY_TIMESTAMP = "timestamp";
@@ -38,14 +60,17 @@ public final class ParticipantDatastore {
     this.datastore = datastore;
   }
 
-  /** Return entity of participant */
-  private static Entity getEntityFromParticipant(Participant participant) {
+  /** Return entity created from participant */
+  private static Entity createEntityFromParticipant(Participant participant) {
     // Set properties of entity based on participant fields
     Entity entity = new Entity(KIND_PARTICIPANT, participant.getUsername());
     entity.setProperty(PROPERTY_USERNAME, participant.getUsername());
     entity.setProperty(PROPERTY_START_TIME_AVAILABLE, participant.getStartTimeAvailable());
     entity.setProperty(PROPERTY_END_TIME_AVAILABLE, participant.getEndTimeAvailable());
     entity.setProperty(PROPERTY_DURATION, participant.getDuration());
+    entity.setProperty(PROPERTY_ROLE, participant.getRole());
+    entity.setProperty(PROPERTY_PRODUCT_AREA, participant.getProductArea());
+    entity.setProperty(PROPERTY_MATCH_PREFERENCE, participant.getMatchPreference().getValue());
     entity.setProperty(PROPERTY_MATCH_ID, participant.getMatchId());
     entity.setProperty(PROPERTY_MATCH_STATUS, participant.getMatchStatus().getValue());
     entity.setProperty(PROPERTY_TIMESTAMP, participant.getTimestamp());
@@ -59,7 +84,7 @@ public final class ParticipantDatastore {
    */
   public void addParticipant(Participant participant) {
     // Insert entity into datastore
-    datastore.put(getEntityFromParticipant(participant));
+    datastore.put(createEntityFromParticipant(participant));
   }
 
   /** Return Participant Entity from username, or null if entity is not found */
@@ -81,6 +106,10 @@ public final class ParticipantDatastore {
         (long) entity.getProperty(PROPERTY_START_TIME_AVAILABLE),
         (long) entity.getProperty(PROPERTY_END_TIME_AVAILABLE),
         ((Long) entity.getProperty(PROPERTY_DURATION)).intValue(),
+        (String) entity.getProperty(PROPERTY_ROLE),
+        (String) entity.getProperty(PROPERTY_PRODUCT_AREA),
+        MatchPreference.forIntValue(
+            ((Long) entity.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()),
         (long) entity.getProperty(PROPERTY_MATCH_ID),
         MatchStatus.forIntValue(((Long) entity.getProperty(PROPERTY_MATCH_STATUS)).intValue()),
         (long) entity.getProperty(PROPERTY_TIMESTAMP));
@@ -96,16 +125,26 @@ public final class ParticipantDatastore {
     return getParticipantFromEntity(entity);
   }
 
-  /** Return list of all unmatched participants with duration */
-  public List<Participant> getParticipantsWithDuration(int duration) {
+  /** Return list of all unmatched participants with duration and compatible endTimeAvailable */
+  public List<Participant> getParticipantsCompatibleTimeAvailibility(
+      int duration, long endTimeAvailable, int paddingTime, Clock clock) {
     Query query = new Query(KIND_PARTICIPANT);
 
-    // Create filter to get only unmatched participants with same duration
+    // Create filters to get only unmatched participants with compatible time availability
     Filter unmatched =
         new FilterPredicate(
             PROPERTY_MATCH_STATUS, FilterOperator.EQUAL, MatchStatus.UNMATCHED.getValue());
     Filter sameDuration = new FilterPredicate(PROPERTY_DURATION, FilterOperator.EQUAL, duration);
-    query.setFilter(unmatched).setFilter(sameDuration);
+    Filter compatibleTime =
+        new FilterPredicate(
+            PROPERTY_END_TIME_AVAILABLE,
+            FilterOperator.GREATER_THAN,
+            clock.millis() + TimeUnit.MINUTES.toMillis(duration + paddingTime));
+
+    // Combine filters into one, and filter query
+    CompositeFilter composite =
+        CompositeFilterOperator.and(unmatched, sameDuration, compatibleTime);
+    query.setFilter(composite);
 
     PreparedQuery results = datastore.prepare(query);
 

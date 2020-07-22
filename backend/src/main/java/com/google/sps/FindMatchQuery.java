@@ -96,15 +96,16 @@ public final class FindMatchQuery {
    */
   private MatchPreference getCombinedMatchPreference(
       MatchPreference firstMatchPreference, MatchPreference secondMatchPreference) {
-    if ((firstMatchPreference != secondMatchPreference)
-        && (firstMatchPreference != MatchPreference.ANY)
-        && (secondMatchPreference != MatchPreference.ANY)) {
-      // One user is SIMILAR, other is DIFFERENT. Incompatible.
-      return null;
+    if (firstMatchPreference == secondMatchPreference) {
+      return firstMatchPreference;
     }
-    return (firstMatchPreference == MatchPreference.ANY)
-        ? secondMatchPreference
-        : firstMatchPreference;
+    if (firstMatchPreference == MatchPreference.ANY) {
+      return secondMatchPreference;
+    }
+    if (secondMatchPreference == MatchPreference.ANY) {
+      return firstMatchPreference;
+    }
+    return null;
   }
 
   /**

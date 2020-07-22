@@ -136,7 +136,7 @@ public final class FindMatchQuery {
 
       // If match preference = similar, numSameFields must be at least MIN_SAME_FIELDS to satisfy
       // preference
-      // If match preference = differe, numSameFields must be less than MIN_SAME_FIELDS to satisfy
+      // If match preference = different, numSameFields must be less than MIN_SAME_FIELDS to satisfy
       // preference
       if ((combinedMatchPreference == MatchPreference.SIMILAR && numSameFields < MIN_SAME_FIELDS)
           || (combinedMatchPreference == MatchPreference.DIFFERENT

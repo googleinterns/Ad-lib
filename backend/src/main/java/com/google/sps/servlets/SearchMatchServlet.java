@@ -23,12 +23,16 @@ import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
 import com.google.sps.datastore.MatchDatastore;
 import com.google.sps.datastore.ParticipantDatastore;
+import com.google.sps.notifs.EmailNotifier;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.concurrent.TimeUnit;
+import javax.mail.MessagingException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import main.java.com.google.sps.GmailFactory;
 import org.json.simple.JSONObject;
 
 /** Servlet that searches for the participant's current match and removes participant if expired */
@@ -43,9 +47,19 @@ public class SearchMatchServlet extends HttpServlet {
   private static final String JSON_FIRST_PARTICIPANT_USERNAME = "firstParticipantUsername";
   private static final String JSON_SECOND_PARTICIPANT_USERNAME = "secondParticipantUsername";
   private static final String JSON_DURATION = "duration";
+  private final GmailFactory GM_Factory = new GmailFactory();
+  private final EmailNotifier EMAIL_NOTIFIER = new EmailNotifier(GM_Factory.build());
+
+  // Get DatastoreService and instiate Match and Participant Datastores
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private final MatchDatastore matchDatastore = new MatchDatastore(datastore);
+  private final ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
+
+  public SearchMatchServlet() throws GeneralSecurityException, IOException {}
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
     System.out.println("Request received");
 
     // Get participant username
@@ -56,11 +70,6 @@ public class SearchMatchServlet extends HttpServlet {
       return;
     }
     String username = email.split("@")[0];
-
-    // Get DatastoreService and instiate Match and Participant Datastores
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    MatchDatastore matchDatastore = new MatchDatastore(datastore);
-    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
 
     // Find participant's match, if exists and not returned yet
     Participant participant = participantDatastore.getParticipantFromUsername(username);
@@ -75,11 +84,11 @@ public class SearchMatchServlet extends HttpServlet {
     if (participant.getMatchStatus() == MatchStatus.UNMATCHED) {
       if (isExpired(participant)) {
         participantDatastore.removeParticipant(username);
-        sendExpiredResponse(response);
+        sendExpiredResponse(response, participant);
         return;
       }
       // No match yet
-      sendNoMatchResponse(response);
+      sendNoMatchResponse(response, participant);
       return;
     }
 
@@ -116,20 +125,30 @@ public class SearchMatchServlet extends HttpServlet {
   }
 
   /** Send JSON response for expired participant that has been removed from datastore */
-  private void sendExpiredResponse(HttpServletResponse response) throws IOException {
+  private void sendExpiredResponse(HttpServletResponse response, Participant participant)
+      throws IOException {
     JSONObject expired = new JSONObject();
     expired.put(JSON_MATCH_STATUS, "expired");
-
+    try {
+      EMAIL_NOTIFIER.sendExpiredEmail(participant.getUsername());
+    } catch (MessagingException e) {
+      e.printStackTrace();
+    }
     // Send the JSON back as the response
     response.setContentType("application/json");
     response.getWriter().println(expired.toString());
   }
 
   /** Send JSON response for no match yet */
-  private void sendNoMatchResponse(HttpServletResponse response) throws IOException {
+  private void sendNoMatchResponse(HttpServletResponse response, Participant participant)
+      throws IOException {
     JSONObject noMatchYet = new JSONObject();
     noMatchYet.put(JSON_MATCH_STATUS, "false");
-
+    try {
+      EMAIL_NOTIFIER.sendNoMatchEmail(participant.getUsername());
+    } catch (MessagingException e) {
+      e.printStackTrace();
+    }
     // Send the JSON back as the response
     response.setContentType("application/json");
     response.getWriter().println(noMatchYet.toString());
@@ -142,7 +161,12 @@ public class SearchMatchServlet extends HttpServlet {
     matchExists.put(JSON_FIRST_PARTICIPANT_USERNAME, match.getFirstParticipantUsername());
     matchExists.put(JSON_SECOND_PARTICIPANT_USERNAME, match.getSecondParticipantUsername());
     matchExists.put(JSON_DURATION, match.getDuration());
-
+    try {
+      EMAIL_NOTIFIER.sendMatchEmail(
+          match.getFirstParticipantUsername(), match.getSecondParticipantUsername());
+    } catch (MessagingException | GeneralSecurityException e) {
+      e.printStackTrace();
+    }
     // Send the JSON back as the response
     response.setContentType("application/json");
     response.getWriter().println(matchExists.toString());

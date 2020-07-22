@@ -58,7 +58,6 @@ public final class UserDatastore {
 
   /** Put user in datastore. Overwrite user entity if user with same username already exists. */
   public void addUser(User user) {
-    ;
     // Insert entity into datastore
     datastore.put(createEntityFromUser(user));
   }

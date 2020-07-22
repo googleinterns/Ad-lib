@@ -17,11 +17,11 @@ package com.google.sps.data;
 /** Represent whether or not a Participant is matched */
 public enum MatchPreference {
   /** Prefer to be matched with different Googler */
-  DIFFERENT(-1),
+  DIFFERENT(0),
   /** No preference on match similarity */
-  ANY(0),
+  ANY(1),
   /** Prefer to be matched with similar Googler */
-  SIMILAR(1);
+  SIMILAR(2);
 
   private final int value;
 

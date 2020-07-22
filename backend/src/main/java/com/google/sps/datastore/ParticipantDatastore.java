@@ -47,6 +47,7 @@ public final class ParticipantDatastore {
   private static final String PROPERTY_DURATION = "duration";
   private static final String PROPERTY_ROLE = "role";
   private static final String PROPERTY_PRODUCT_AREA = "productArea";
+  private static final String PROPERTY_PRODUCT_AREA = "interests";
   private static final String PROPERTY_MATCH_PREFERENCE = "matchPreference";
   private static final String PROPERTY_MATCH_ID = "matchId";
   private static final String PROPERTY_MATCH_STATUS = "matchStatus";
@@ -70,6 +71,7 @@ public final class ParticipantDatastore {
     entity.setProperty(PROPERTY_DURATION, participant.getDuration());
     entity.setProperty(PROPERTY_ROLE, participant.getRole());
     entity.setProperty(PROPERTY_PRODUCT_AREA, participant.getProductArea());
+    entity.setProperty(PROPERTY_INTERESTS, participant.getInterests());
     entity.setProperty(PROPERTY_MATCH_PREFERENCE, participant.getMatchPreference().getValue());
     entity.setProperty(PROPERTY_MATCH_ID, participant.getMatchId());
     entity.setProperty(PROPERTY_MATCH_STATUS, participant.getMatchStatus().getValue());

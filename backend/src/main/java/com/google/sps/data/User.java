@@ -21,7 +21,7 @@ public final class User {
 
   /** Google username (ldap) */
   private final String username;
-  /** How long user wants to chat */
+  /** How long user prefers to chat */
   private final int duration;
   /** Role at Google */
   private final String role;

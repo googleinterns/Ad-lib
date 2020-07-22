@@ -35,6 +35,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /** Servlet that adds a participant to the queue and tries to find them a match immediately */
@@ -71,8 +72,14 @@ public class AddParticipantServlet extends HttpServlet {
     }
     String role = formDetails.getString(REQUEST_ROLE);
     String productArea = formDetails.getString(REQUEST_PRODUCT_AREA);
-    // TODO: get correct interests format
-    String[] interests = formDetails.getString(REQUEST_INTERESTS);
+    // TODO (: get correct interests format
+    JSONArray interestsJsonArray = new JSONArray(REQUEST_INTERESTS);
+    int numInterests = interestsJsonArray.length();
+    StringBuilder interestsSB = new StringBuilder();
+    for (int i = 0; i < interestsJsonArray.length(); i++) {
+      interestsSB.append(interestsJsonArray.getJSONObject(i).getString("interest") + ",");
+    }
+    String interests = interestsSB.toString();
 
     boolean savePreference = formDetails.getBoolean(REQUEST_SAVE_PREFERENCE);
     String matchPreferenceString = formDetails.getString(REQUEST_MATCH_PREFERENCE);
@@ -130,7 +137,7 @@ public class AddParticipantServlet extends HttpServlet {
 
     // Add User to datastore if opted to save preferences
     if (savePreference) {
-      User user = new User(username, duration, role, productArea, matchPreference);
+      User user = new User(username, duration, role, productArea, interests, matchPreference);
       userDatastore.addUser(user);
     }
 

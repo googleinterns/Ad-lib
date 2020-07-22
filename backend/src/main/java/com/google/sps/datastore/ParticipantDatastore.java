@@ -47,7 +47,7 @@ public final class ParticipantDatastore {
   private static final String PROPERTY_DURATION = "duration";
   private static final String PROPERTY_ROLE = "role";
   private static final String PROPERTY_PRODUCT_AREA = "productArea";
-  private static final String PROPERTY_PRODUCT_AREA = "interests";
+  private static final String PROPERTY_INTERESTS = "interests";
   private static final String PROPERTY_MATCH_PREFERENCE = "matchPreference";
   private static final String PROPERTY_MATCH_ID = "matchId";
   private static final String PROPERTY_MATCH_STATUS = "matchStatus";

@@ -160,8 +160,8 @@ public class SearchMatchServlet extends HttpServlet {
     matchExists.put(JSON_DURATION, match.getDuration());
     try {
       emailNotifier.sendMatchEmail(
-          match.getFirstParticipantUsername(), match.g);
-    } catch (MessagingException | GeneralSecurityException e) {
+          match.getFirstParticipantUsername());
+    } catch (MessagingException  e) {
       e.printStackTrace();
     }
     // Send the JSON back as the response

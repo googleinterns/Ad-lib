@@ -120,7 +120,7 @@ public final class FindMatchQuery {
     System.out.println("First filled fields: " + firstFilledFieldsList);
     System.out.println("Second filled fields: " + secondFilledFieldsList);
 
-    // Count num shared interests
+    // Count number of shared fields
     StringTokenizer firstFields = new StringTokenizer(firstFilledFieldsList, ",");
     StringTokenizer secondFields = new StringTokenizer(secondFilledFieldsList, ",");
     int firstNumFilledFields = firstFields.countTokens();

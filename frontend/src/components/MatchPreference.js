@@ -6,10 +6,10 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
-// Add onChange to props validation
+// Add onChange and shouldDisableMatchPreferenceFields to props validation
 MatchPreference.propTypes = {
   onChange: PropTypes.func,
-  checkPersonalPreferenceFields: PropTypes.bool,
+  shouldDisableMatchPreferenceFields: PropTypes.bool,
 };
 
 /**
@@ -29,7 +29,7 @@ export default function MatchPreference(props) {
       >
         <FormControlLabel
           value="similar"
-          disabled={props.checkPersonalPreferenceFields}
+          disabled={props.shouldDisableMatchPreferenceFields}
           control={<Radio color="primary" />}
           label="Similar Googler" />
         <FormControlLabel
@@ -38,7 +38,7 @@ export default function MatchPreference(props) {
           label="Any Googler" />
         <FormControlLabel
           value="different"
-          disabled={props.checkPersonalPreferenceFields}
+          disabled={props.shouldDisableMatchPreferenceFields}
           control={<Radio color="primary" />}
           label="Different Googler" />
       </RadioGroup>

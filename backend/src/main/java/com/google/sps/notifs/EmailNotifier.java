@@ -32,7 +32,6 @@ public class EmailNotifier {
   //   TODO(#35): Create a dummy email for ad lib itself to send emails.
   private static final String APPLICATION_EMAIL = "Adlib-Step@gmail.com";
 
-
   /** The gmail service */
   private final Gmail service;
 
@@ -68,8 +67,8 @@ public class EmailNotifier {
    * @return the MimeMessage to be used to send email
    * @throws MessagingException if there was a problem accessing the Store
    */
-  private MimeMessage createEmail(
-      String recipientUsername, String subject, String bodyText) throws MessagingException {
+  private MimeMessage createEmail(String recipientUsername, String subject, String bodyText)
+      throws MessagingException {
 
     Properties props = new Properties();
     Session session = Session.getDefaultInstance(props, /* authenticator= */ null);
@@ -92,8 +91,8 @@ public class EmailNotifier {
             firstMatchRecipientName,
             "Ad-lib: We found you a match !",
             " We found you a match with matchUsername. "
-                +   " Check your calendar for your meeting event,"
-                +   " and feel free to join the Meet call now!\n");
+                + " Check your calendar for your meeting event,"
+                + " and feel free to join the Meet call now!\n");
     Message messageWithEmail = createMessageWithEmail(email);
     service.users().messages().send("me", messageWithEmail).execute();
   }
@@ -105,7 +104,8 @@ public class EmailNotifier {
         createEmail(
             expiredRecipientName,
             "Ad-lib: Sorry, we couldn't find you a match!",
-            " We couldn't find a match  for you this time, but we encourage you to please try again later! \n "
+            " We couldn't find a match  for you this time, but we encourage you to please try "
+                + " again later! \n "
                 + " Best, \n"
                 + " The Ad-lib team \n");
     Message messageWithEmail = createMessageWithEmail(email);

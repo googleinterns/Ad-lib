@@ -13,7 +13,6 @@ import com.google.sps.notifs.EmailNotifier;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.GeneralSecurityException;
 import java.util.Properties;
 import javax.mail.Address;
 import javax.mail.MessagingException;
@@ -68,8 +67,7 @@ public class EmailNotifierTest {
   }
 
   @Test
-  public void testMessageHasCorrectApplicationName()
-      throws MessagingException, IOException {
+  public void testMessageHasCorrectApplicationName() throws MessagingException, IOException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
 
     emailNotifier.sendExpiredEmail(testName);
@@ -80,8 +78,7 @@ public class EmailNotifierTest {
   }
 
   @Test
-  public void testMessageHasMatchFoundSubject()
-      throws MessagingException, IOException {
+  public void testMessageHasMatchFoundSubject() throws MessagingException, IOException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
 
     emailNotifier.sendMatchEmail(testName);
@@ -90,8 +87,6 @@ public class EmailNotifierTest {
     String subjectName = convertToMimeMessage(argument.getValue()).getSubject();
     assertThat(subjectName).isEqualTo("Ad-lib: We found you a match !");
   }
-
-
 
   @Test
   public void testMessageHasMatchExpiredSubject() throws MessagingException, IOException {
@@ -105,8 +100,7 @@ public class EmailNotifierTest {
   }
 
   @Test
-  public void testMessageShouldHaveCorrectBodyText()
-      throws MessagingException, IOException {
+  public void testMessageShouldHaveCorrectBodyText() throws MessagingException, IOException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
 
     emailNotifier.sendMatchEmail(testName);
@@ -115,14 +109,13 @@ public class EmailNotifierTest {
     String bodyText = convertToMimeMessage(argument.getValue()).getContent().toString();
     assertThat(bodyText)
         .isEqualTo(
-                " We found you a match with matchUsername. "
-                        +   " Check your calendar for your meeting event,"
-                        +   " and feel free to join the Meet call now!\n");
+            " We found you a match with matchUsername. "
+                + " Check your calendar for your meeting event,"
+                + " and feel free to join the Meet call now!\n");
   }
 
   @Test
-  public void testMessageShouldHaveIncorrectBodyText()
-      throws MessagingException, IOException {
+  public void testMessageShouldHaveIncorrectBodyText() throws MessagingException, IOException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
 
     emailNotifier.sendMatchEmail(testName);

@@ -64,13 +64,17 @@ public final class FindMatchQuery {
         continue;
       }
 
-      // Check if combined match preference is satisfied depending on number of same fields
+      // Check if combined match preference is satisfied depending on number of same inputs
       if (!isCombinedMatchPreferenceSatisfied(
           combinedMatchPreference, firstParticipant, secondParticipant)) {
         continue;
       }
 
-      System.out.println("match found");
+      System.out.println(
+          "match found: "
+              + firstParticipant.getUsername()
+              + " and "
+              + secondParticipant.getUsername());
       // Found a match
       return new Match(
           firstParticipant.getUsername(),
@@ -103,66 +107,68 @@ public final class FindMatchQuery {
 
   /**
    * @return true if the participants are a match based on their combinedMatchPreference and the
-   *     number of fields that are the same, false if not a match
+   *     number of inputs that are the same, false if not a match
    */
   private boolean isCombinedMatchPreferenceSatisfied(
       MatchPreference combinedMatchPreference,
       Participant firstParticipant,
       Participant secondParticipant) {
     if (combinedMatchPreference == MatchPreference.ANY) {
-      // both ANY, doesn't matter how many same fields
+      // both ANY, doesn't matter how many same inputs
       return true;
     }
 
     // Get lists of combined role, product area, interests for first and second participant
-    String firstFilledFieldsList = getAllFilledFieldsList(firstParticipant);
-    String secondFilledFieldsList = getAllFilledFieldsList(secondParticipant);
-    System.out.println("First filled fields: " + firstFilledFieldsList);
-    System.out.println("Second filled fields: " + secondFilledFieldsList);
+    String firstFilledInputsList = getAllFilledInputs(firstParticipant);
+    String secondFilledInputsList = getAllFilledInputs(secondParticipant);
+    System.out.println("First filled inputs: " + firstFilledInputsList);
+    System.out.println("Second filled inputs: " + secondFilledInputsList);
 
-    // Count number of shared fields
-    StringTokenizer firstFields = new StringTokenizer(firstFilledFieldsList, ",");
-    StringTokenizer secondFields = new StringTokenizer(secondFilledFieldsList, ",");
-    int firstNumFilledFields = firstFields.countTokens();
-    int secondNumFilledFields = secondFields.countTokens();
-    int numSameFields = 0;
-    while (firstFields.hasMoreTokens()) {
-      String firstField = firstFields.nextToken();
-      secondFields = new StringTokenizer(secondFilledFieldsList, ",");
-      while (secondFields.hasMoreTokens()) {
-        if (firstField.equals(secondFields.nextToken())) {
-          numSameFields++;
-          System.out.println(firstField + " matches");
+    // Count number of shared inputs
+    StringTokenizer firstInputs = new StringTokenizer(firstFilledInputsList, ",");
+    StringTokenizer secondInputs = new StringTokenizer(secondFilledInputsList, ",");
+    int firstNumFilledInputs = firstInputs.countTokens();
+    int secondNumFilledInputs = secondInputs.countTokens();
+    int numSameInputs = 0;
+    while (firstInputs.hasMoreTokens()) {
+      String firstInput = firstInputs.nextToken();
+      secondInputs = new StringTokenizer(secondFilledInputsList, ",");
+      while (secondInputs.hasMoreTokens()) {
+        if (firstInput.equals(secondInputs.nextToken())) {
+          numSameInputs++;
+          System.out.println(firstInput + " matches");
+          break;
         }
       }
     }
-    System.out.println("numSameFields: " + numSameFields);
+    System.out.println("numSameInputs: " + numSameInputs);
 
-    // Check if match based on preference and number of same fields
-    int maxNumFilledFields = Math.max(firstNumFilledFields, secondNumFilledFields);
-    int MIN_SAME_FIELDS = maxNumFilledFields / 2 + maxNumFilledFields % 2;
-    System.out.println(MIN_SAME_FIELDS);
-    if (combinedMatchPreference == MatchPreference.SIMILAR && numSameFields < MIN_SAME_FIELDS) {
+    // Check if match based on preference and number of same inputs
+    int maxNumFilledInputs = Math.max(firstNumFilledInputs, secondNumFilledInputs);
+    int minSameInputs = (maxNumFilledInputs + 1) / 2;
+    System.out.println(minSameInputs);
+    if (combinedMatchPreference == MatchPreference.SIMILAR && numSameInputs < minSameInputs) {
       return false;
     }
-    if (combinedMatchPreference == MatchPreference.DIFFERENT && numSameFields >= MIN_SAME_FIELDS) {
+    if (combinedMatchPreference == MatchPreference.DIFFERENT && numSameInputs >= minSameInputs) {
       return false;
     }
     System.out.println("combined match pref satisfied");
     return true;
   }
 
-  /** Return all filled fields of participant in one string delimited by , */
-  private String getAllFilledFieldsList(Participant participant) {
+  /**
+   * @return all filled inputs of participant in one string delimited by a comma Assumes no role,
+   *     PA, or interests have the same options
+   */
+  private String getAllFilledInputs(Participant participant) {
     StringBuilder sb = new StringBuilder();
     String role = participant.getRole();
-    boolean isRoleFilled = !role.equals("");
-    if (isRoleFilled) {
+    if (!role.equals("")) {
       sb.append(role + ",");
     }
     String productArea = participant.getProductArea();
-    boolean isProductAreaFilled = !productArea.equals("");
-    if (isProductAreaFilled) {
+    if (!productArea.equals("")) {
       sb.append(productArea + ",");
     }
     sb.append(participant.getInterests());

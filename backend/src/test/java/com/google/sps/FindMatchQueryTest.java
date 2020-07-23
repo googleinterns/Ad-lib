@@ -41,22 +41,27 @@ public final class FindMatchQueryTest {
   private static final String PERSON_A = "Person A";
   private static final String PERSON_B = "Person B";
   private static final String PERSON_C = "Person C";
-  private static final String PERSON_D = "Person D";
 
   // Default parameters unused in query
   private static final long MATCHID_DEFAULT = 0;
   private static final long TIMESTAMP_DEFAULT = 0;
 
   // Role constants
+  private static final String ROLE_BLANK = "";
   private static final String ROLE_SOFTWARE_ENGINEER = "Software engineer";
   private static final String ROLE_PRODUCT_MANAGER = "Product manager";
 
   // Product area constants
+  private static final String PRODUCT_AREA_BLANK = "";
   private static final String PRODUCT_AREA_ADS = "Ads";
   private static final String PRODUCT_AREA_CLOUD = "Cloud";
 
   // Interests constants
+  private static final String INTERESTS_BLANK = "";
   private static final String INTERESTS_BOOKS = "Books";
+  private static final String INTERESTS_BOOKS_SPORTS_TRAVEL = "Books,Sports,Travel";
+  private static final String INTERESTS_BOOKS_TRAVEL = "Books,Travel";
+  private static final String INTERESTS_GAMING_SPORTS = "Gaming,Sports";
 
   // Match preference constants
   private static final MatchPreference MATCH_PREFERENCE_DIFFERENT = MatchPreference.DIFFERENT;
@@ -405,7 +410,7 @@ public final class FindMatchQueryTest {
   }
 
   @Test
-  public void barelyNotCompatible() {
+  public void barelyNotCompatibleAvailibility() {
     // Two participants barely NOT compatible availability (edge case, need >10 minutes padding)
     Participant participantA =
         new Participant(
@@ -444,7 +449,7 @@ public final class FindMatchQueryTest {
   }
 
   @Test
-  public void barelyCompatible() {
+  public void barelyCompatibleAvailability() {
     // Two participants barely compatible availability (edge case, need >10 minutes padding for
     // compatibility)
     Participant participantA =
@@ -486,8 +491,9 @@ public final class FindMatchQueryTest {
   }
 
   @Test
-  public void areDifferentPreferSimilar() {
-    // Two participants that are different but prefer to be matched with someone similar
+  public void areCompletelyDifferentPreferSimilar() {
+    // Two participants that are completely different (0/4) but prefer to be matched with someone
+    // similar
     Participant participantA =
         new Participant(
             PERSON_A,
@@ -509,7 +515,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_PRODUCT_MANAGER,
             PRODUCT_AREA_CLOUD,
-            INTERESTS_BOOKS,
+            INTERESTS_GAMING_SPORTS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -526,7 +532,7 @@ public final class FindMatchQueryTest {
 
   @Test
   public void areSimilarPreferDifferent() {
-    // Two participants that are similar but prefer to be matched with someone different
+    // Two participants that are similar (3/3) but prefer to be matched with someone different
     Participant participantA =
         new Participant(
             PERSON_A,
@@ -565,7 +571,8 @@ public final class FindMatchQueryTest {
 
   @Test
   public void areDifferentPreferDifferent() {
-    // Two participants that are different and prefer to be matched with someone different
+    // Two participants that are different (1/3 match) and prefer to be matched with someone
+    // different
     Participant participantA =
         new Participant(
             PERSON_A,
@@ -605,9 +612,8 @@ public final class FindMatchQueryTest {
   }
 
   @Test
-  public void oneFieldMatches() {
-    // Two participants with one matching field prefer to be matched with someone similar
-    // TODO (#67): change num matching fields threshold when interests are added
+  public void oneFilledFiveOtherFilledThreeAllMatching() {
+    // Two participants, A with 5 filled fields, B with 3 filled fields. All 3 fields match
     Participant participantA =
         new Participant(
             PERSON_A,
@@ -616,7 +622,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
-            INTERESTS_BOOKS,
+            INTERESTS_BOOKS_SPORTS_TRAVEL,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -627,9 +633,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1800ET,
             DURATION_45_MINUTES,
-            ROLE_PRODUCT_MANAGER,
+            ROLE_BLANK,
             PRODUCT_AREA_ADS,
-            INTERESTS_BOOKS,
+            INTERESTS_BOOKS_TRAVEL,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,

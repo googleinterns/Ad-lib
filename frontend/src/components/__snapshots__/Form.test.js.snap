@@ -314,11 +314,11 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
           role="radiogroup"
         >
           <label
-            className="MuiFormControlLabel-root"
+            className="MuiFormControlLabel-root Mui-disabled"
           >
             <span
-              aria-disabled={false}
-              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-6 MuiRadio-root MuiRadio-colorPrimary MuiIconButton-colorPrimary"
+              aria-disabled={true}
+              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-6 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-8 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
               onBlur={[Function]}
               onDragLeave={[Function]}
               onFocus={[Function]}
@@ -330,7 +330,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
               onTouchEnd={[Function]}
               onTouchMove={[Function]}
               onTouchStart={[Function]}
-              tabIndex={null}
+              tabIndex={-1}
             >
               <span
                 className="MuiIconButton-label"
@@ -338,7 +338,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
                 <input
                   checked={false}
                   className="PrivateSwitchBase-input-9"
-                  disabled={false}
+                  disabled={true}
                   name="matchPreference"
                   onChange={[Function]}
                   type="radio"
@@ -371,7 +371,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
               </span>
             </span>
             <span
-              className="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
+              className="MuiTypography-root MuiFormControlLabel-label Mui-disabled MuiTypography-body1"
             >
               Similar Googler
             </span>
@@ -436,15 +436,15 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
             <span
               className="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
             >
-              No Preference
+              Any Googler
             </span>
           </label>
           <label
-            className="MuiFormControlLabel-root"
+            className="MuiFormControlLabel-root Mui-disabled"
           >
             <span
-              aria-disabled={false}
-              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-6 MuiRadio-root MuiRadio-colorPrimary MuiIconButton-colorPrimary"
+              aria-disabled={true}
+              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-6 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-8 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
               onBlur={[Function]}
               onDragLeave={[Function]}
               onFocus={[Function]}
@@ -456,7 +456,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
               onTouchEnd={[Function]}
               onTouchMove={[Function]}
               onTouchStart={[Function]}
-              tabIndex={null}
+              tabIndex={-1}
             >
               <span
                 className="MuiIconButton-label"
@@ -464,7 +464,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
                 <input
                   checked={false}
                   className="PrivateSwitchBase-input-9"
-                  disabled={false}
+                  disabled={true}
                   name="matchPreference"
                   onChange={[Function]}
                   type="radio"
@@ -497,12 +497,17 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
               </span>
             </span>
             <span
-              className="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
+              className="MuiTypography-root MuiFormControlLabel-label Mui-disabled MuiTypography-body1"
             >
               Different Googler
             </span>
           </label>
         </div>
+        <p
+          className="MuiFormHelperText-root"
+        >
+          You must select at least one personal preference field to select a match preference 
+        </p>
       </fieldset>
     </div>
   </div>

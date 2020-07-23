@@ -43,7 +43,7 @@ public class AddParticipantServlet extends HttpServlet {
 
   // HTTP Request JSON key constants
   private static final String REQUEST_FORM_DETAILS = "formDetails";
-  private static final String REQUEST_TIME_AVAILABLE_UNTIL = "timeAvailableUntil";
+  private static final String REQUEST_END_TIME_AVAILABLE = "endTimeAvailable";
   private static final String REQUEST_DURATION = "duration";
   private static final String REQUEST_ROLE = "role";
   private static final String REQUEST_PRODUCT_AREA = "productArea";
@@ -60,7 +60,7 @@ public class AddParticipantServlet extends HttpServlet {
     JSONObject formDetails = obj.getJSONObject(REQUEST_FORM_DETAILS);
 
     // Get endTimeAvailable and startTimeAvailable in milliseconds
-    long endTimeAvailable = formDetails.getLong(REQUEST_TIME_AVAILABLE_UNTIL);
+    long endTimeAvailable = formDetails.getLong(REQUEST_END_TIME_AVAILABLE);
     long startTimeAvailable = Instant.now().toEpochMilli();
 
     int duration = formDetails.getInt(REQUEST_DURATION);

@@ -6,6 +6,12 @@ import {configure, shallow} from 'enzyme';
 
 configure({adapter: new Adapter()});
 
+let menuItems;
+beforeAll(() => {
+  menuItems = shallow(<InterestsDropdown />)
+      .find('[data-testid="menu-option"]');
+});
+
 describe('Interests Dropdown', () => {
   it('should be defined', () => {
     expect(InterestsDropdown).toBeDefined();
@@ -15,13 +21,9 @@ describe('Interests Dropdown', () => {
     expect(tree).toMatchSnapshot();
   });
   it('should be populated with 20 interests', () => {
-    const menuItems = shallow(<InterestsDropdown />)
-        .find('[data-testid="menu-option"]');
     expect(menuItems).toHaveLength(20);
   });
   it('should be populated in alphabetical order', () => {
-    const menuItems = shallow(<InterestsDropdown />)
-        .find('[data-testid="menu-option"]');
     const menuOptions = menuItems.map((node) => node.key());
     const sortedMenuOptions = menuOptions.sort();
 

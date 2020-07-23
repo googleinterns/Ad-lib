@@ -15,13 +15,9 @@
 package com.google.sps.notifs;
 
 import com.google.api.services.gmail.Gmail;
-import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
-import com.google.common.collect.ImmutableList;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.List;
 import java.util.Properties;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;

@@ -41,7 +41,6 @@ InterestsDropdown.propTypes = {
  * @return {InterestsDropdown} InterestsDropdown component
  */
 export default function InterestsDropdown(props) {
-  debugger
   const [interests, interestsSelected] = React.useState([]);
 
   const handleChange = (event) => {

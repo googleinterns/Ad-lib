@@ -43,10 +43,41 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
+ * Validates from inputs on submission and alerts user on error
+ * @param {String} role
+ * @param {String} productArea
+ * @param {Number} duration in minutes
+ * @param {Number} timeAvailableUntilMilliseconds
+ * @param {Number} currentTimeMilliseconds
+ * @return {Boolean} true or false based on validity of inputs
+ */
+export function validateFormInputs(
+    role,
+    productArea,
+    duration,
+    timeAvailableUntilMilliseconds,
+    currentTimeMilliseconds,
+) {
+  const durationMilliseconds = duration * 60000;
+
+  if (isNaN(timeAvailableUntilMilliseconds)) {
+    alert('Please select a valid date.');
+    return false;
+  } else if (currentTimeMilliseconds + durationMilliseconds >=
+    timeAvailableUntilMilliseconds) {
+    // Check if a meeting is possible with the provided inputs
+    alert('Please select an larger time availability window');
+    return false;
+  }
+  return true;
+}
+
+/**
  * Create form component with time and match preference inputs
+ * @param {Object} props
  * @return {Form} Form component
  */
-export default function Form() {
+export default function Form(props) {
   const classes = useStyles();
 
   // Declare state variables for each input field and set default states
@@ -59,12 +90,30 @@ export default function Form() {
   const [savePreference, setSavePreference] = React.useState(true);
   const [matchPreference, setMatchPreference] = React.useState('none');
 
+  /**
+   * Method that controls the disabled attribute of MatchPreference radio group
+   * based on the completion status of the personal preference fields
+   * @return {Boolean} true/false where true means the MatchPreference options
+   * will be disabled and false means that the options will be enabled.
+   */
+  function shouldDisableMatchPreferenceFields() {
+    // TO-DO(#65): Add interests to this validation
+    return role === '' && productArea === '';
+  }
+
   /** Gather user inputs from form and send POST request to backend
     * @param {Event} event
    */
   function handleFormSubmission(event) {
-    // TODO(#34): Validate input values (before allowing to submit)
-
+    const currentTimeInMilliseconds = new Date().getTime();
+    if (!validateFormInputs(
+        role,
+        productArea,
+        duration,
+        timeAvailableUntil.getTime(),
+        currentTimeInMilliseconds)) {
+      return;
+    }
     // Override browser's default behvaior to execute POST request
     event.preventDefault();
 
@@ -83,10 +132,12 @@ export default function Form() {
     axios.post('/api/v1/add-participant', {formDetails})
         .then((response) => {
           if (response.data != null) {
-            // TODO(#33): change alert to a redirection to the loading page view
+            // TODO(#33): change alert to a redirection to loading page view
             alert('Successful');
           }
         });
+
+    // TO-DO(#57): call getMatch() to initiate servlet GET request
   }
 
   return (
@@ -123,7 +174,10 @@ export default function Form() {
           <InterestsDropdown onChange={(value) => setInterests(value)} />
         </div>
         <div className={classes.padding}>
-          <MatchPreference onChange={(value) => setMatchPreference(value)} />
+          <MatchPreference
+            onChange={(value) => setMatchPreference(value)}
+            shouldDisableMatchPreferenceFields={shouldDisableMatchPreferenceFields()}
+          />
         </div>
       </div>
       <div className={classes.flexEndDiv}>

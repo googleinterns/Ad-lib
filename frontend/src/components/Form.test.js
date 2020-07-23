@@ -3,6 +3,7 @@ import Form from './Form';
 import renderer from 'react-test-renderer';
 import axios from 'axios';
 import mockAxios from 'axios';
+import {validateFormInputs} from './Form';
 
 beforeAll(() => {
   const DATE_TO_USE = new Date('2020');
@@ -43,5 +44,47 @@ describe('Form', () => {
     expect(mockAxios.post).toHaveBeenCalledWith(
         servletEndpoint, {mockFormDetails},
     );
+  });
+});
+
+describe('Form Validation', () => {
+  it('should return true when all fields are provided and time is compatible',
+      () => {
+        const role = 'Intern';
+        const productArea = 'Platforms and Ecosystems';
+        // Wed Jul 15 2020 20:56:45
+        const endTimeAvailableMilliseconds = 1594846605591;
+        const duration = 15;
+        // Wed Jul 15 2020 08:30:00
+        const currentTimeMilliseconds = 1594801800000;
+
+        expect(validateFormInputs(role, productArea, duration,
+            endTimeAvailableMilliseconds, currentTimeMilliseconds)).toBe(true);
+      });
+
+  it('should return false when time is incompatible', () => {
+    window.alert = jest.fn();
+    const role = 'Intern';
+    const productArea = 'Core';
+    // Wed Jul 15 2020 20:56:45
+    const endTimeAvailableMilliseconds = 1594846605591;
+    const duration = 15;
+    // Wed Jul 15 2020 20:56:40
+    const currentTimeMilliseconds = 1594846600000;
+
+    expect(validateFormInputs(role, productArea, duration,
+        endTimeAvailableMilliseconds, currentTimeMilliseconds)).toBe(false);
+  });
+
+  it('should return false when time has invalid format', () => {
+    window.alert = jest.fn();
+    const role = 'Intern';
+    const productArea = 'Core';
+    const endTimeAvailableMilliseconds = NaN;
+    const duration = 15;
+    const currentTimeMilliseconds = 1594846605000;
+
+    expect(validateFormInputs(role, productArea, duration,
+        endTimeAvailableMilliseconds, currentTimeMilliseconds)).toBe(false);
   });
 });

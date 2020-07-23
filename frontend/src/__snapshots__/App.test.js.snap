@@ -450,7 +450,7 @@ exports[`App should render correctly 1`] = `
                 role="radiogroup"
               >
                 <label
-                  className="MuiFormControlLabel-root"
+                  className="MuiFormControlLabel-root Mui-disabled"
                 >
                   <span
                     aria-disabled={false}
@@ -466,7 +466,7 @@ exports[`App should render correctly 1`] = `
                     onTouchEnd={[Function]}
                     onTouchMove={[Function]}
                     onTouchStart={[Function]}
-                    tabIndex={null}
+                    tabIndex={-1}
                   >
                     <span
                       className="MuiIconButton-label"
@@ -507,7 +507,7 @@ exports[`App should render correctly 1`] = `
                     </span>
                   </span>
                   <span
-                    className="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
+                    className="MuiTypography-root MuiFormControlLabel-label Mui-disabled MuiTypography-body1"
                   >
                     Similar Googler
                   </span>
@@ -572,11 +572,11 @@ exports[`App should render correctly 1`] = `
                   <span
                     className="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
                   >
-                    No Preference
+                    Any Googler
                   </span>
                 </label>
                 <label
-                  className="MuiFormControlLabel-root"
+                  className="MuiFormControlLabel-root Mui-disabled"
                 >
                   <span
                     aria-disabled={false}
@@ -592,7 +592,7 @@ exports[`App should render correctly 1`] = `
                     onTouchEnd={[Function]}
                     onTouchMove={[Function]}
                     onTouchStart={[Function]}
-                    tabIndex={null}
+                    tabIndex={-1}
                   >
                     <span
                       className="MuiIconButton-label"
@@ -633,12 +633,17 @@ exports[`App should render correctly 1`] = `
                     </span>
                   </span>
                   <span
-                    className="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
+                    className="MuiTypography-root MuiFormControlLabel-label Mui-disabled MuiTypography-body1"
                   >
                     Different Googler
                   </span>
                 </label>
               </div>
+              <p
+                className="MuiFormHelperText-root"
+              >
+                You must select at least one personal preference field to select a match preference 
+              </p>
             </fieldset>
           </div>
         </div>

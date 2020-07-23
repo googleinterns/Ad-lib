@@ -20,10 +20,13 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.FindMatchQuery;
 import com.google.sps.data.Match;
+import com.google.sps.data.MatchPreference;
 import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
+import com.google.sps.data.User;
 import com.google.sps.datastore.MatchDatastore;
 import com.google.sps.datastore.ParticipantDatastore;
+import com.google.sps.datastore.UserDatastore;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.Clock;
@@ -68,7 +71,22 @@ public class AddParticipantServlet extends HttpServlet {
     String role = formDetails.getString(REQUEST_ROLE);
     String productArea = formDetails.getString(REQUEST_PRODUCT_AREA);
     boolean savePreference = formDetails.getBoolean(REQUEST_SAVE_PREFERENCE);
-    String matchPreference = formDetails.getString(REQUEST_MATCH_PREFERENCE);
+    String matchPreferenceString = formDetails.getString(REQUEST_MATCH_PREFERENCE);
+    MatchPreference matchPreference;
+    switch (matchPreferenceString) {
+      case "different":
+        matchPreference = MatchPreference.DIFFERENT;
+        break;
+      case "any":
+        matchPreference = MatchPreference.ANY;
+        break;
+      case "similar":
+        matchPreference = MatchPreference.SIMILAR;
+        break;
+      default:
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid match preference.");
+        return;
+    }
     long timestamp = System.currentTimeMillis();
 
     String username = getUsername();
@@ -84,6 +102,9 @@ public class AddParticipantServlet extends HttpServlet {
             startTimeAvailable,
             endTimeAvailable,
             duration,
+            role,
+            productArea,
+            matchPreference,
             /* matchId=*/ 0,
             MatchStatus.UNMATCHED,
             timestamp);
@@ -92,6 +113,7 @@ public class AddParticipantServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     MatchDatastore matchDatastore = new MatchDatastore(datastore);
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
+    UserDatastore userDatastore = new UserDatastore(datastore);
 
     // Check if new participant already in datastore (unmatched, in queue)
     // TODO: FIX! What if matched but not returned yet
@@ -99,6 +121,12 @@ public class AddParticipantServlet extends HttpServlet {
     if (existingParticipant != null) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Already submitted form");
       return;
+    }
+
+    // Add User to datastore if opted to save preferences
+    if (savePreference) {
+      User user = new User(username, duration, role, productArea, matchPreference);
+      userDatastore.addUser(user);
     }
 
     // Find immediate match if possible

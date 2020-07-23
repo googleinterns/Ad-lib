@@ -133,7 +133,7 @@ exports[`Match Preferences Radio Group should render correctly 1`] = `
       <span
         className="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
       >
-        No Preference
+        Any Googler
       </span>
     </label>
     <label
@@ -200,5 +200,10 @@ exports[`Match Preferences Radio Group should render correctly 1`] = `
       </span>
     </label>
   </div>
+  <p
+    className="MuiFormHelperText-root"
+  >
+    You must select at least one personal preference field to select a match preference 
+  </p>
 </fieldset>
 `;

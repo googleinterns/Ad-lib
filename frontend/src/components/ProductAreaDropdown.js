@@ -1,10 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
+import {makeStyles} from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
-import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
+
+/** Establishes style to use on rendering component */
+const useStyles = makeStyles((theme) => ({
+  padding: {
+    margin: theme.spacing(2),
+    marginBottom: theme.spacing(3),
+  },
+}));
 
 const productAreas = [
   'Ads',
@@ -43,10 +50,12 @@ ProductAreaDropdown.propTypes = {
 
 /**
  * Create product area dropdown component using productAreas array
- * @return {ProductAreaDropdown} ProductAreaDropdown component
  * @param {Object} props
+ * @return {ProductAreaDropdown} ProductAreaDropdown component
  */
 export default function ProductAreaDropdown(props) {
+  const classes = useStyles();
+
   return (
     <div>
       <FormControl style={{width: 180}}>
@@ -58,9 +67,13 @@ export default function ProductAreaDropdown(props) {
           inputProps={{'aria-label': 'productArea'}}
         >
           {productAreas.map((currentProductArea) => (
-            <MenuItem key={currentProductArea} value={currentProductArea}>
-              <ListItemText primary={currentProductArea} />
-            </MenuItem>
+            <option
+              className={classes.padding}
+              key={currentProductArea}
+              value={currentProductArea}
+            >
+              {currentProductArea}
+            </option>
           ))}
         </Select>
       </FormControl>

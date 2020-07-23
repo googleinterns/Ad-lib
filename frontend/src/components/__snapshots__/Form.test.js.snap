@@ -112,43 +112,34 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
             className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
             onClick={[Function]}
           >
-            <select
-              aria-invalid={false}
+            <div
+              aria-haspopup="listbox"
               aria-label="duration"
-              className="MuiNativeSelect-root MuiNativeSelect-select MuiInputBase-input MuiInput-input"
-              disabled={false}
+              aria-labelledby="duration-input"
+              className="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
               id="duration-input"
+              onBlur={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onMouseDown={[Function]}
+              role="button"
+              tabIndex={0}
+            >
+              15 minutes
+            </div>
+            <input
+              aria-hidden={true}
+              className="MuiSelect-nativeInput"
               name="duration"
               onAnimationStart={[Function]}
-              onBlur={[Function]}
               onChange={[Function]}
-              onFocus={[Function]}
               required={false}
-            >
-              <option
-                value={15}
-              >
-                15 minutes
-              </option>
-              <option
-                value={30}
-              >
-                30 minutes
-              </option>
-              <option
-                value={45}
-              >
-                45 minutes
-              </option>
-              <option
-                value={60}
-              >
-                60 minutes
-              </option>
-            </select>
+              tabIndex={-1}
+              value={15}
+            />
             <svg
               aria-hidden={true}
-              className="MuiSvgIcon-root MuiNativeSelect-icon"
+              className="MuiSvgIcon-root MuiSelect-icon"
               focusable="false"
               viewBox="0 0 24 24"
             >
@@ -300,6 +291,70 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
           </div>
         </div>
       </div>
+      <div>
+        <div
+          className="MuiFormControl-root"
+          style={
+            Object {
+              "width": 180,
+            }
+          }
+        >
+          <label
+            className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
+            data-shrink={false}
+            id="interests"
+          >
+            Interests
+          </label>
+          <div
+            className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
+            onClick={[Function]}
+          >
+            <div
+              aria-haspopup="listbox"
+              aria-label="interests"
+              aria-labelledby="interests"
+              className="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+              id="interests"
+              onBlur={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              onMouseDown={[Function]}
+              role="button"
+              tabIndex={0}
+            >
+              <span
+                dangerouslySetInnerHTML={
+                  Object {
+                    "__html": "&#8203;",
+                  }
+                }
+              />
+            </div>
+            <input
+              aria-hidden={true}
+              className="MuiSelect-nativeInput"
+              name="interests"
+              onAnimationStart={[Function]}
+              onChange={[Function]}
+              required={false}
+              tabIndex={-1}
+              value=""
+            />
+            <svg
+              aria-hidden={true}
+              className="MuiSvgIcon-root MuiSelect-icon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M7 10l5 5 5-5z"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
     </div>
     <div
       className="makeStyles-padding-5"
@@ -310,15 +365,15 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
         <div
           aria-label="matchPreference"
           className="MuiFormGroup-root MuiFormGroup-row"
-          defaultValue="none"
+          defaultValue="any"
           role="radiogroup"
         >
           <label
-            className="MuiFormControlLabel-root"
+            className="MuiFormControlLabel-root Mui-disabled"
           >
             <span
-              aria-disabled={false}
-              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-6 MuiRadio-root MuiRadio-colorPrimary MuiIconButton-colorPrimary"
+              aria-disabled={true}
+              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-11 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
               onBlur={[Function]}
               onDragLeave={[Function]}
               onFocus={[Function]}
@@ -330,22 +385,22 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
               onTouchEnd={[Function]}
               onTouchMove={[Function]}
               onTouchStart={[Function]}
-              tabIndex={null}
+              tabIndex={-1}
             >
               <span
                 className="MuiIconButton-label"
               >
                 <input
                   checked={false}
-                  className="PrivateSwitchBase-input-9"
-                  disabled={false}
+                  className="PrivateSwitchBase-input-12"
+                  disabled={true}
                   name="matchPreference"
                   onChange={[Function]}
                   type="radio"
                   value="similar"
                 />
                 <div
-                  className="PrivateRadioButtonIcon-root-10"
+                  className="PrivateRadioButtonIcon-root-13"
                 >
                   <svg
                     aria-hidden={true}
@@ -359,7 +414,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
                   </svg>
                   <svg
                     aria-hidden={true}
-                    className="MuiSvgIcon-root PrivateRadioButtonIcon-layer-11"
+                    className="MuiSvgIcon-root PrivateRadioButtonIcon-layer-14"
                     focusable="false"
                     viewBox="0 0 24 24"
                   >
@@ -371,7 +426,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
               </span>
             </span>
             <span
-              className="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
+              className="MuiTypography-root MuiFormControlLabel-label Mui-disabled MuiTypography-body1"
             >
               Similar Googler
             </span>
@@ -381,7 +436,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
           >
             <span
               aria-disabled={false}
-              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-6 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-checked-7 Mui-checked MuiIconButton-colorPrimary"
+              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-checked-10 Mui-checked MuiIconButton-colorPrimary"
               onBlur={[Function]}
               onDragLeave={[Function]}
               onFocus={[Function]}
@@ -400,15 +455,15 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
               >
                 <input
                   checked={true}
-                  className="PrivateSwitchBase-input-9"
+                  className="PrivateSwitchBase-input-12"
                   disabled={false}
                   name="matchPreference"
                   onChange={[Function]}
                   type="radio"
-                  value="none"
+                  value="any"
                 />
                 <div
-                  className="PrivateRadioButtonIcon-root-10 PrivateRadioButtonIcon-checked-12"
+                  className="PrivateRadioButtonIcon-root-13 PrivateRadioButtonIcon-checked-15"
                 >
                   <svg
                     aria-hidden={true}
@@ -422,7 +477,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
                   </svg>
                   <svg
                     aria-hidden={true}
-                    className="MuiSvgIcon-root PrivateRadioButtonIcon-layer-11"
+                    className="MuiSvgIcon-root PrivateRadioButtonIcon-layer-14"
                     focusable="false"
                     viewBox="0 0 24 24"
                   >
@@ -436,15 +491,15 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
             <span
               className="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
             >
-              No Preference
+              Any Googler
             </span>
           </label>
           <label
-            className="MuiFormControlLabel-root"
+            className="MuiFormControlLabel-root Mui-disabled"
           >
             <span
-              aria-disabled={false}
-              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-6 MuiRadio-root MuiRadio-colorPrimary MuiIconButton-colorPrimary"
+              aria-disabled={true}
+              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-11 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
               onBlur={[Function]}
               onDragLeave={[Function]}
               onFocus={[Function]}
@@ -456,22 +511,22 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
               onTouchEnd={[Function]}
               onTouchMove={[Function]}
               onTouchStart={[Function]}
-              tabIndex={null}
+              tabIndex={-1}
             >
               <span
                 className="MuiIconButton-label"
               >
                 <input
                   checked={false}
-                  className="PrivateSwitchBase-input-9"
-                  disabled={false}
+                  className="PrivateSwitchBase-input-12"
+                  disabled={true}
                   name="matchPreference"
                   onChange={[Function]}
                   type="radio"
                   value="different"
                 />
                 <div
-                  className="PrivateRadioButtonIcon-root-10"
+                  className="PrivateRadioButtonIcon-root-13"
                 >
                   <svg
                     aria-hidden={true}
@@ -485,7 +540,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
                   </svg>
                   <svg
                     aria-hidden={true}
-                    className="MuiSvgIcon-root PrivateRadioButtonIcon-layer-11"
+                    className="MuiSvgIcon-root PrivateRadioButtonIcon-layer-14"
                     focusable="false"
                     viewBox="0 0 24 24"
                   >
@@ -497,12 +552,17 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
               </span>
             </span>
             <span
-              className="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
+              className="MuiTypography-root MuiFormControlLabel-label Mui-disabled MuiTypography-body1"
             >
               Different Googler
             </span>
           </label>
         </div>
+        <p
+          className="MuiFormHelperText-root"
+        >
+          You must select at least one personal preference field to select a match preference 
+        </p>
       </fieldset>
     </div>
   </div>
@@ -514,7 +574,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
     >
       <span
         aria-disabled={false}
-        className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-6 MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-checked-7 Mui-checked MuiIconButton-colorPrimary"
+        className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-checked-10 Mui-checked MuiIconButton-colorPrimary"
         onBlur={[Function]}
         onDragLeave={[Function]}
         onFocus={[Function]}
@@ -532,7 +592,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
           className="MuiIconButton-label"
         >
           <input
-            className="PrivateSwitchBase-input-9"
+            className="PrivateSwitchBase-input-12"
             data-indeterminate={false}
             defaultChecked={true}
             name="checkbox"
@@ -581,7 +641,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
         <span
           className="MuiButton-label"
         >
-          Submit
+          Match me!
         </span>
       </button>
     </div>

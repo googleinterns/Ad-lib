@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Duration Dropdown should render correctly 1`] = `
+exports[`Interests Dropdown should render correctly 1`] = `
 <div>
   <div
     className="MuiFormControl-root"
@@ -10,16 +10,23 @@ exports[`Duration Dropdown should render correctly 1`] = `
       }
     }
   >
+    <label
+      className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
+      data-shrink={false}
+      id="interests"
+    >
+      Interests
+    </label>
     <div
       className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
       onClick={[Function]}
     >
       <div
         aria-haspopup="listbox"
-        aria-label="duration"
-        aria-labelledby="duration-input"
+        aria-label="interests"
+        aria-labelledby="interests"
         className="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
-        id="duration-input"
+        id="interests"
         onBlur={[Function]}
         onFocus={[Function]}
         onKeyDown={[Function]}
@@ -27,17 +34,23 @@ exports[`Duration Dropdown should render correctly 1`] = `
         role="button"
         tabIndex={0}
       >
-        15 minutes
+        <span
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "&#8203;",
+            }
+          }
+        />
       </div>
       <input
         aria-hidden={true}
         className="MuiSelect-nativeInput"
-        name="duration"
+        name="interests"
         onAnimationStart={[Function]}
         onChange={[Function]}
         required={false}
         tabIndex={-1}
-        value={15}
+        value=""
       />
       <svg
         aria-hidden={true}

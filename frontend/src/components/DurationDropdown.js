@@ -1,7 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {makeStyles} from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
-import NativeSelect from '@material-ui/core/NativeSelect';
+import Select from '@material-ui/core/Select';
+
+/** Establishes style to use on rendering component */
+const useStyles = makeStyles((theme) => ({
+  padding: {
+    margin: theme.spacing(2),
+    marginBottom: theme.spacing(3),
+  },
+}));
 
 const durations = [
   {label: '15 minutes', value: 15},
@@ -17,25 +26,32 @@ DurationDropdown.propTypes = {
 
 /**
  * Create duration dropdown component using durations array
- * @return {DurationDropdown} DurationDropdown component
  * @param {Object} props
+ * @return {DurationDropdown} DurationDropdown component
  */
 export default function DurationDropdown(props) {
+  const classes = useStyles();
+
   return (
     <div>
       <FormControl style={{width: 180}}>
-        <NativeSelect
+        <Select
           id="duration-input"
           name="duration"
+          defaultValue={15}
           onChange={(event) => props.onChange(event.target.value)}
           inputProps={{'aria-label': 'duration'}}
         >
           {durations.map((currentDuration) => (
-            <option key={currentDuration.label} value={currentDuration.value}>
+            <option
+              className={classes.padding}
+              key={currentDuration.label}
+              value={currentDuration.value}
+            >
               {currentDuration.label}
             </option>
           ))}
-        </NativeSelect>
+        </Select>
       </FormControl>
     </div>
   );

@@ -51,8 +51,6 @@ Form.propTypes = {
 
 /**
  * Validates from inputs on submission and alerts user on error
- * @param {String} role
- * @param {String} productArea
  * @param {Number} duration in minutes
  * @param {Number} endTimeAvailableMilliseconds
  * @param {Number} currentTimeMilliseconds
@@ -179,7 +177,8 @@ export default function Form(props) {
         <div className={classes.padding}>
           <MatchPreference
             onChange={(value) => setMatchPreference(value)}
-            shouldDisableMatchPreferenceFields={shouldDisableMatchPreferenceFields()}
+            shouldDisableMatchPreferenceFields={
+              shouldDisableMatchPreferenceFields()}
           />
         </div>
       </div>

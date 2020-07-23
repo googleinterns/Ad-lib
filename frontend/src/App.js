@@ -42,7 +42,6 @@ export default function App() {
         })
         .catch ((error) => {
           console.log(error);
-          // Redirect to "Oops, something went wrong page"
         });
     const interval = setInterval(getMatch, matchDataRefreshRate);
   }

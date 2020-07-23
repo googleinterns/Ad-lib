@@ -20,8 +20,8 @@ describe('Interests Dropdown', () => {
     const tree = renderer.create(<InterestsDropdown />).toJSON();
     expect(tree).toMatchSnapshot();
   });
-  it('should be populated with 20 interests', () => {
-    expect(menuItems).toHaveLength(20);
+  it('should be populated with more than one interest', () => {
+    expect(menuItems.length).toBeGreaterThan(0);
   });
   it('should be populated in alphabetical order', () => {
     const menuOptions = menuItems.map((node) => node.key());

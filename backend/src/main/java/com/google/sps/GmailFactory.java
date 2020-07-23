@@ -1,8 +1,5 @@
 package main.java.com.google.sps;
 
-import com.google.api.services.gmail.GmailScopes;
-import static com.google.appengine.repackaged.com.google.datastore.v1.client.DatastoreOptions.SCOPES;
-
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -14,6 +11,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
+import com.google.api.services.gmail.GmailScopes;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.io.FileInputStream;

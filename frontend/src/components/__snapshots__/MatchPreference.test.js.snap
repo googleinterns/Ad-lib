@@ -7,7 +7,7 @@ exports[`Match Preferences Radio Group should render correctly 1`] = `
   <div
     aria-label="matchPreference"
     className="MuiFormGroup-root MuiFormGroup-row"
-    defaultValue="none"
+    defaultValue="any"
     role="radiogroup"
   >
     <label
@@ -102,7 +102,7 @@ exports[`Match Preferences Radio Group should render correctly 1`] = `
             name="matchPreference"
             onChange={[Function]}
             type="radio"
-            value="none"
+            value="any"
           />
           <div
             className="PrivateRadioButtonIcon-root-5 PrivateRadioButtonIcon-checked-7"

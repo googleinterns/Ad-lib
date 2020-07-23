@@ -14,8 +14,8 @@ MatchPreference.propTypes = {
 
 /**
  * Create match preference radio group component
- * @return {MatchPreference} MatchPreference component
  * @param {Object} props
+ * @return {MatchPreference} MatchPreference component
  */
 export default function MatchPreference(props) {
   return (
@@ -24,7 +24,7 @@ export default function MatchPreference(props) {
         row
         aria-label="matchPreference"
         name="matchPreference"
-        defaultValue="none"
+        defaultValue="any"
         onChange={(event) => props.onChange(event.target.value)}
       >
         <FormControlLabel
@@ -33,7 +33,7 @@ export default function MatchPreference(props) {
           control={<Radio color="primary" />}
           label="Similar Googler" />
         <FormControlLabel
-          value="none"
+          value="any"
           control={<Radio color="primary" />}
           label="Any Googler" />
         <FormControlLabel

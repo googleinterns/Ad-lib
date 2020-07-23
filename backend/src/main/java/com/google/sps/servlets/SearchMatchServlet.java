@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import main.java.com.google.sps.GmailFactory;
 import org.json.simple.JSONObject;
 
-/** Servlet that searches for the participant's current match */
+/** Servlet that searches for the participant's current match and removes participant if expired */
 @WebServlet("/api/v1/search-match")
 public class SearchMatchServlet extends HttpServlet {
 

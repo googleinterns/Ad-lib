@@ -24,7 +24,7 @@ describe('App', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  it('GET request using axios() to servlet', ()  => {
+  it('should initiate GET request using axios() to servlet', () => {
     const servletEndpoint = '/api/v1/search-match';
     const mockMatchStatus = {matchStatus: 'true'};
     const mockData = {data: mockMatchStatus};
@@ -34,6 +34,6 @@ describe('App', () => {
 
     responseData.then((response) => {
       expect(response.data).toEqual(mockData);
-    }).catch ((error) => {});
+    }).catch((error) => {});
   });
 });

@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 export default function App() {
   const classes = useStyles();
   const matchDataRefreshRate = 5000;
-  const [matchStatus, setMatchStatus] = React.useState("Unmatched");
+  const [matchStatus, setMatchStatus] = React.useState('Unmatched');
 
   /** Initiate GET request to search-match servlet */
   function getMatch() {
@@ -36,16 +36,16 @@ export default function App() {
         .then((response) => {
           console.log(response);
           if (response.status === 200 && response.data.matchStatus === 'true') {
-            setMatchStatus("Matched");
+            setMatchStatus('Matched');
             clearInterval(interval);
-          } 
+          }
         })
-        .catch ((error) => {
+        .catch((error) => {
           console.log(error);
         });
     const interval = setInterval(getMatch, matchDataRefreshRate);
   }
-  
+
   return (
     <div>
       <MenuBar />
@@ -63,7 +63,7 @@ export default function App() {
           </CardContent>
         </Card>
         <Card className={classes.content}>
-          <Form 
+          <Form
             onSubmit={getMatch}
           />
         </Card>

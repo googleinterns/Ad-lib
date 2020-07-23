@@ -47,8 +47,10 @@ public class SearchMatchServlet extends HttpServlet {
   private static final String JSON_FIRST_PARTICIPANT_USERNAME = "firstParticipantUsername";
   private static final String JSON_SECOND_PARTICIPANT_USERNAME = "secondParticipantUsername";
   private static final String JSON_DURATION = "duration";
-  private final GmailFactory GM_Factory = new GmailFactory();
-  private final EmailNotifier EMAIL_NOTIFIER = new EmailNotifier(GM_Factory.build());
+
+  // Create GmailFactory and use it to instantiate Email Notifier
+  private final GmailFactory gmFactory = new GmailFactory();
+  private final EmailNotifier emailNotifier = new EmailNotifier(gmFactory.build());
 
   // Get DatastoreService and instiate Match and Participant Datastores
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -130,7 +132,7 @@ public class SearchMatchServlet extends HttpServlet {
     JSONObject expired = new JSONObject();
     expired.put(JSON_MATCH_STATUS, "expired");
     try {
-      EMAIL_NOTIFIER.sendExpiredEmail(participant.getUsername());
+      emailNotifier.sendExpiredEmail(participant.getUsername());
     } catch (MessagingException e) {
       e.printStackTrace();
     }
@@ -144,11 +146,6 @@ public class SearchMatchServlet extends HttpServlet {
       throws IOException {
     JSONObject noMatchYet = new JSONObject();
     noMatchYet.put(JSON_MATCH_STATUS, "false");
-    try {
-      EMAIL_NOTIFIER.sendNoMatchEmail(participant.getUsername());
-    } catch (MessagingException e) {
-      e.printStackTrace();
-    }
     // Send the JSON back as the response
     response.setContentType("application/json");
     response.getWriter().println(noMatchYet.toString());
@@ -162,8 +159,8 @@ public class SearchMatchServlet extends HttpServlet {
     matchExists.put(JSON_SECOND_PARTICIPANT_USERNAME, match.getSecondParticipantUsername());
     matchExists.put(JSON_DURATION, match.getDuration());
     try {
-      EMAIL_NOTIFIER.sendMatchEmail(
-          match.getFirstParticipantUsername(), match.getSecondParticipantUsername());
+      emailNotifier.sendMatchEmail(
+          match.getFirstParticipantUsername(), match.g);
     } catch (MessagingException | GeneralSecurityException e) {
       e.printStackTrace();
     }

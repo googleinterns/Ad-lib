@@ -47,24 +47,22 @@ const useStyles = makeStyles((theme) => ({
  * @param {String} role
  * @param {String} productArea
  * @param {Number} duration in minutes
- * @param {Number} timeAvailableUntilMilliseconds
+ * @param {Number} endTimeAvailableMilliseconds
  * @param {Number} currentTimeMilliseconds
  * @return {Boolean} true or false based on validity of inputs
  */
 export function validateFormInputs(
-    role,
-    productArea,
     duration,
-    timeAvailableUntilMilliseconds,
+    endTimeAvailableMilliseconds,
     currentTimeMilliseconds,
 ) {
   const durationMilliseconds = duration * 60000;
 
-  if (isNaN(timeAvailableUntilMilliseconds)) {
+  if (isNaN(endTimeAvailableMilliseconds)) {
     alert('Please select a valid date.');
     return false;
   } else if (currentTimeMilliseconds + durationMilliseconds >=
-    timeAvailableUntilMilliseconds) {
+    endTimeAvailableMilliseconds) {
     // Check if a meeting is possible with the provided inputs
     alert('Please select an larger time availability window');
     return false;
@@ -107,10 +105,8 @@ export default function Form(props) {
   function handleFormSubmission(event) {
     const currentTimeInMilliseconds = new Date().getTime();
     if (!validateFormInputs(
-        role,
-        productArea,
         duration,
-        timeAvailableUntil.getTime(),
+        endTimeAvailable.getTime(),
         currentTimeInMilliseconds)) {
       return;
     }

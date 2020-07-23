@@ -10,8 +10,8 @@ PreferencesCheckbox.propTypes = {
 
 /**
  * Create checkbox component for input on saving preferences for future use
- * @return {PreferencesCheckbox} PreferencesCheckbox component
  * @param {Object} props
+ * @return {PreferencesCheckbox} PreferencesCheckbox component
  */
 export default function PreferencesCheckbox(props) {
   return (

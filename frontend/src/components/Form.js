@@ -11,6 +11,7 @@ import MatchPreference from './MatchPreference';
 import Checkbox from './PreferencesCheckbox';
 import RoleDropdown from './RoleDropdown';
 import ProductAreaDropdown from './ProductAreaDropdown';
+import InterestsDropdown from './InterestsDropdown';
 import DurationDropdown from './DurationDropdown';
 
 /** Establishes style to use on rendering form component */
@@ -50,31 +51,30 @@ Form.propTypes = {
 
 /**
  * Validates from inputs on submission and alerts user on error
- * @return {Boolean} true or false based on validity of inputs
  * @param {String} role
  * @param {String} productArea
- * @param {Number} duration
- * @param {Number} timeAvailableUntilMilliseconds
+ * @param {Number} duration in minutes
+ * @param {Number} endTimeAvailableMilliseconds
  * @param {Number} currentTimeMilliseconds
+ * @return {Boolean} true or false based on validity of inputs
  */
-export function validateFormInputs(role, productArea, duration,
-    timeAvailableUntilMilliseconds, currentTimeMilliseconds) {
+export function validateFormInputs(
+    duration,
+    endTimeAvailableMilliseconds,
+    currentTimeMilliseconds,
+) {
   const durationMilliseconds = duration * 60000;
 
-  if (isNaN(timeAvailableUntilMilliseconds)) {
+  if (isNaN(endTimeAvailableMilliseconds)) {
     alert('Please select a valid date.');
     return false;
   } else if (currentTimeMilliseconds + durationMilliseconds >=
-    timeAvailableUntilMilliseconds) {
+    endTimeAvailableMilliseconds) {
     // Check if a meeting is possible with the provided inputs
     alert('Please select an larger time availability window');
     return false;
-  } else if (productArea === '' || role === '') {
-    alert('Please select options for all form fields to submit!');
-    return false;
-  } else {
-    return true;
   }
+  return true;
 }
 
 /**
@@ -86,45 +86,61 @@ export default function Form(props) {
   const classes = useStyles();
 
   // Declare state variables for each input field and set default states
-  const [timeAvailableUntil, setTimeAvailableUntil] =
+  const [endTimeAvailable, setEndTimeAvailable] =
     React.useState(new Date());
   const [duration, setDuration] = React.useState(15);
   const [productArea, setProductArea] = React.useState('');
   const [role, setRole] = React.useState('');
+  const [interests, setInterests] = React.useState([]);
   const [savePreference, setSavePreference] = React.useState(true);
   const [matchPreference, setMatchPreference] = React.useState('none');
+
+  /**
+   * Method that controls the disabled attribute of MatchPreference radio group
+   * based on the completion status of the personal preference fields
+   * @return {Boolean} true/false where true means the MatchPreference options
+   * will be disabled and false means that the options will be enabled.
+   */
+  function shouldDisableMatchPreferenceFields() {
+    // TO-DO(#65): Add interests to this validation
+    return role === '' && productArea === '';
+  }
 
   /** Gather user inputs from form and send POST request to backend
     * @param {Event} event
    */
   function handleFormSubmission(event) {
     const currentTimeInMilliseconds = new Date().getTime();
-    if (validateFormInputs(role, productArea, duration,
-        timeAvailableUntil.getTime(), currentTimeInMilliseconds)) {
-      // Override browser's default behvaior to execute POST request
-      event.preventDefault();
-
-      // Gather all form inputs into one object
-      const formDetails = {
-        timeAvailableUntil: timeAvailableUntil.getTime(),
-        duration: duration,
-        role: role,
-        productArea: productArea,
-        matchPreference: matchPreference,
-        savePreference: savePreference,
-      };
-
-      // Send form details to AddParticipantServlet and alert user on success
-      axios.post('/api/v1/add-participant', {formDetails})
-          .then((response) => {
-            if (response.data != null) {
-              // TODO(#33): change alert to a redirection to loading page view
-              alert('Successful');
-            }
-          });
-
-      props.onSubmit();
+    if (!validateFormInputs(
+        duration,
+        endTimeAvailable.getTime(),
+        currentTimeInMilliseconds)) {
+      return;
     }
+    // Override browser's default behvaior to execute POST request
+    event.preventDefault();
+
+    // Gather all form inputs into one object
+    const formDetails = {
+      endTimeAvailable: endTimeAvailable.getTime(),
+      duration: duration,
+      role: role,
+      productArea: productArea,
+      interests: interests,
+      matchPreference: matchPreference,
+      savePreference: savePreference,
+    };
+
+    // Send form details to AddParticipantServlet and alert user on success
+    axios.post('/api/v1/add-participant', {formDetails})
+        .then((response) => {
+          if (response.data != null) {
+            // TODO(#33): change alert to a redirection to loading page view
+            alert('Successful');
+          }
+        });
+
+    props.onSubmit();
   }
 
   return (
@@ -139,8 +155,8 @@ export default function Form(props) {
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardTimePicker
                 id="time-field"
-                value={timeAvailableUntil}
-                onChange={(value) => setTimeAvailableUntil(value)}
+                value={endTimeAvailable}
+                onChange={(value) => setEndTimeAvailable(value)}
                 KeyboardButtonProps={{'aria-label': 'time-field'}}
               />
             </MuiPickersUtilsProvider>
@@ -158,9 +174,13 @@ export default function Form(props) {
         <div className={classes.flexStartDiv}>
           <RoleDropdown onChange={(value) => setRole(value)} />
           <ProductAreaDropdown onChange={(value) => setProductArea(value)} />
+          <InterestsDropdown onChange={(value) => setInterests(value)} />
         </div>
         <div className={classes.padding}>
-          <MatchPreference onChange={(value) => setMatchPreference(value)} />
+          <MatchPreference
+            onChange={(value) => setMatchPreference(value)}
+            shouldDisableMatchPreferenceFields={shouldDisableMatchPreferenceFields()}
+          />
         </div>
       </div>
       <div className={classes.flexEndDiv}>
@@ -168,7 +188,7 @@ export default function Form(props) {
         <div className={classes.flexEndDiv}>
           <Button variant="contained" color="primary"
             onClick={handleFormSubmission}>
-            Submit
+            Match me!
           </Button>
         </div>
       </div>

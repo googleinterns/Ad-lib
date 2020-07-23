@@ -24,6 +24,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.sps.data.MatchPreference;
 import com.google.sps.data.User;
 import com.google.sps.datastore.UserDatastore;
 import org.junit.After;
@@ -37,6 +38,10 @@ public final class UserDatastoreTest {
 
   // Default values
   private static final long ID_DEFAULT = 0;
+  private static final int DURATION_DEFAULT = 30;
+  private static final String ROLE_DEFAULT = "Software engineer";
+  private static final String PRODUCT_AREA_DEFAULT = "Ads";
+  private static final MatchPreference MATCH_PREFERENCE_DEFAULT = MatchPreference.SIMILAR;
 
   // Some usernames
   private static final String PERSON_A = "Person A";
@@ -45,6 +50,10 @@ public final class UserDatastoreTest {
   // Datastore Key/Property constants
   private static final String KIND_USER = "User";
   private static final String PROPERTY_USERNAME = "username";
+  private static final String PROPERTY_DURATION = "duration";
+  private static final String PROPERTY_ROLE = "role";
+  private static final String PROPERTY_PRODUCT_AREA = "productArea";
+  private static final String PROPERTY_MATCH_PREFERENCE = "matchPreference";
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -65,13 +74,27 @@ public final class UserDatastoreTest {
     // Add one user to datastore
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserDatastore userDatastore = new UserDatastore(datastore);
-    User userA = new User(ID_DEFAULT, PERSON_A);
+    User user =
+        new User(
+            PERSON_A,
+            DURATION_DEFAULT,
+            ROLE_DEFAULT,
+            PRODUCT_AREA_DEFAULT,
+            MATCH_PREFERENCE_DEFAULT);
 
-    userDatastore.addUser(userA);
+    userDatastore.addUser(user);
 
-    Key keyA = KeyFactory.createKey(KIND_USER, PERSON_A);
-    Entity entityA = datastore.get(keyA);
-    assertThat((String) entityA.getProperty(PROPERTY_USERNAME)).isEqualTo(PERSON_A);
+    Key key = KeyFactory.createKey(KIND_USER, PERSON_A);
+    Entity entity = datastore.get(key);
+    assertThat((String) entity.getProperty(PROPERTY_USERNAME)).isEqualTo(PERSON_A);
+    assertThat(((Long) entity.getProperty(PROPERTY_DURATION)).intValue())
+        .isEqualTo(DURATION_DEFAULT);
+    assertThat((String) entity.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
+    assertThat((String) entity.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
+    assertThat(
+            MatchPreference.forIntValue(
+                ((Long) entity.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()))
+        .isEqualTo(MATCH_PREFERENCE_DEFAULT);
   }
 
   @Test
@@ -79,8 +102,20 @@ public final class UserDatastoreTest {
     // Add two users to datastore
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserDatastore userDatastore = new UserDatastore(datastore);
-    User userA = new User(ID_DEFAULT, PERSON_A);
-    User userB = new User(ID_DEFAULT, PERSON_B);
+    User userA =
+        new User(
+            PERSON_A,
+            DURATION_DEFAULT,
+            ROLE_DEFAULT,
+            PRODUCT_AREA_DEFAULT,
+            MATCH_PREFERENCE_DEFAULT);
+    User userB =
+        new User(
+            PERSON_B,
+            DURATION_DEFAULT,
+            ROLE_DEFAULT,
+            PRODUCT_AREA_DEFAULT,
+            MATCH_PREFERENCE_DEFAULT);
 
     userDatastore.addUser(userA);
     userDatastore.addUser(userB);
@@ -90,22 +125,41 @@ public final class UserDatastoreTest {
     Entity entityA = datastore.get(keyA);
     Entity entityB = datastore.get(keyB);
     assertThat((String) entityA.getProperty(PROPERTY_USERNAME)).isEqualTo(PERSON_A);
+    assertThat(((Long) entityA.getProperty(PROPERTY_DURATION)).intValue())
+        .isEqualTo(DURATION_DEFAULT);
+    assertThat((String) entityA.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
+    assertThat((String) entityA.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
+    assertThat(
+            MatchPreference.forIntValue(
+                ((Long) entityA.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()))
+        .isEqualTo(MATCH_PREFERENCE_DEFAULT);
     assertThat((String) entityB.getProperty(PROPERTY_USERNAME)).isEqualTo(PERSON_B);
+    assertThat(((Long) entityB.getProperty(PROPERTY_DURATION)).intValue())
+        .isEqualTo(DURATION_DEFAULT);
+    assertThat((String) entityB.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
+    assertThat((String) entityB.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
+    assertThat(
+            MatchPreference.forIntValue(
+                ((Long) entityB.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()))
+        .isEqualTo(MATCH_PREFERENCE_DEFAULT);
   }
 
   @Test
-  public void addGetTwoUsers() {
-    // Add two users to datastore, return user from username
+  public void addGetOneUser() {
+    // Add one user to datastore, return user from username
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserDatastore userDatastore = new UserDatastore(datastore);
-    User userA = new User(ID_DEFAULT, PERSON_A);
-    User userB = new User(ID_DEFAULT, PERSON_B);
+    User user =
+        new User(
+            PERSON_A,
+            DURATION_DEFAULT,
+            ROLE_DEFAULT,
+            PRODUCT_AREA_DEFAULT,
+            MATCH_PREFERENCE_DEFAULT);
 
-    userDatastore.addUser(userA);
-    userDatastore.addUser(userB);
+    userDatastore.addUser(user);
 
     assertThat(userDatastore.getUserFromUsername(PERSON_A).getUsername()).isEqualTo(PERSON_A);
-    assertThat(userDatastore.getUserFromUsername(PERSON_B).getUsername()).isEqualTo(PERSON_B);
   }
 
   @Test

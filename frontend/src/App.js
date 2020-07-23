@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
  */
 export default function App() {
   const classes = useStyles();
-  const getMatchDataRefreshRate = 5000;
+  const matchDataRefreshRate = 5000;
   const [matchStatus, setMatchStatus] = React.useState("Unmatched");
 
   /** Initiate GET request to search-match servlet */
@@ -43,9 +43,8 @@ export default function App() {
         .catch ((error) => {
           console.log(error);
           // Redirect to "Oops, something went wrong page"
-          //clearInterval(interval);
         });
-    const interval = setInterval(getMatch, getMatchDataRefreshRate);
+    const interval = setInterval(getMatch, matchDataRefreshRate);
   }
   
   return (

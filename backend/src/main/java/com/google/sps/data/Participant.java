@@ -1,3 +1,17 @@
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package com.google.sps.data;
 
 import com.google.common.base.MoreObjects;
@@ -14,6 +28,12 @@ public final class Participant {
   private final long endTimeAvailable;
   /** How long user wants to chat */
   private final int duration;
+  /** Role at Google */
+  private final String role;
+  /** Product area at Google */
+  private final String productArea;
+  /** Whether they want to be matched with a similar, any, or different Googler */
+  private final MatchPreference matchPreference;
   /** Id of match in datastore, 0 if never found a match (can assign 0 at construction) */
   private final long matchId;
   /** Matched already or not yet */
@@ -27,6 +47,9 @@ public final class Participant {
       long startTimeAvailable,
       long endTimeAvailable,
       int duration,
+      String role,
+      String productArea,
+      MatchPreference matchPreference,
       long matchId,
       MatchStatus matchStatus,
       long timestamp) {
@@ -37,6 +60,9 @@ public final class Participant {
     this.startTimeAvailable = startTimeAvailable;
     this.endTimeAvailable = endTimeAvailable;
     this.duration = duration;
+    this.role = role;
+    this.productArea = productArea;
+    this.matchPreference = matchPreference;
     this.matchId = matchId;
     this.matchStatus = matchStatus;
     this.timestamp = timestamp;
@@ -58,6 +84,18 @@ public final class Participant {
     return duration;
   }
 
+  public String getRole() {
+    return role;
+  }
+
+  public String getProductArea() {
+    return productArea;
+  }
+
+  public MatchPreference getMatchPreference() {
+    return matchPreference;
+  }
+
   public long getMatchId() {
     return matchId;
   }
@@ -77,6 +115,9 @@ public final class Participant {
         startTimeAvailable,
         endTimeAvailable,
         duration,
+        role,
+        productArea,
+        matchPreference,
         newMatchId,
         MatchStatus.MATCHED,
         timestamp);
@@ -88,6 +129,9 @@ public final class Participant {
         .add("startTimeAvailable", startTimeAvailable)
         .add("endTimeAvailable", endTimeAvailable)
         .add("duration", duration)
+        .add("role", role)
+        .add("productArea", productArea)
+        .add("matchPreference", matchPreference.getValue())
         .add("matchId", matchId)
         .add("matchStatus", matchStatus.getValue())
         .add("timestamp", timestamp)

@@ -94,7 +94,7 @@ export default function Form(props) {
    * @return {Boolean} true/false where true means the MatchPreference options
    * will be disabled and false means that the options will be enabled.
    */
-  function toggleMatchPreferenceOptions() {
+  function toggleMatchPreferences() {
     // TO-DO(#65): Add interests to this validation
     return role === '' && productArea === '';
   }
@@ -172,7 +172,7 @@ export default function Form(props) {
         <div className={classes.padding}>
           <MatchPreference
             onChange={(value) => setMatchPreference(value)}
-            checkPersonalPreferenceFields={toggleMatchPreferenceOptions()}
+            checkPersonalPreferenceFields={toggleMatchPreferences()}
           />
         </div>
       </div>

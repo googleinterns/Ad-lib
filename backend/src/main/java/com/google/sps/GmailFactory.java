@@ -1,5 +1,6 @@
 package main.java.com.google.sps;
 
+import com.google.api.services.gmail.GmailScopes;
 import static com.google.appengine.repackaged.com.google.datastore.v1.client.DatastoreOptions.SCOPES;
 
 import com.google.api.client.auth.oauth2.Credential;
@@ -13,14 +14,22 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
+import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
+import java.util.List;
 
 public class GmailFactory {
+
+  /**
+   * Global instance of the scopes required by this quickstart. If modifying these scopes, delete
+   * your previously saved tokens/ folder.
+   */
+  private static final List<String> SCOPES = ImmutableList.of(GmailScopes.MAIL_GOOGLE_COM);
 
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
   private static final String APPLICATION_NAME = "Ad-lib";
@@ -29,7 +38,6 @@ public class GmailFactory {
   private final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
 
   public GmailFactory() throws GeneralSecurityException, IOException {}
-  ;
 
   /**
    * Creates an authorized Credential object.

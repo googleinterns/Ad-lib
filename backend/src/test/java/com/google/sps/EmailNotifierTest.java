@@ -40,8 +40,8 @@ public class EmailNotifierTest {
 
   @Before
   public void setUp() throws IOException {
-    testEmail = "John@google.com";
-    testName = "John";
+    testEmail = "grantjustice@google.com";
+    testName = "grantjustice";
     testString = "Text Text";
     gmail = mock(Gmail.class);
     // Mock to return list of users
@@ -91,16 +91,7 @@ public class EmailNotifierTest {
     assertThat(subjectName).isEqualTo("Ad-lib: Match Found");
   }
 
-  @Test
-  public void testMessageHasMatchNotFoundSubject() throws MessagingException, IOException {
-    ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
 
-    emailNotifier.sendNoMatchEmail(testName);
-
-    verify(messages).send(any(), argument.capture());
-    String subjectName = convertToMimeMessage(argument.getValue()).getSubject();
-    assertThat(subjectName).isEqualTo("Ad-lib: No Match Found");
-  }
 
   @Test
   public void testMessageHasMatchExpiredSubject() throws MessagingException, IOException {

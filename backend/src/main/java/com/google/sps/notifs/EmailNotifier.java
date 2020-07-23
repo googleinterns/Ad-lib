@@ -36,11 +36,6 @@ public class EmailNotifier {
   //   TODO(#35): Create a dummy email for ad lib itself to send emails.
   private static final String APPLICATION_EMAIL = "Adlib-Step@gmail.com";
 
-  /**
-   * Global instance of the scopes required by this quickstart. If modifying these scopes, delete
-   * your previously saved tokens/ folder.
-   */
-  private static final List<String> SCOPES = ImmutableList.of(GmailScopes.MAIL_GOOGLE_COM);
 
   /** The gmail service */
   private final Gmail service;
@@ -77,7 +72,7 @@ public class EmailNotifier {
    * @return the MimeMessage to be used to send email
    * @throws MessagingException if there was a problem accessing the Store
    */
-  private MimeMessage createEmailWithSingleRecipient(
+  private MimeMessage createEmail(
       String recipientUsername, String subject, String bodyText) throws MessagingException {
 
     Properties props = new Properties();
@@ -92,45 +87,17 @@ public class EmailNotifier {
     return email;
   }
 
-  /**
-   * Create a MimeMessage using the parameters provided.
-   *
-   * @param bodyText body text of the email
-   * @return the MimeMessage to be used to send email
-   * @throws MessagingException if there was a problem accessing the Store
-   */
-  private MimeMessage createEmailWithMultiRecipients(
-      String firstRecipientUsername, String secondRecipientUsername, String bodyText)
-      throws MessagingException {
-
-    Properties props = new Properties();
-    Session session = Session.getDefaultInstance(props, /* authenticator= */ null);
-
-    MimeMessage email = new MimeMessage(session);
-
-    email.setFrom(new InternetAddress(APPLICATION_EMAIL));
-    email.addRecipients(
-        RecipientType.TO,
-        new InternetAddress[] {
-          new InternetAddress(firstRecipientUsername + "@google.com"),
-          new InternetAddress(secondRecipientUsername + "@google.com")
-        });
-    email.setSubject("Ad-lib: Match Found");
-    email.setText(bodyText);
-    return email;
-  }
-
   /** Function that access its api and using it sends an email */
   //   TODO(#36): Replace body to send real link to user instead of generic.
-  public void sendMatchEmail(String firstMatchRecipientName, String secondMatchRecipientName)
-      throws MessagingException, IOException, GeneralSecurityException {
+  public void sendMatchEmail(String firstMatchRecipientName)
+      throws MessagingException, IOException {
     MimeMessage email =
-        createEmailWithMultiRecipients(
+        createEmail(
             firstMatchRecipientName,
-            secondMatchRecipientName,
-            "Congratulations"
-                + " Please Join your Ad-Lib meeting via the link below : \n"
-                + " http://meet.google.com/new");
+            "Ad-lib: We found you a match !",
+            " We found you a match with matchUsername. "
+                +   " Check your calendar for your meeting event,"
+                +   " and feel free to join the Meet call now!\n");
     Message messageWithEmail = createMessageWithEmail(email);
     service.users().messages().send("me", messageWithEmail).execute();
   }
@@ -139,31 +106,13 @@ public class EmailNotifier {
   //   TODO(#36): Replace body to send real link to user instead of generic.
   public void sendExpiredEmail(String expiredRecipientName) throws MessagingException, IOException {
     MimeMessage email =
-        createEmailWithSingleRecipient(
+        createEmail(
             expiredRecipientName,
-            "Ad-lib: Meeting Query Expired",
-            " We apologize "
-                + expiredRecipientName
-                + "\n"
-                + " You're search for a match took longer than anticipated ! \n"
-                + " Please try again at a later time ! : \n");
+            "Ad-lib: Sorry, we couldn't find you a match!",
+            " We couldn't find a match  for you this time, but we encourage you to please try again later! \n "
+                + " Best, \n"
+                + " The Ad-lib team \n");
     Message messageWithEmail = createMessageWithEmail(email);
-    service.users().messages().send("me", messageWithEmail).execute();
-  }
-
-  /** Function that access its api and using it sends an email */
-  //   TODO(#36): Replace body to send real link to user instead of generic.
-  public void sendNoMatchEmail(String noMatchParticipantName)
-      throws MessagingException, IOException {
-    MimeMessage noMatchEmail =
-        createEmailWithSingleRecipient(
-            noMatchParticipantName,
-            "Ad-lib: No Match Found",
-            " Sorry "
-                + noMatchParticipantName
-                + " We could'nt find you a Match :( \n"
-                + " Please try again later.");
-    Message messageWithEmail = createMessageWithEmail(noMatchEmail);
     service.users().messages().send("me", messageWithEmail).execute();
   }
 }

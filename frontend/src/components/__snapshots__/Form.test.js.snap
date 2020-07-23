@@ -372,8 +372,8 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
             className="MuiFormControlLabel-root Mui-disabled"
           >
             <span
-              aria-disabled={false}
-              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiRadio-root MuiRadio-colorPrimary MuiIconButton-colorPrimary"
+              aria-disabled={true}
+              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-11 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
               onBlur={[Function]}
               onDragLeave={[Function]}
               onFocus={[Function]}
@@ -393,7 +393,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
                 <input
                   checked={false}
                   className="PrivateSwitchBase-input-12"
-                  disabled={false}
+                  disabled={true}
                   name="matchPreference"
                   onChange={[Function]}
                   type="radio"
@@ -498,8 +498,8 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
             className="MuiFormControlLabel-root Mui-disabled"
           >
             <span
-              aria-disabled={false}
-              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiRadio-root MuiRadio-colorPrimary MuiIconButton-colorPrimary"
+              aria-disabled={true}
+              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-11 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
               onBlur={[Function]}
               onDragLeave={[Function]}
               onFocus={[Function]}
@@ -519,7 +519,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
                 <input
                   checked={false}
                   className="PrivateSwitchBase-input-12"
-                  disabled={false}
+                  disabled={true}
                   name="matchPreference"
                   onChange={[Function]}
                   type="radio"

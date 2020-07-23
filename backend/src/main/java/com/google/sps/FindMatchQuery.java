@@ -114,57 +114,25 @@ public final class FindMatchQuery {
       return true;
     }
 
-    // Count number of same fields between two participants if filled out, keep track of each
-    // participant's total filled fields
-    int firstNumFilledFields = 0;
-    int secondNumFilledFields = 0;
-    int numSameFields = 0;
-    // Compare role
-    String firstRole = firstParticipant.getRole();
-    String secondRole = secondParticipant.getRole();
-    boolean firstRoleFilled = !firstRole.equals("");
-    boolean secondRoleFilled = !secondRole.equals("");
-    if (firstRoleFilled) {
-      firstNumFilledFields++;
-    }
-    if (secondRoleFilled) {
-      secondNumFilledFields++;
-    }
-    if (firstRoleFilled && secondRoleFilled && firstRole.equals(secondRole)) {
-      numSameFields++;
-      System.out.println("role matches");
-    }
-
-    // Compare product area
-    String firstProductArea = firstParticipant.getProductArea();
-    String secondProductArea = secondParticipant.getProductArea();
-    boolean firstProductAreaFilled = !firstProductArea.equals("");
-    boolean secondProductAreaFilled = !secondProductArea.equals("");
-    if (firstProductAreaFilled) {
-      firstNumFilledFields++;
-    }
-    if (secondProductAreaFilled) {
-      secondNumFilledFields++;
-    }
-    if (firstProductAreaFilled
-        && secondProductAreaFilled
-        && firstProductArea.equals(secondProductArea)) {
-      numSameFields++;
-      System.out.println("pa matches");
-    }
+    // Get lists of combined role, product area, interests for first and second participant
+    String firstFilledFieldsList = getAllFilledFieldsList(firstParticipant);
+    String secondFilledFieldsList = getAllFilledFieldsList(secondParticipant);
+    System.out.println("First filled fields: " + firstFilledFieldsList);
+    System.out.println("Second filled fields: " + secondFilledFieldsList);
 
     // Count num shared interests
-    StringTokenizer firstInterests = new StringTokenizer(firstParticipant.getInterests(), ",");
-    firstNumFilledFields += firstInterests.countTokens();
-    secondNumFilledFields += secondInterests.countTokens();
-    int numSameInterests = 0;
-    while (firstInterests.hasMoreTokens()) {
-      String firstInterest = firstInterests.nextToken();
-      StringTokenizer secondInterests = new StringTokenizer(secondParticipant.getInterests(), ",");
-      while (secondInterests.hasMoreTokens()) {
-        if (firstInterest.equals(secondInterests.nextToken())) {
+    StringTokenizer firstFields = new StringTokenizer(firstFilledFieldsList, ",");
+    StringTokenizer secondFields = new StringTokenizer(secondFilledFieldsList, ",");
+    int firstNumFilledFields = firstFields.countTokens();
+    int secondNumFilledFields = secondFields.countTokens();
+    int numSameFields = 0;
+    while (firstFields.hasMoreTokens()) {
+      String firstField = firstFields.nextToken();
+      secondFields = new StringTokenizer(secondFilledFieldsList, ",");
+      while (secondFields.hasMoreTokens()) {
+        if (firstField.equals(secondFields.nextToken())) {
           numSameFields++;
-          System.out.println("interest " + firstInterest + " matches");
+          System.out.println(firstField + " matches");
         }
       }
     }
@@ -182,5 +150,22 @@ public final class FindMatchQuery {
     }
     System.out.println("combined match pref satisfied");
     return true;
+  }
+
+  /** Return all filled fields of participant in one string delimited by , */
+  private String getAllFilledFieldsList(Participant participant) {
+    StringBuilder sb = new StringBuilder();
+    String role = participant.getRole();
+    boolean isRoleFilled = !role.equals("");
+    if (isRoleFilled) {
+      sb.append(role + ",");
+    }
+    String productArea = participant.getProductArea();
+    boolean isProductAreaFilled = !productArea.equals("");
+    if (isProductAreaFilled) {
+      sb.append(productArea + ",");
+    }
+    sb.append(participant.getInterests());
+    return sb.toString();
   }
 }

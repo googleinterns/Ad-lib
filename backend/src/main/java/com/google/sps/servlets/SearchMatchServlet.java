@@ -158,11 +158,10 @@ public class SearchMatchServlet extends HttpServlet {
     response.getWriter().println(matchExists.toString());
   }
 
+  /** Retrieve user email address via Users API and parse for username */
   private String getUsername() {
+    UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
-    if (email == null) {
-      return null;
-    }
-    return email.split("@")[0];
+    return email != null ? email.split("@")[0] : null;
   }
 }

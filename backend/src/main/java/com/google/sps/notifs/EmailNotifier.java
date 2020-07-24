@@ -108,8 +108,8 @@ public class EmailNotifier {
             expiredRecipientEmail,
             "Ad-lib: Sorry, we couldn't find you a match!",
             String.format(
-                " Sorry %s We couldn't find a match for you this time, but we encourage you to please try "
-                    + " again later! \n "
+                " Sorry %s We couldn't find a match for you this time, but we encourage you to "
+                    + " please try again later! \n "
                     + " Best, \n"
                     + " The Ad-lib team \n",
                 expiredRecipientUsername));

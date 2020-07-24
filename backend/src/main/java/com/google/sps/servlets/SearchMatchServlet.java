@@ -60,33 +60,25 @@ public class SearchMatchServlet extends HttpServlet {
   // Get participant username
   UserService userService = UserServiceFactory.getUserService();
 
-  public SearchMatchServlet() throws GeneralSecurityException, IOException {}
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     System.out.println("Request received");
 
-    String email = userService.getCurrentUser().getEmail();
-    if (email == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid email.");
-      return;
-    }
-    String username = email.split("@")[0];
-
     // Find participant's match, if exists and not returned yet
-    Participant participant = participantDatastore.getParticipantFromUsername(username);
+    Participant participant = participantDatastore.getParticipantFromUsername(getUsername());
     if (participant == null) {
       response.sendError(
           HttpServletResponse.SC_BAD_REQUEST,
-          "Participant with username " + username + "does not exist.");
+          "Participant with username " + getUsername() + "does not exist.");
       return;
     }
 
     // Check if match exists and not returned yet
     if (participant.getMatchStatus() == MatchStatus.UNMATCHED) {
       if (isExpired(participant)) {
-        participantDatastore.removeParticipant(username);
+        participantDatastore.removeParticipant(getUsername());
         sendExpiredResponse(response, participant);
         return;
       }
@@ -133,8 +125,7 @@ public class SearchMatchServlet extends HttpServlet {
     JSONObject expired = new JSONObject();
     expired.put(JSON_MATCH_STATUS, "expired");
     try {
-      emailNotifier.sendExpiredEmail(
-          participant.getUsername(), userService.getCurrentUser().getEmail());
+      emailNotifier.sendExpiredEmail(getUsername(), userService.getCurrentUser().getEmail());
     } catch (MessagingException e) {
       e.printStackTrace();
     }
@@ -160,13 +151,20 @@ public class SearchMatchServlet extends HttpServlet {
     matchExists.put(JSON_SECOND_PARTICIPANT_USERNAME, match.getSecondParticipantUsername());
     matchExists.put(JSON_DURATION, match.getDuration());
     try {
-      emailNotifier.sendMatchEmail(
-          match.getFirstParticipantUsername(), userService.getCurrentUser().getEmail());
+      emailNotifier.sendMatchEmail(getUsername(), userService.getCurrentUser().getEmail());
     } catch (MessagingException e) {
       e.printStackTrace();
     }
     // Send the JSON back as the response
     response.setContentType("application/json");
     response.getWriter().println(matchExists.toString());
+  }
+
+  private String getUsername() {
+    String email = userService.getCurrentUser().getEmail();
+    if (email == null) {
+      return null;
+    }
+    return email.split("@")[0];
   }
 }

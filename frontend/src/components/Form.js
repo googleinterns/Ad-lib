@@ -90,7 +90,7 @@ export default function Form(props) {
   const [role, setRole] = React.useState('');
   const [interests, setInterests] = React.useState([]);
   const [savePreference, setSavePreference] = React.useState(true);
-  const [matchPreference, setMatchPreference] = React.useState('none');
+  const [matchPreference, setMatchPreference] = React.useState('any');
 
   /**
    * Method that controls the disabled attribute of MatchPreference radio group
@@ -127,6 +127,8 @@ export default function Form(props) {
       matchPreference: matchPreference,
       savePreference: savePreference,
     };
+
+    console.log(formDetails);
 
     // Send form details to AddParticipantServlet and alert user on success
     axios.post('/api/v1/add-participant', {formDetails})

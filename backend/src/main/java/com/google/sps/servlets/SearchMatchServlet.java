@@ -60,8 +60,7 @@ public class SearchMatchServlet extends HttpServlet {
   // Get participant username
   UserService userService = UserServiceFactory.getUserService();
 
-  public SearchMatchServlet() throws IOException, GeneralSecurityException {
-  }
+  public SearchMatchServlet() throws IOException, GeneralSecurityException {}
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

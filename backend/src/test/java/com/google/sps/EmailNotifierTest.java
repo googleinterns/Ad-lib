@@ -85,7 +85,7 @@ public class EmailNotifierTest {
 
     verify(messages).send(any(), argument.capture());
     String subjectName = convertToMimeMessage(argument.getValue()).getSubject();
-    assertThat(subjectName).isEqualTo("Ad-lib: We found you a match !");
+    assertThat(subjectName).isEqualTo("Ad-lib: We found you a match!");
   }
 
   @Test

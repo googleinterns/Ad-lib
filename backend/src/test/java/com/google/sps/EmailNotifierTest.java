@@ -70,7 +70,7 @@ public class EmailNotifierTest {
   public void testMessageHasCorrectApplicationName() throws MessagingException, IOException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
 
-    emailNotifier.sendExpiredEmail(testName);
+    emailNotifier.sendExpiredEmail(testName, testEmail);
 
     verify(messages).send(any(), argument.capture());
     String applicationName = convertToMimeMessage(argument.getValue()).getFrom()[0].toString();
@@ -81,7 +81,7 @@ public class EmailNotifierTest {
   public void testMessageHasMatchFoundSubject() throws MessagingException, IOException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
 
-    emailNotifier.sendMatchEmail(testName);
+    emailNotifier.sendMatchEmail(testName, testEmail);
 
     verify(messages).send(any(), argument.capture());
     String subjectName = convertToMimeMessage(argument.getValue()).getSubject();
@@ -92,7 +92,7 @@ public class EmailNotifierTest {
   public void testMessageHasMatchExpiredSubject() throws MessagingException, IOException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
 
-    emailNotifier.sendExpiredEmail(testName);
+    emailNotifier.sendExpiredEmail(testName, testEmail);
 
     verify(messages).send(any(), argument.capture());
     String subjectName = convertToMimeMessage(argument.getValue()).getSubject();
@@ -103,13 +103,13 @@ public class EmailNotifierTest {
   public void testMessageShouldHaveCorrectBodyText() throws MessagingException, IOException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
 
-    emailNotifier.sendMatchEmail(testName);
+    emailNotifier.sendMatchEmail(testName, testEmail);
 
     verify(messages).send(any(), argument.capture());
     String bodyText = convertToMimeMessage(argument.getValue()).getContent().toString();
     assertThat(bodyText)
         .isEqualTo(
-            " We found you a match with matchUsername. "
+            " We found you a match with grantjustice "
                 + " Check your calendar for your meeting event,"
                 + " and feel free to join the Meet call now!\n");
   }
@@ -118,7 +118,7 @@ public class EmailNotifierTest {
   public void testMessageShouldHaveIncorrectBodyText() throws MessagingException, IOException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
 
-    emailNotifier.sendMatchEmail(testName);
+    emailNotifier.sendMatchEmail(testName, testEmail);
 
     verify(messages).send(eq("me"), argument.capture());
     String realString = convertToMimeMessage(argument.getValue()).getContent().toString();
@@ -129,7 +129,7 @@ public class EmailNotifierTest {
   public void testMessageShouldHaveCorrectRecipients() throws MessagingException, IOException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
 
-    emailNotifier.sendExpiredEmail(testName);
+    emailNotifier.sendExpiredEmail(testName, testEmail);
 
     verify(messages).send(any(), argument.capture());
     Address[] allRecipients = convertToMimeMessage(argument.getValue()).getAllRecipients();

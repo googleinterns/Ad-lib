@@ -33,6 +33,8 @@ public class GmailFactory {
   private static final String APPLICATION_NAME = "Ad-lib";
   private static final String CREDENTIALS_FILE_PATH = "backend/credentials.json";
   private static final String TOKENS_DIRECTORY_PATH = "tokens";
+  private static final String ACCCESS_TYPE = "offline";
+  private static final int PORT_NUM = 8000;
   private final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
 
   public GmailFactory() throws GeneralSecurityException, IOException {}
@@ -44,8 +46,7 @@ public class GmailFactory {
    * @return An authorized Credential object.
    * @throws IOException If the credentials.json file cannot be found.
    */
-  private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
-      throws IOException {
+  private static Credential getCredentials(NetHttpTransport HTTP_TRANSPORT) throws IOException {
     // Load client secrets.
     InputStream in = new FileInputStream(CREDENTIALS_FILE_PATH);
     GoogleClientSecrets clientSecrets =
@@ -55,9 +56,9 @@ public class GmailFactory {
     GoogleAuthorizationCodeFlow flow =
         new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
             .setDataStoreFactory(new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH)))
-            .setAccessType("offline")
+            .setAccessType(ACCCESS_TYPE)
             .build();
-    LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8000).build();
+    LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(PORT_NUM).build();
     return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
   }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import axios from 'axios';
 import {makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -30,11 +30,25 @@ const useStyles = makeStyles((theme) => ({
  * @return {App} App component
  */
 export default function App() {
+  let match;
   const classes = useStyles();
   const matchDataRefreshRateMilliseconds = 30000;
-  const [currentPage, setCurrentPage] = React.useState('form');
-  let match;
-  
+  const defaultPageView = 'form';
+  const pageViewKey = 'pageViewState';
+
+  /**
+   * Set current page view to state retrieved from local storage or
+   * default view if no state is currently saved
+   * */
+  const [currentPage, setCurrentPage] = React.useState(
+      localStorage.getItem(pageViewKey) || defaultPageView,
+  );
+
+  // Load page view state from local storage using useEffect hook
+  useEffect(() => {
+    localStorage.setItem(pageViewKey, currentPage);
+  }, [pageViewKey, currentPage]);
+
   /** Initiate GET request to search-match servlet */
   function getMatch() {
     setCurrentPage('loading');
@@ -48,7 +62,6 @@ export default function App() {
           }
         })
         .catch((error) => {
-          // TO-DO(#76): Add 'Oops, something went wrong' page view
           console.log(error);
           setCurrentPage('error');
           clearInterval(interval);

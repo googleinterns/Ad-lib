@@ -25,7 +25,6 @@ import com.google.sps.datastore.MatchDatastore;
 import com.google.sps.datastore.ParticipantDatastore;
 import com.google.sps.notifs.EmailNotifier;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.concurrent.TimeUnit;
 import javax.mail.MessagingException;
 import javax.servlet.annotation.WebServlet;
@@ -59,7 +58,6 @@ public class SearchMatchServlet extends HttpServlet {
 
   // Get participant username
   UserService userService = UserServiceFactory.getUserService();
-
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

@@ -41,7 +41,9 @@ export default function App() {
           }
         })
         .catch((error) => {
+          // TO-DO(#76): Add "Oops, something went wrong" page view
           console.log(error);
+          alert("Oops, something went wrong. Please try again later");
         });
     const interval = setInterval(getMatch, matchDataRefreshRate);
   }

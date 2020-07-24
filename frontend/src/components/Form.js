@@ -48,7 +48,6 @@ Form.propTypes = {
   onSubmit: PropTypes.func,
 };
 
-
 /**
  * Validates from inputs on submission and alerts user on error
  * @param {Number} duration in minutes

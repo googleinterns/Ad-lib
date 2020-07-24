@@ -35,9 +35,6 @@ public class GmailFactory {
   private static final String TOKENS_DIRECTORY_PATH = "tokens";
   private static final String ACCCESS_TYPE = "offline";
   private static final int PORT_NUM = 8000;
-  private final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-
-  public GmailFactory() throws GeneralSecurityException, IOException {}
 
   /**
    * Creates an authorized Credential object.
@@ -62,7 +59,8 @@ public class GmailFactory {
     return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
   }
 
-  public Gmail build() throws IOException {
+  public Gmail build() throws IOException, GeneralSecurityException {
+    final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
     return new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
         .setApplicationName(APPLICATION_NAME)
         .build();

@@ -67,7 +67,7 @@ public class EmailNotifier {
   /**
    * Create a MimeMessage using the parameters provided.
    *
-   * @param recipientEmail email of user to whom is to be notified
+   * @param recipientEmail email to which the notification should be sent
    * @param subjectText subject of the email
    * @param bodyText body text of the email
    * @return the MimeMessage to be used to send email

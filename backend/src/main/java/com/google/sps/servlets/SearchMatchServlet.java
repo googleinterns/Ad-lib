@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets;
 
+import com.google.api.services.gmail.Gmail;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.UserService;
@@ -50,22 +51,24 @@ public class SearchMatchServlet extends HttpServlet {
 
   // Create GmailFactory and use it to instantiate Email Notifier
   private final GmailFactory gmFactory = new GmailFactory();
-  private final EmailNotifier emailNotifier = new EmailNotifier(gmFactory.build());
-
   // Get DatastoreService and instiate Match and Participant Datastores
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private final MatchDatastore matchDatastore = new MatchDatastore(datastore);
   private final ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
-
   // Get participant username
   UserService userService = UserServiceFactory.getUserService();
-
-  public SearchMatchServlet() throws IOException, GeneralSecurityException {}
+  private EmailNotifier emailNotifier;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     System.out.println("Request received");
+
+    try {
+      emailNotifier = ensureEmailNotifier();
+    } catch (GeneralSecurityException e) {
+      e.printStackTrace();
+    }
 
     // Find participant's match, if exists and not returned yet
     Participant participant = participantDatastore.getParticipantFromUsername(getUsername());
@@ -166,5 +169,9 @@ public class SearchMatchServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     return email != null ? email.split("@")[0] : null;
+  }
+
+  private EmailNotifier ensureEmailNotifier() throws GeneralSecurityException, IOException {
+    return this.emailNotifier != null ? this.emailNotifier : new EmailNotifier(gmFactory.build());
   }
 }

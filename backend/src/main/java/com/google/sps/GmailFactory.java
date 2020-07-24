@@ -60,8 +60,9 @@ public class GmailFactory {
     return new AuthorizationCodeInstalledApp(flow, receiver).authorize(AUTH_USER);
   }
 
-  public Gmail build() throws IOException, GeneralSecurityException {
-    NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+  public Gmail build() throws GeneralSecurityException, IOException {
+    NetHttpTransport httpTransport;
+    httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     return new Gmail.Builder(httpTransport, JSON_FACTORY, getCredentials(httpTransport))
         .setApplicationName(APPLICATION_NAME)
         .build();

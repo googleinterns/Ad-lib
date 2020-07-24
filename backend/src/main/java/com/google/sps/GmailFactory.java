@@ -31,9 +31,10 @@ public class GmailFactory {
 
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
   private static final String APPLICATION_NAME = "Ad-lib";
+  private static final String AUTH_USER = "user";
   private static final String CREDENTIALS_FILE_PATH = "backend/credentials.json";
   private static final String TOKENS_DIRECTORY_PATH = "tokens";
-  private static final String ACCCESS_TYPE = "offline";
+  private static final String ACCESS_TYPE = "offline";
   private static final int PORT_NUM = 8000;
 
   /**
@@ -53,29 +54,16 @@ public class GmailFactory {
     GoogleAuthorizationCodeFlow flow =
         new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
             .setDataStoreFactory(new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH)))
-            .setAccessType(ACCCESS_TYPE)
+            .setAccessType(ACCESS_TYPE)
             .build();
     LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(PORT_NUM).build();
-    return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+    return new AuthorizationCodeInstalledApp(flow, receiver).authorize(AUTH_USER);
   }
 
-  public Gmail build() {
-    NetHttpTransport httpTransport = null;
-    Gmail gmail = null;
-    try {
-      httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    } catch (GeneralSecurityException | IOException e) {
-      e.printStackTrace();
-    }
-    assert httpTransport != null;
-    try {
-      gmail =
-          new Gmail.Builder(httpTransport, JSON_FACTORY, getCredentials(httpTransport))
-              .setApplicationName(APPLICATION_NAME)
-              .build();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return gmail;
+  public Gmail build() throws IOException, GeneralSecurityException {
+    NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    return new Gmail.Builder(httpTransport, JSON_FACTORY, getCredentials(httpTransport))
+        .setApplicationName(APPLICATION_NAME)
+        .build();
   }
 }

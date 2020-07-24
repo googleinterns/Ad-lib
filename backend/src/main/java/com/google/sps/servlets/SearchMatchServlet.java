@@ -57,6 +57,9 @@ public class SearchMatchServlet extends HttpServlet {
   private final MatchDatastore matchDatastore = new MatchDatastore(datastore);
   private final ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
 
+  // Get participant username
+  UserService userService = UserServiceFactory.getUserService();
+
   public SearchMatchServlet() throws GeneralSecurityException, IOException {}
 
   @Override
@@ -64,8 +67,6 @@ public class SearchMatchServlet extends HttpServlet {
 
     System.out.println("Request received");
 
-    // Get participant username
-    UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     if (email == null) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid email.");
@@ -90,7 +91,7 @@ public class SearchMatchServlet extends HttpServlet {
         return;
       }
       // No match yet
-      sendNoMatchResponse(response, participant);
+      sendNoMatchResponse(response);
       return;
     }
 
@@ -132,7 +133,7 @@ public class SearchMatchServlet extends HttpServlet {
     JSONObject expired = new JSONObject();
     expired.put(JSON_MATCH_STATUS, "expired");
     try {
-      emailNotifier.sendExpiredEmail(participant.getUsername());
+      emailNotifier.sendExpiredEmail(participant.getUsername(),userService.getCurrentUser().getEmail());
     } catch (MessagingException e) {
       e.printStackTrace();
     }
@@ -142,7 +143,7 @@ public class SearchMatchServlet extends HttpServlet {
   }
 
   /** Send JSON response for no match yet */
-  private void sendNoMatchResponse(HttpServletResponse response, Participant participant)
+  private void sendNoMatchResponse(HttpServletResponse response)
       throws IOException {
     JSONObject noMatchYet = new JSONObject();
     noMatchYet.put(JSON_MATCH_STATUS, "false");
@@ -159,7 +160,7 @@ public class SearchMatchServlet extends HttpServlet {
     matchExists.put(JSON_SECOND_PARTICIPANT_USERNAME, match.getSecondParticipantUsername());
     matchExists.put(JSON_DURATION, match.getDuration());
     try {
-      emailNotifier.sendMatchEmail(match.getFirstParticipantUsername());
+      emailNotifier.sendMatchEmail(match.getFirstParticipantUsername(),userService.getCurrentUser().getEmail());
     } catch (MessagingException e) {
       e.printStackTrace();
     }

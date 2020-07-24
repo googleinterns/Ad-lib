@@ -26,7 +26,6 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.sps.data.MatchPreference;
 import com.google.sps.data.User;
-import com.google.sps.datastore.ListStringConversion;
 import com.google.sps.datastore.UserDatastore;
 import java.util.Arrays;
 import java.util.List;
@@ -97,7 +96,7 @@ public final class UserDatastoreTest {
         .isEqualTo(DURATION_DEFAULT);
     assertThat((String) entity.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
     assertThat((String) entity.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
-    assertThat(ListStringConversion.stringToList((String) entity.getProperty(PROPERTY_INTERESTS)))
+    assertThat(UserDatastore.convertStringToList((String) entity.getProperty(PROPERTY_INTERESTS)))
         .isEqualTo(INTERESTS_DEFAULT);
     assertThat(
             MatchPreference.forIntValue(
@@ -139,7 +138,7 @@ public final class UserDatastoreTest {
         .isEqualTo(DURATION_DEFAULT);
     assertThat((String) entityA.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
     assertThat((String) entityA.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
-    assertThat(ListStringConversion.stringToList((String) entityA.getProperty(PROPERTY_INTERESTS)))
+    assertThat(UserDatastore.convertStringToList((String) entityA.getProperty(PROPERTY_INTERESTS)))
         .isEqualTo(INTERESTS_DEFAULT);
     assertThat(
             MatchPreference.forIntValue(
@@ -150,7 +149,7 @@ public final class UserDatastoreTest {
         .isEqualTo(DURATION_DEFAULT);
     assertThat((String) entityB.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
     assertThat((String) entityB.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
-    assertThat(ListStringConversion.stringToList((String) entityB.getProperty(PROPERTY_INTERESTS)))
+    assertThat(UserDatastore.convertStringToList((String) entityB.getProperty(PROPERTY_INTERESTS)))
         .isEqualTo(INTERESTS_DEFAULT);
     assertThat(
             MatchPreference.forIntValue(

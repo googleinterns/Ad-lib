@@ -31,6 +31,7 @@ import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
 import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
@@ -71,8 +72,7 @@ public final class ParticipantDatastore {
     entity.setProperty(PROPERTY_DURATION, participant.getDuration());
     entity.setProperty(PROPERTY_ROLE, participant.getRole());
     entity.setProperty(PROPERTY_PRODUCT_AREA, participant.getProductArea());
-    entity.setProperty(
-        PROPERTY_INTERESTS, ListStringConversion.listToString(participant.getInterests()));
+    entity.setProperty(PROPERTY_INTERESTS, convertListToString(participant.getInterests()));
     entity.setProperty(PROPERTY_MATCH_PREFERENCE, participant.getMatchPreference().getValue());
     entity.setProperty(PROPERTY_MATCH_ID, participant.getMatchId());
     entity.setProperty(PROPERTY_MATCH_STATUS, participant.getMatchStatus().getValue());
@@ -111,7 +111,7 @@ public final class ParticipantDatastore {
         ((Long) entity.getProperty(PROPERTY_DURATION)).intValue(),
         (String) entity.getProperty(PROPERTY_ROLE),
         (String) entity.getProperty(PROPERTY_PRODUCT_AREA),
-        ListStringConversion.stringToList((String) entity.getProperty(PROPERTY_INTERESTS)),
+        convertStringToList((String) entity.getProperty(PROPERTY_INTERESTS)),
         MatchPreference.forIntValue(
             ((Long) entity.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()),
         (long) entity.getProperty(PROPERTY_MATCH_ID),
@@ -171,5 +171,15 @@ public final class ParticipantDatastore {
               + username
               + " cannot be removed because it is not in the datastore.");
     }
+  }
+
+  /** Convert list of strings to a string with each element delimited by a comma */
+  public static String convertListToString(List<String> list) {
+    return String.join(",", list);
+  }
+
+  /** Convert a string with each element delimited by a comma to a list of strings */
+  public static List<String> convertStringToList(String str) {
+    return Arrays.asList(str.split(","));
   }
 }

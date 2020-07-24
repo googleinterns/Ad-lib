@@ -27,7 +27,6 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.sps.data.MatchPreference;
 import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
-import com.google.sps.datastore.ListStringConversion;
 import com.google.sps.datastore.ParticipantDatastore;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -118,7 +117,9 @@ public final class ParticipantDatastoreTest {
         .isEqualTo(DURATION_DEFAULT);
     assertThat((String) entity.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
     assertThat((String) entity.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
-    assertThat(ListStringConversion.stringToList((String) entity.getProperty(PROPERTY_INTERESTS)))
+    assertThat(
+            ParticipantDatastore.convertStringToList(
+                (String) entity.getProperty(PROPERTY_INTERESTS)))
         .isEqualTo(INTERESTS_DEFAULT);
     assertThat(
             MatchPreference.forIntValue(
@@ -179,7 +180,9 @@ public final class ParticipantDatastoreTest {
         .isEqualTo(DURATION_DEFAULT);
     assertThat((String) entityA.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
     assertThat((String) entityA.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
-    assertThat(ListStringConversion.stringToList((String) entityA.getProperty(PROPERTY_INTERESTS)))
+    assertThat(
+            ParticipantDatastore.convertStringToList(
+                (String) entityA.getProperty(PROPERTY_INTERESTS)))
         .isEqualTo(INTERESTS_DEFAULT);
     assertThat(
             MatchPreference.forIntValue(
@@ -199,7 +202,9 @@ public final class ParticipantDatastoreTest {
         .isEqualTo(DURATION_DEFAULT);
     assertThat((String) entityB.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
     assertThat((String) entityB.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
-    assertThat(ListStringConversion.stringToList((String) entityB.getProperty(PROPERTY_INTERESTS)))
+    assertThat(
+            ParticipantDatastore.convertStringToList(
+                (String) entityB.getProperty(PROPERTY_INTERESTS)))
         .isEqualTo(INTERESTS_DEFAULT);
     assertThat(
             MatchPreference.forIntValue(

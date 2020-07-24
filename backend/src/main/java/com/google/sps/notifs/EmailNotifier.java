@@ -32,6 +32,11 @@ public class EmailNotifier {
   //   TODO(#35): Create a dummy email account for ad lib itself to send emails.
   private static final String APPLICATION_EMAIL = "Adlib-Step@gmail.com";
 
+  /**
+   * The user's email address. The special value me can be used to indicate the authenticated user.
+   */
+  private static final String AUTH_USERNAME = "me";
+
   /** The gmail service */
   private final Gmail service;
 
@@ -85,17 +90,17 @@ public class EmailNotifier {
 
   /** Function that access its api and using it sends an email */
   //   TODO(#36): Replace body to send real link to user instead of generic.
-  public void sendMatchEmail(String firstMatchRecipientName, String firstMatchRecipientEmail)
+  public void sendMatchEmail(String recipientName, String recipientEmail)
       throws MessagingException, IOException {
     MimeMessage email =
         createEmail(
-            firstMatchRecipientEmail,
-            "Ad-lib: We found you a match !",
+            recipientEmail,
+            "Ad-lib: We found you a match!",
             String.format(
                 " We found you a match with %s "
                     + " Check your calendar for your meeting event,"
                     + " and feel free to join the Meet call now!\n",
-                firstMatchRecipientName));
+                recipientName));
     Message messageWithEmail = createMessageWithEmail(email);
     service.users().messages().send("me", messageWithEmail).execute();
   }
@@ -114,6 +119,6 @@ public class EmailNotifier {
                     + " The Ad-lib team \n",
                 expiredRecipientUsername));
     Message messageWithEmail = createMessageWithEmail(email);
-    service.users().messages().send("me", messageWithEmail).execute();
+    service.users().messages().send(AUTH_USERNAME, messageWithEmail).execute();
   }
 }

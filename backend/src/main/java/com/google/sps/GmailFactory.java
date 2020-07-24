@@ -39,11 +39,11 @@ public class GmailFactory {
   /**
    * Creates an authorized Credential object.
    *
-   * @param HTTP_TRANSPORT The network HTTP Transport.
+   * @param httpTransport The network HTTP Transport.
    * @return An authorized Credential object.
    * @throws IOException If the credentials.json file cannot be found.
    */
-  private static Credential getCredentials(NetHttpTransport HTTP_TRANSPORT) throws IOException {
+  private static Credential getCredentials(NetHttpTransport httpTransport) throws IOException {
     // Load client secrets.
     InputStream in = new FileInputStream(CREDENTIALS_FILE_PATH);
     GoogleClientSecrets clientSecrets =
@@ -51,7 +51,7 @@ public class GmailFactory {
 
     // Build flow and trigger user authorization request.
     GoogleAuthorizationCodeFlow flow =
-        new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+        new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
             .setDataStoreFactory(new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH)))
             .setAccessType(ACCCESS_TYPE)
             .build();
@@ -59,9 +59,9 @@ public class GmailFactory {
     return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
   }
 
-  public Gmail build() throws IOException, GeneralSecurityException {
-    final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-    return new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+  public Gmail build() throws GeneralSecurityException, IOException {
+    NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    return new Gmail.Builder(httpTransport, JSON_FACTORY, getCredentials(httpTransport))
         .setApplicationName(APPLICATION_NAME)
         .build();
   }

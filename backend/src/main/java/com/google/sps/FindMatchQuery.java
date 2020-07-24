@@ -124,17 +124,9 @@ public final class FindMatchQuery {
     System.out.println("First filled inputs: " + firstFilledInputs.toString());
     System.out.println("Second filled inputs: " + secondFilledInputs.toString());
 
-    // Count number of shared inputs
-    int numSameInputs = 0;
-    for (String firstFilledInput : firstFilledInputs) {
-      for (String secondFilledInput : secondFilledInputs) {
-        if (firstFilledInput.equals(secondFilledInput)) {
-          numSameInputs++;
-          System.out.println(firstFilledInput + "matches");
-          break;
-        }
-      }
-    }
+    // Count number of shared inputs by finding size of intersection
+    (firstFilledInputs).retainAll(secondFilledInputs);
+    int numSameInputs = firstFilledInputs.size();
     System.out.println("numSameInputs: " + numSameInputs);
 
     // Check if match based on preference and number of same inputs

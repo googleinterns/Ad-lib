@@ -154,10 +154,8 @@ public final class ParticipantDatastore {
 
     // Convert entities to list of participants
     List<Participant> participants = new ArrayList<Participant>();
-    if (results != null) {
-      for (Entity entity : results.asIterable()) {
-        participants.add(getParticipantFromEntity(entity));
-      }
+    for (Entity entity : results.asIterable()) {
+      participants.add(getParticipantFromEntity(entity));
     }
     return participants;
   }

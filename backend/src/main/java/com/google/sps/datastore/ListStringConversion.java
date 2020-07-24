@@ -14,28 +14,18 @@
 
 package com.google.sps.datastore;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.StringTokenizer;
 
 public class ListStringConversion {
 
   /** Convert list of strings to a string with each element delimited by a comma */
   public static String listToString(List<String> list) {
-    StringBuilder sb = new StringBuilder();
-    for (String str : list) {
-      sb.append(str + ",");
-    }
-    return sb.toString();
+    return String.join(",", list);
   }
 
   /** Convert a string with each element delimited by a comma to a list of strings */
   public static List<String> stringToList(String str) {
-    StringTokenizer st = new StringTokenizer(str, ",");
-    List<String> list = new ArrayList<String>();
-    while (st.hasMoreTokens()) {
-      list.add(st.nextToken());
-    }
-    return list;
+    return Arrays.asList(str.split(","));
   }
 }

@@ -44,7 +44,8 @@ public final class FindMatchQuery {
    *     availibility, or null if no match yet
    */
   @Nullable
-  public Match findMatch(Participant firstParticipant) {
+  public Match findMatch(Participant newParticipant) {
+    Participant firstParticipant = newParticipant;
     int duration = firstParticipant.getDuration();
 
     // Get list of unmatched participants with same duration as and compatible time availaiblity
@@ -125,7 +126,7 @@ public final class FindMatchQuery {
     System.out.println("Second filled inputs: " + secondFilledInputs.toString());
 
     // Count number of shared inputs by finding size of intersection
-    (firstFilledInputs).retainAll(secondFilledInputs);
+    firstFilledInputs.retainAll(secondFilledInputs);
     int numSameInputs = firstFilledInputs.size();
     System.out.println("numSameInputs: " + numSameInputs);
 

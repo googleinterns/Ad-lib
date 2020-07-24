@@ -55,19 +55,13 @@ public class SearchMatchServlet extends HttpServlet {
   private final MatchDatastore matchDatastore = new MatchDatastore(datastore);
   private final ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
   // Get participant username
-  UserService userService = UserServiceFactory.getUserService();
+  private final UserService userService = UserServiceFactory.getUserService();
   private EmailNotifier emailNotifier;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     System.out.println("Request received");
-
-    try {
-      emailNotifier = ensureEmailNotifier();
-    } catch (GeneralSecurityException e) {
-      e.printStackTrace();
-    }
 
     // Find participant's match, if exists and not returned yet
     Participant participant = participantDatastore.getParticipantFromUsername(getUsername());
@@ -128,6 +122,11 @@ public class SearchMatchServlet extends HttpServlet {
     JSONObject expired = new JSONObject();
     expired.put(JSON_MATCH_STATUS, "expired");
     try {
+      emailNotifier = ensureEmailNotifier();
+    } catch (GeneralSecurityException e) {
+      e.printStackTrace();
+    }
+    try {
       emailNotifier.sendExpiredEmail(getUsername(), userService.getCurrentUser().getEmail());
     } catch (MessagingException e) {
       e.printStackTrace();
@@ -154,6 +153,11 @@ public class SearchMatchServlet extends HttpServlet {
     matchExists.put(JSON_SECOND_PARTICIPANT_USERNAME, match.getSecondParticipantUsername());
     matchExists.put(JSON_DURATION, match.getDuration());
     try {
+      emailNotifier = ensureEmailNotifier();
+    } catch (GeneralSecurityException e) {
+      e.printStackTrace();
+    }
+    try {
       emailNotifier.sendMatchEmail(getUsername(), userService.getCurrentUser().getEmail());
     } catch (MessagingException e) {
       e.printStackTrace();
@@ -171,6 +175,10 @@ public class SearchMatchServlet extends HttpServlet {
   }
 
   private EmailNotifier ensureEmailNotifier() throws GeneralSecurityException, IOException {
-    return this.emailNotifier != null ? this.emailNotifier : new EmailNotifier(gmFactory.build());
+    if (this.emailNotifier == null) return null;
+    else {
+      this.emailNotifier = new EmailNotifier(gmFactory.build());
+    }
+    return this.emailNotifier;
   }
 }

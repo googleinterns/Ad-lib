@@ -133,7 +133,8 @@ public class SearchMatchServlet extends HttpServlet {
     JSONObject expired = new JSONObject();
     expired.put(JSON_MATCH_STATUS, "expired");
     try {
-      emailNotifier.sendExpiredEmail(participant.getUsername(),userService.getCurrentUser().getEmail());
+      emailNotifier.sendExpiredEmail(
+          participant.getUsername(), userService.getCurrentUser().getEmail());
     } catch (MessagingException e) {
       e.printStackTrace();
     }
@@ -143,8 +144,7 @@ public class SearchMatchServlet extends HttpServlet {
   }
 
   /** Send JSON response for no match yet */
-  private void sendNoMatchResponse(HttpServletResponse response)
-      throws IOException {
+  private void sendNoMatchResponse(HttpServletResponse response) throws IOException {
     JSONObject noMatchYet = new JSONObject();
     noMatchYet.put(JSON_MATCH_STATUS, "false");
     // Send the JSON back as the response
@@ -160,7 +160,8 @@ public class SearchMatchServlet extends HttpServlet {
     matchExists.put(JSON_SECOND_PARTICIPANT_USERNAME, match.getSecondParticipantUsername());
     matchExists.put(JSON_DURATION, match.getDuration());
     try {
-      emailNotifier.sendMatchEmail(match.getFirstParticipantUsername(),userService.getCurrentUser().getEmail());
+      emailNotifier.sendMatchEmail(
+          match.getFirstParticipantUsername(), userService.getCurrentUser().getEmail());
     } catch (MessagingException e) {
       e.printStackTrace();
     }

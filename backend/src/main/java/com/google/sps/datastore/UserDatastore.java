@@ -52,7 +52,7 @@ public final class UserDatastore {
     entity.setProperty(PROPERTY_DURATION, user.getDuration());
     entity.setProperty(PROPERTY_ROLE, user.getRole());
     entity.setProperty(PROPERTY_PRODUCT_AREA, user.getProductArea());
-    entity.setProperty(PROPERTY_INTERESTS, user.getInterests());
+    entity.setProperty(PROPERTY_INTERESTS, ListStringConversion.listToString(user.getInterests()));
     entity.setProperty(PROPERTY_MATCH_PREFERENCE, user.getMatchPreference().getValue());
 
     return entity;
@@ -83,7 +83,7 @@ public final class UserDatastore {
         ((Long) entity.getProperty(PROPERTY_DURATION)).intValue(),
         (String) entity.getProperty(PROPERTY_ROLE),
         (String) entity.getProperty(PROPERTY_PRODUCT_AREA),
-        (String) entity.getProperty(PROPERTY_INTERESTS),
+        ListStringConversion.stringToList((String) entity.getProperty(PROPERTY_INTERESTS)),
         MatchPreference.forIntValue(
             ((Long) entity.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()));
   }

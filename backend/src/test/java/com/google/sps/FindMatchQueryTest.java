@@ -28,6 +28,9 @@ import com.google.sps.datastore.ParticipantDatastore;
 import java.time.Clock;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,11 +60,12 @@ public final class FindMatchQueryTest {
   private static final String PRODUCT_AREA_CLOUD = "Cloud";
 
   // Interests constants
-  private static final String INTERESTS_BLANK = "";
-  private static final String INTERESTS_BOOKS = "Books";
-  private static final String INTERESTS_BOOKS_SPORTS_TRAVEL = "Books,Sports,Travel";
-  private static final String INTERESTS_BOOKS_TRAVEL = "Books,Travel";
-  private static final String INTERESTS_GAMING_SPORTS = "Gaming,Sports";
+  private static final List<String> INTERESTS_BLANK = new ArrayList<String>();
+  private static final List<String> INTERESTS_BOOKS = Arrays.asList("Books");
+  private static final List<String> INTERESTS_BOOKS_SPORTS_TRAVEL =
+      Arrays.asList("Books", "Sports", "Travel");
+  private static final List<String> INTERESTS_BOOKS_TRAVEL = Arrays.asList("Books", "Travel");
+  private static final List<String> INTERESTS_GAMING_SPORTS = Arrays.asList("Gaming", "Sports");
 
   // Match preference constants
   private static final MatchPreference MATCH_PREFERENCE_DIFFERENT = MatchPreference.DIFFERENT;

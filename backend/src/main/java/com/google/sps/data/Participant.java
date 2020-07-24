@@ -16,6 +16,7 @@ package com.google.sps.data;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
+import java.util.List;
 
 /** A user who wants to be matched. */
 public final class Participant {
@@ -32,8 +33,8 @@ public final class Participant {
   private final String role;
   /** Product area at Google */
   private final String productArea;
-  /** List of interests delimited by commas */
-  private final String interests;
+  /** List of interests */
+  private final List<String> interests;
   /** Whether they want to be matched with a similar, any, or different Googler */
   private final MatchPreference matchPreference;
   /** Id of match in datastore, 0 if never found a match (can assign 0 at construction) */
@@ -51,7 +52,7 @@ public final class Participant {
       int duration,
       String role,
       String productArea,
-      String interests,
+      List<String> interests,
       MatchPreference matchPreference,
       long matchId,
       MatchStatus matchStatus,
@@ -96,7 +97,7 @@ public final class Participant {
     return productArea;
   }
 
-  public String getInterests() {
+  public List<String> getInterests() {
     return interests;
   }
 
@@ -141,7 +142,7 @@ public final class Participant {
         .add("role", role)
         .add("productArea", productArea)
         .add("matchPreference", matchPreference.getValue())
-        .add("interests", interests)
+        .add("interests", interests.toString())
         .add("matchId", matchId)
         .add("matchStatus", matchStatus.getValue())
         .add("timestamp", timestamp)

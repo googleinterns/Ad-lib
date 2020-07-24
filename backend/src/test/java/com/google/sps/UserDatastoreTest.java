@@ -26,7 +26,10 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.sps.data.MatchPreference;
 import com.google.sps.data.User;
+import com.google.sps.datastore.ListStringConversion;
 import com.google.sps.datastore.UserDatastore;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +44,7 @@ public final class UserDatastoreTest {
   private static final int DURATION_DEFAULT = 30;
   private static final String ROLE_DEFAULT = "Software engineer";
   private static final String PRODUCT_AREA_DEFAULT = "Ads";
-  private static final String INTERESTS_DEFAULT = "Books,Travel";
+  private static final List<String> INTERESTS_DEFAULT = Arrays.asList("Books", "Travel");
   private static final MatchPreference MATCH_PREFERENCE_DEFAULT = MatchPreference.SIMILAR;
 
   // Some usernames
@@ -94,7 +97,8 @@ public final class UserDatastoreTest {
         .isEqualTo(DURATION_DEFAULT);
     assertThat((String) entity.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
     assertThat((String) entity.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
-    assertThat((String) entity.getProperty(PROPERTY_INTERESTS)).isEqualTo(INTERESTS_DEFAULT);
+    assertThat(ListStringConversion.stringToList((String) entity.getProperty(PROPERTY_INTERESTS)))
+        .isEqualTo(INTERESTS_DEFAULT);
     assertThat(
             MatchPreference.forIntValue(
                 ((Long) entity.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()))
@@ -135,7 +139,8 @@ public final class UserDatastoreTest {
         .isEqualTo(DURATION_DEFAULT);
     assertThat((String) entityA.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
     assertThat((String) entityA.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
-    assertThat((String) entityA.getProperty(PROPERTY_INTERESTS)).isEqualTo(INTERESTS_DEFAULT);
+    assertThat(ListStringConversion.stringToList((String) entityA.getProperty(PROPERTY_INTERESTS)))
+        .isEqualTo(INTERESTS_DEFAULT);
     assertThat(
             MatchPreference.forIntValue(
                 ((Long) entityA.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()))
@@ -145,7 +150,8 @@ public final class UserDatastoreTest {
         .isEqualTo(DURATION_DEFAULT);
     assertThat((String) entityB.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
     assertThat((String) entityB.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
-    assertThat((String) entityB.getProperty(PROPERTY_INTERESTS)).isEqualTo(INTERESTS_DEFAULT);
+    assertThat(ListStringConversion.stringToList((String) entityB.getProperty(PROPERTY_INTERESTS)))
+        .isEqualTo(INTERESTS_DEFAULT);
     assertThat(
             MatchPreference.forIntValue(
                 ((Long) entityB.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()))

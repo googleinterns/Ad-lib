@@ -31,6 +31,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -73,30 +75,19 @@ public class AddParticipantServlet extends HttpServlet {
     String role = formDetails.getString(REQUEST_ROLE);
     String productArea = formDetails.getString(REQUEST_PRODUCT_AREA);
     // TODO (: get correct interests format
-    JSONArray interestsJsonArray = new JSONArray(REQUEST_INTERESTS);
+    JSONArray interestsJsonArray = formDetails.getJSONArray(REQUEST_INTERESTS);
     int numInterests = interestsJsonArray.length();
-    StringBuilder interestsSB = new StringBuilder();
-    for (int i = 0; i < interestsJsonArray.length(); i++) {
-      interestsSB.append(interestsJsonArray.getJSONObject(i).getString("interest") + ",");
+    List<String> interests = new ArrayList<String>();
+    for (int i = 0; i < numInterests; i++) {
+      interests.add(interestsJsonArray.getString(i));
     }
-    String interests = interestsSB.toString();
 
     boolean savePreference = formDetails.getBoolean(REQUEST_SAVE_PREFERENCE);
     String matchPreferenceString = formDetails.getString(REQUEST_MATCH_PREFERENCE);
-    MatchPreference matchPreference;
-    switch (matchPreferenceString) {
-      case "different":
-        matchPreference = MatchPreference.DIFFERENT;
-        break;
-      case "any":
-        matchPreference = MatchPreference.ANY;
-        break;
-      case "similar":
-        matchPreference = MatchPreference.SIMILAR;
-        break;
-      default:
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid match preference.");
-        return;
+    MatchPreference matchPreference = getMatchPreference(matchPreferenceString);
+    if (matchPreference == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid match preference.");
+      return;
     }
     long timestamp = System.currentTimeMillis();
 
@@ -186,5 +177,24 @@ public class AddParticipantServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     return email != null ? email.split("@")[0] : null;
+  }
+
+  /** Parse match preference string to */
+  private static MatchPreference getMatchPreference(String matchPreferenceString) {
+    MatchPreference matchPreference;
+    switch (matchPreferenceString) {
+      case "different":
+        matchPreference = MatchPreference.DIFFERENT;
+        break;
+      case "any":
+        matchPreference = MatchPreference.ANY;
+        break;
+      case "similar":
+        matchPreference = MatchPreference.SIMILAR;
+        break;
+      default:
+        matchPreference = null;
+    }
+    return matchPreference;
   }
 }

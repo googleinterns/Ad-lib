@@ -19,8 +19,8 @@ import com.google.sps.data.MatchPreference;
 import com.google.sps.data.Participant;
 import com.google.sps.datastore.ParticipantDatastore;
 import java.time.Clock;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 import javax.annotation.Nullable;
 
 /** Class used to find a match for new Participant with unmatched Participants in datastore */
@@ -119,24 +119,18 @@ public final class FindMatchQuery {
     }
 
     // Get lists of combined role, product area, interests for first and second participant
-    String firstFilledInputsList = getAllFilledInputs(firstParticipant);
-    String secondFilledInputsList = getAllFilledInputs(secondParticipant);
-    System.out.println("First filled inputs: " + firstFilledInputsList);
-    System.out.println("Second filled inputs: " + secondFilledInputsList);
+    List<String> firstFilledInputs = getAllFilledInputs(firstParticipant);
+    List<String> secondFilledInputs = getAllFilledInputs(secondParticipant);
+    System.out.println("First filled inputs: " + firstFilledInputs.toString());
+    System.out.println("Second filled inputs: " + secondFilledInputs.toString());
 
     // Count number of shared inputs
-    StringTokenizer firstInputs = new StringTokenizer(firstFilledInputsList, ",");
-    StringTokenizer secondInputs = new StringTokenizer(secondFilledInputsList, ",");
-    int firstNumFilledInputs = firstInputs.countTokens();
-    int secondNumFilledInputs = secondInputs.countTokens();
     int numSameInputs = 0;
-    while (firstInputs.hasMoreTokens()) {
-      String firstInput = firstInputs.nextToken();
-      secondInputs = new StringTokenizer(secondFilledInputsList, ",");
-      while (secondInputs.hasMoreTokens()) {
-        if (firstInput.equals(secondInputs.nextToken())) {
+    for (String firstFilledInput : firstFilledInputs) {
+      for (String secondFilledInput : secondFilledInputs) {
+        if (firstFilledInput.equals(secondFilledInput)) {
           numSameInputs++;
-          System.out.println(firstInput + " matches");
+          System.out.println(firstFilledInput + "matches");
           break;
         }
       }
@@ -144,7 +138,7 @@ public final class FindMatchQuery {
     System.out.println("numSameInputs: " + numSameInputs);
 
     // Check if match based on preference and number of same inputs
-    int maxNumFilledInputs = Math.max(firstNumFilledInputs, secondNumFilledInputs);
+    int maxNumFilledInputs = Math.max(firstFilledInputs.size(), secondFilledInputs.size());
     int minSameInputs = (maxNumFilledInputs + 1) / 2;
     System.out.println(minSameInputs);
     if (combinedMatchPreference == MatchPreference.SIMILAR && numSameInputs < minSameInputs) {
@@ -161,17 +155,17 @@ public final class FindMatchQuery {
    * @return all filled inputs of participant in one string delimited by a comma Assumes no role,
    *     PA, or interests have the same options
    */
-  private String getAllFilledInputs(Participant participant) {
-    StringBuilder sb = new StringBuilder();
+  private List<String> getAllFilledInputs(Participant participant) {
+    List<String> allFilledInputs = new ArrayList<String>();
     String role = participant.getRole();
     if (!role.equals("")) {
-      sb.append(role + ",");
+      allFilledInputs.add(role);
     }
     String productArea = participant.getProductArea();
     if (!productArea.equals("")) {
-      sb.append(productArea + ",");
+      allFilledInputs.add(productArea);
     }
-    sb.append(participant.getInterests());
-    return sb.toString();
+    allFilledInputs.addAll(participant.getInterests());
+    return allFilledInputs;
   }
 }

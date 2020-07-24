@@ -71,7 +71,8 @@ public final class ParticipantDatastore {
     entity.setProperty(PROPERTY_DURATION, participant.getDuration());
     entity.setProperty(PROPERTY_ROLE, participant.getRole());
     entity.setProperty(PROPERTY_PRODUCT_AREA, participant.getProductArea());
-    entity.setProperty(PROPERTY_INTERESTS, participant.getInterests());
+    entity.setProperty(
+        PROPERTY_INTERESTS, ListStringConversion.listToString(participant.getInterests()));
     entity.setProperty(PROPERTY_MATCH_PREFERENCE, participant.getMatchPreference().getValue());
     entity.setProperty(PROPERTY_MATCH_ID, participant.getMatchId());
     entity.setProperty(PROPERTY_MATCH_STATUS, participant.getMatchStatus().getValue());
@@ -110,7 +111,7 @@ public final class ParticipantDatastore {
         ((Long) entity.getProperty(PROPERTY_DURATION)).intValue(),
         (String) entity.getProperty(PROPERTY_ROLE),
         (String) entity.getProperty(PROPERTY_PRODUCT_AREA),
-        (String) entity.getProperty(PROPERTY_INTERESTS),
+        ListStringConversion.stringToList((String) entity.getProperty(PROPERTY_INTERESTS)),
         MatchPreference.forIntValue(
             ((Long) entity.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()),
         (long) entity.getProperty(PROPERTY_MATCH_ID),
@@ -153,8 +154,10 @@ public final class ParticipantDatastore {
 
     // Convert entities to list of participants
     List<Participant> participants = new ArrayList<Participant>();
-    for (Entity entity : results.asIterable()) {
-      participants.add(getParticipantFromEntity(entity));
+    if (results != null) {
+      for (Entity entity : results.asIterable()) {
+        participants.add(getParticipantFromEntity(entity));
+      }
     }
     return participants;
   }

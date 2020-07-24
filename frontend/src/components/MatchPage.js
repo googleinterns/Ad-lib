@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
- * Add MatchPage components to UI
+ * Define MatchPage component
  * @return {MatchPage} MatchPage component
  */
 export default function MatchPage(props) {

@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
- * Add LoadingPage components to UI
+ * Define LoadingPage component
  * @return {LoadingPage} LoadingPage component
  */
 export default function LoadingPage() {

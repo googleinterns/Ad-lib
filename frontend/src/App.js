@@ -2,13 +2,14 @@ import React from 'react';
 import axios from 'axios';
 import {makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
 import './App.css';
 import MenuBar from './components/MenuBar';
 import Form from './components/Form';
 import LoadingPage from './components/LoadingPage';
 import MatchPage from './components/MatchPage';
 import NoMatchPage from './components/NoMatchPage';
+import ErrorPage from './components/ErrorPage';
+import FormContent from './components/FormContent';
 
 /**
  * Establishes style to use on rendering components
@@ -30,10 +31,10 @@ const useStyles = makeStyles((theme) => ({
  */
 export default function App() {
   const classes = useStyles();
-  const matchDataRefreshRate = 5000;
-  // const [matchStatus, setMatchStatus] = React.useState('Unmatched');
+  const matchDataRefreshRateMilliseconds = 30000;
   const [currentPage, setCurrentPage] = React.useState('form');
   let match;
+  
   /** Initiate GET request to search-match servlet */
   function getMatch() {
     setCurrentPage('loading');
@@ -42,16 +43,17 @@ export default function App() {
           console.log(response);
           if (response.status === 200 && response.data.matchStatus === 'true') {
             match = response;
-            // setMatchStatus('Matched');
+            setCurrentPage('match');
             clearInterval(interval);
           }
         })
         .catch((error) => {
           // TO-DO(#76): Add 'Oops, something went wrong' page view
           console.log(error);
-          //alert('Oops, something went wrong. Please try again later');
+          setCurrentPage('error');
+          clearInterval(interval);
         });
-    const interval = setInterval(getMatch, matchDataRefreshRate);
+    const interval = setInterval(getMatch, matchDataRefreshRateMilliseconds);
   }
 
   switch (currentPage) {
@@ -60,19 +62,7 @@ export default function App() {
         <div>
           <MenuBar />
           <div className={classes.centerHorizontal}>
-            <Card className={classes.content}>
-              <CardContent>
-                <h3>Meet fellow Googlers <em>now</em>!</h3>
-                <p>Miss bumping into new faces at the office? Want an easy, fun,
-                  spontaneous way of meeting Googlers virtually?
-                  Now you can!</p>
-                <p>Ad-lib matches you with a fellow Googler in the queue,
-                  notifies you through email when you’ve been matched, and adds
-                  an event to your Calendar with a Meet link for you to join
-                  immediately! It also provides a starter question to get the
-                  conversation flowing!</p>
-              </CardContent>
-            </Card>
+            <FormContent />
             <Card className={classes.content}>
               <Form
                 onSubmit={getMatch}
@@ -86,7 +76,7 @@ export default function App() {
         <div>
           <MenuBar />
           <div className={classes.centerHorizontal}>
-            <LoadingPage matchInformation={match}/>
+            <LoadingPage />
           </div>
         </div>
       );
@@ -105,6 +95,15 @@ export default function App() {
           <MenuBar />
           <div className={classes.centerHorizontal}>
             <NoMatchPage matchInformation={match}/>
+          </div>
+        </div>
+      );
+    case 'error':
+      return (
+        <div>
+          <MenuBar />
+          <div className={classes.centerHorizontal}>
+            <ErrorPage />
           </div>
         </div>
       );

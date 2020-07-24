@@ -14,19 +14,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
- * Define NoMatchPage component
- * @return {NoMatchPage} NoMatchPage component
+ * Define ErrorPage component
+ * @return {ErrorPage} ErrorPage component
  */
-export default function NoMatchPage(props) {
+export default function ErrorPage() {
   const classes = useStyles();
   return (
     <div>
       <Card className={classes.content}>
         <CardContent>
-          <h3>We could not find you a match!</h3>
-          <p>It looks like you are only free until 11:45am, and we could not
-             find you a match to meet or 30 minutes before then. Please try
-             again later, and happy working!</p>
+          <h3>Oops, something went wrong</h3>
+          <p>We encourage you to please try again later!</p>
         </CardContent>
       </Card>
     </div>

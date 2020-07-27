@@ -27,6 +27,7 @@ import com.google.sps.notifs.EmailNotifier;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Nullable;
 import javax.mail.MessagingException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -121,16 +122,7 @@ public class SearchMatchServlet extends HttpServlet {
       throws IOException {
     JSONObject expired = new JSONObject();
     expired.put(JSON_MATCH_STATUS, "expired");
-    try {
-      emailNotifier = createOrGetEmailNotifier();
-    } catch (GeneralSecurityException e) {
-      e.printStackTrace();
-    }
-    try {
-      emailNotifier.sendExpiredEmail(getUsername(), userService.getCurrentUser().getEmail());
-    } catch (MessagingException e) {
-      e.printStackTrace();
-    }
+    sendEmailResponse(false);
     // Send the JSON back as the response
     response.setContentType("application/json");
     response.getWriter().println(expired.toString());
@@ -152,31 +144,45 @@ public class SearchMatchServlet extends HttpServlet {
     matchExists.put(JSON_FIRST_PARTICIPANT_USERNAME, match.getFirstParticipantUsername());
     matchExists.put(JSON_SECOND_PARTICIPANT_USERNAME, match.getSecondParticipantUsername());
     matchExists.put(JSON_DURATION, match.getDuration());
-    try {
-      emailNotifier = createOrGetEmailNotifier();
-    } catch (GeneralSecurityException e) {
-      e.printStackTrace();
-    }
-    try {
-      emailNotifier.sendMatchEmail(getUsername(), userService.getCurrentUser().getEmail());
-    } catch (MessagingException e) {
-      e.printStackTrace();
-    }
+    sendEmailResponse(true);
     // Send the JSON back as the response
     response.setContentType("application/json");
     response.getWriter().println(matchExists.toString());
   }
 
-  /** Retrieve user email address via Users API and parse for username */
+  /**
+   * Retrieve user email address via Users API and parse for username. Email can be null when the
+   * current user does not exist.
+   */
+  @Nullable
   private String getUsername() {
-    UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     return email != null ? email.split("@")[0] : null;
   }
 
   private EmailNotifier createOrGetEmailNotifier() throws GeneralSecurityException, IOException {
-    if (this.emailNotifier != null) return this.emailNotifier;
+    if (this.emailNotifier != null) {
+      return this.emailNotifier;
+    }
     this.emailNotifier = new EmailNotifier(gmFactory.build());
     return this.emailNotifier;
+  }
+
+  private void sendEmailResponse(boolean match) {
+    if (match) {
+      try {
+        emailNotifier = createOrGetEmailNotifier();
+        emailNotifier.sendMatchEmail(getUsername(), userService.getCurrentUser().getEmail());
+      } catch (GeneralSecurityException | MessagingException | IOException e) {
+        e.printStackTrace();
+      }
+    } else {
+      try {
+        emailNotifier = createOrGetEmailNotifier();
+        emailNotifier.sendExpiredEmail(getUsername(), userService.getCurrentUser().getEmail());
+      } catch (GeneralSecurityException | MessagingException | IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 }

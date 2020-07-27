@@ -61,8 +61,7 @@ public class GmailFactory {
   }
 
   public Gmail build() throws GeneralSecurityException, IOException {
-    NetHttpTransport httpTransport;
-    httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     return new Gmail.Builder(httpTransport, JSON_FACTORY, getCredentials(httpTransport))
         .setApplicationName(APPLICATION_NAME)
         .build();

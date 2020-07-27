@@ -122,7 +122,7 @@ public class SearchMatchServlet extends HttpServlet {
     JSONObject expired = new JSONObject();
     expired.put(JSON_MATCH_STATUS, "expired");
     try {
-      emailNotifier = ensureEmailNotifier();
+      emailNotifier = createOrGetEmailNotifier();
     } catch (GeneralSecurityException e) {
       e.printStackTrace();
     }
@@ -153,7 +153,7 @@ public class SearchMatchServlet extends HttpServlet {
     matchExists.put(JSON_SECOND_PARTICIPANT_USERNAME, match.getSecondParticipantUsername());
     matchExists.put(JSON_DURATION, match.getDuration());
     try {
-      emailNotifier = ensureEmailNotifier();
+      emailNotifier = createOrGetEmailNotifier();
     } catch (GeneralSecurityException e) {
       e.printStackTrace();
     }
@@ -174,11 +174,9 @@ public class SearchMatchServlet extends HttpServlet {
     return email != null ? email.split("@")[0] : null;
   }
 
-  private EmailNotifier ensureEmailNotifier() throws GeneralSecurityException, IOException {
-    if (this.emailNotifier == null) return null;
-    else {
-      this.emailNotifier = new EmailNotifier(gmFactory.build());
-    }
+  private EmailNotifier createOrGetEmailNotifier() throws GeneralSecurityException, IOException {
+    if (this.emailNotifier != null) return this.emailNotifier;
+    this.emailNotifier = new EmailNotifier(gmFactory.build());
     return this.emailNotifier;
   }
 }

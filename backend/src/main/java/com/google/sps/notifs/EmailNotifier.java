@@ -102,7 +102,7 @@ public class EmailNotifier {
                     + " and feel free to join the Meet call now!\n",
                 recipientName));
     Message messageWithEmail = createMessageWithEmail(email);
-    service.users().messages().send("me", messageWithEmail).execute();
+    service.users().messages().send(AUTH_USERNAME, messageWithEmail).execute();
   }
 
   /** Function that access its api and using it sends an email */

@@ -122,7 +122,7 @@ public class SearchMatchServlet extends HttpServlet {
       throws IOException {
     JSONObject expired = new JSONObject();
     expired.put(JSON_MATCH_STATUS, "expired");
-    sendEmailResponse(false);
+    sendExpiredEmailResponse();
     // Send the JSON back as the response
     response.setContentType("application/json");
     response.getWriter().println(expired.toString());
@@ -144,7 +144,7 @@ public class SearchMatchServlet extends HttpServlet {
     matchExists.put(JSON_FIRST_PARTICIPANT_USERNAME, match.getFirstParticipantUsername());
     matchExists.put(JSON_SECOND_PARTICIPANT_USERNAME, match.getSecondParticipantUsername());
     matchExists.put(JSON_DURATION, match.getDuration());
-    sendEmailResponse(true);
+    sendMatchEmailResponse();
     // Send the JSON back as the response
     response.setContentType("application/json");
     response.getWriter().println(matchExists.toString());
@@ -168,21 +168,21 @@ public class SearchMatchServlet extends HttpServlet {
     return this.emailNotifier;
   }
 
-  private void sendEmailResponse(boolean match) {
-    if (match) {
-      try {
-        emailNotifier = createOrGetEmailNotifier();
-        emailNotifier.sendMatchEmail(getUsername(), userService.getCurrentUser().getEmail());
-      } catch (GeneralSecurityException | MessagingException | IOException e) {
-        e.printStackTrace();
-      }
-    } else {
-      try {
-        emailNotifier = createOrGetEmailNotifier();
-        emailNotifier.sendExpiredEmail(getUsername(), userService.getCurrentUser().getEmail());
-      } catch (GeneralSecurityException | MessagingException | IOException e) {
-        e.printStackTrace();
-      }
+  private void sendMatchEmailResponse() {
+    try {
+      emailNotifier = createOrGetEmailNotifier();
+      emailNotifier.sendMatchEmail(getUsername(), userService.getCurrentUser().getEmail());
+    } catch (GeneralSecurityException | MessagingException | IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void sendExpiredEmailResponse() {
+    try {
+      emailNotifier = createOrGetEmailNotifier();
+      emailNotifier.sendExpiredEmail(getUsername(), userService.getCurrentUser().getEmail());
+    } catch (GeneralSecurityException | MessagingException | IOException e) {
+      e.printStackTrace();
     }
   }
 }

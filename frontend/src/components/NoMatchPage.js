@@ -39,6 +39,7 @@ export default function NoMatchPage(props) {
       <Card className={classes.content}>
         <CardContent>
           <h3>We could not find you a match!</h3>
+          {/*TO-DO(#78): Display more personalized info on page*/}
           <p>It looks like you are only free until 11:45am, and we could not
              find you a match to meet or 30 minutes before then. Please try
              again later, and happy working!</p>

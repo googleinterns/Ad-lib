@@ -161,11 +161,11 @@ public class SearchMatchServlet extends HttpServlet {
   }
 
   private EmailNotifier createOrGetEmailNotifier() throws GeneralSecurityException, IOException {
-    if (this.emailNotifier != null) {
-      return this.emailNotifier;
+    if (emailNotifier != null) {
+      return emailNotifier;
     }
-    this.emailNotifier = new EmailNotifier(gmFactory.build());
-    return this.emailNotifier;
+    emailNotifier = new EmailNotifier(gmFactory.build());
+    return emailNotifier;
   }
 
   private void sendMatchEmailResponse() {

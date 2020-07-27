@@ -39,6 +39,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/** Initiate GET request to search-match servlet */
+export async function fetchMatch() {
+  try {
+    const response = await axios.get('/api/v1/search-match');
+    return response.data;
+  } catch (error) {
+    console.log('Error', error);
+    return null;
+  }
+}
+
 /**
  * Add components and content to UI
  * @return {App} App component
@@ -63,24 +74,22 @@ export default function App() {
     localStorage.setItem(pageViewKey, currentPage);
   }, [pageViewKey, currentPage]);
 
-  /** Initiate GET request to search-match servlet */
-  function getMatch() {
+  /** Parse servlet response and update page view */
+  function parseServletResponseAndUpdateUI() {
     setCurrentPage('loading');
-    axios.get('/api/v1/search-match')
-        .then((response) => {
-          console.log(response);
-          if (response.status === 200 && response.data.matchStatus === 'true') {
-            match = response;
-            setCurrentPage('match');
-            clearInterval(interval);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          setCurrentPage('error');
-          clearInterval(interval);
-        });
-    const interval = setInterval(getMatch, matchDataRefreshRateMilliseconds);
+    fetchMatch().then((response) => {
+      console.log(response);
+      if (response === null) {
+        setCurrentPage('error');
+        clearInterval(interval);
+      } else if (response.matchStatus === 'true') {
+        match = response;
+        setCurrentPage('match');
+        clearInterval(interval);
+      }
+    });
+    const interval = setInterval(parseServletResponseAndUpdateUI,
+        matchDataRefreshRateMilliseconds);
   }
 
   switch (currentPage) {
@@ -92,7 +101,7 @@ export default function App() {
             <FormContent />
             <Card className={classes.content}>
               <Form
-                onSubmit={getMatch}
+                onSubmit={parseServletResponseAndUpdateUI}
               />
             </Card>
           </div>

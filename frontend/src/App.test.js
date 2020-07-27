@@ -28,10 +28,8 @@ describe('App', () => {
     const mockMatchStatus = {matchStatus: 'true'};
     const mockData = {data: mockMatchStatus};
     axios.get.mockResolvedValue(mockData);
-    // axios.get.mockImplementation(() => Promise.resolve(mockData));
 
     const response = await fetchMatch();
     return expect(response).toEqual(mockMatchStatus);
-    // return fetchMatch().then(data => expect(data).toEqual(mockMatchStatus));
   });
 });

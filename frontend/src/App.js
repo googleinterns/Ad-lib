@@ -21,6 +21,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/** Initiate GET request to search-match servlet */
+export async function fetchMatch() {
+  try {
+    const response = await axios.get('/api/v1/search-match');
+    return response.data;
+  } catch (error) {
+    console.log('Error', error);
+    return null;
+  }
+}
+
 /**
  * Add components and content to UI
  * @return {App} App component
@@ -28,24 +39,25 @@ const useStyles = makeStyles((theme) => ({
 export default function App() {
   const classes = useStyles();
   const matchDataRefreshRate = 5000;
-  const [matchStatus, setMatchStatus] = React.useState('Unmatched');
+  const MATCHED = 'Matched';
+  const UNMATCHED = 'Unmatched';
+  const [matchStatus, setMatchStatus] = React.useState(UNMATCHED);
 
   /** Initiate GET request to search-match servlet */
-  function getMatch() {
-    axios.get('/api/v1/search-match')
-        .then((response) => {
-          console.log(response);
-          if (response.status === 200 && response.data.matchStatus === 'true') {
-            setMatchStatus('Matched');
-            clearInterval(interval);
-          }
-        })
-        .catch((error) => {
-          // TO-DO(#76): Add 'Oops, something went wrong' page view
-          console.log(error);
-          alert('Oops, something went wrong. Please try again later');
-        });
-    const interval = setInterval(getMatch, matchDataRefreshRate);
+  function parseServletResponseAndUpdateUI() {
+    fetchMatch().then((response) => {
+      console.log(response);
+      if (response === null) {
+        // TO-DO(#76): Add 'Oops, something went wrong' page view
+        alert('Oops, something went wrong. Please try again later');
+        clearInterval(interval);
+      } else if (response.matchStatus === 'true') {
+        setMatchStatus(MATCHED);
+        clearInterval(interval);
+      }
+    });
+    const interval = setInterval(parseServletResponseAndUpdateUI,
+        matchDataRefreshRate);
   }
 
   return (
@@ -66,7 +78,7 @@ export default function App() {
         </Card>
         <Card className={classes.content}>
           <Form
-            onSubmit={getMatch}
+            onSubmit={parseServletResponseAndUpdateUI}
           />
         </Card>
       </div>

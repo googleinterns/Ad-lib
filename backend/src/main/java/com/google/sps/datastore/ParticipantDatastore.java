@@ -14,12 +14,13 @@
 
 package com.google.sps.datastore;
 
+import com.google.appengine.api.datastore.DatastoreNeedIndexException;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
@@ -30,10 +31,10 @@ import com.google.sps.data.MatchPreference;
 import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
 import java.time.Clock;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -131,14 +132,13 @@ public final class ParticipantDatastore {
 
   /** Return list of all unmatched participants with duration and compatible endTimeAvailable */
   public List<Participant> getParticipantsCompatibleTimeAvailibility(
-      int duration, long endTimeAvailable, int paddingTime, Clock clock) {
-    Query query = new Query(KIND_PARTICIPANT);
-
+      int duration, long endTimeAvailable, int paddingTime, Clock clock)
+      throws DatastoreNeedIndexException {
     // Create filters to get only unmatched participants with compatible time availability
+    Filter sameDuration = new FilterPredicate(PROPERTY_DURATION, FilterOperator.EQUAL, duration);
     Filter unmatched =
         new FilterPredicate(
             PROPERTY_MATCH_STATUS, FilterOperator.EQUAL, MatchStatus.UNMATCHED.getValue());
-    Filter sameDuration = new FilterPredicate(PROPERTY_DURATION, FilterOperator.EQUAL, duration);
     Filter compatibleTime =
         new FilterPredicate(
             PROPERTY_END_TIME_AVAILABLE,
@@ -147,16 +147,13 @@ public final class ParticipantDatastore {
 
     // Combine filters into one, and filter query
     CompositeFilter composite =
-        CompositeFilterOperator.and(unmatched, sameDuration, compatibleTime);
-    query.setFilter(composite);
+        CompositeFilterOperator.and(sameDuration, unmatched, compatibleTime);
 
-    PreparedQuery results = datastore.prepare(query);
+    Query query = new Query(KIND_PARTICIPANT).setFilter(composite);
 
-    // Convert entities to list of participants
-    List<Participant> participants = new ArrayList<Participant>();
-    for (Entity entity : results.asIterable()) {
-      participants.add(getParticipantFromEntity(entity));
-    }
+    List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+    List<Participant> participants =
+        results.stream().map(p -> getParticipantFromEntity(p)).collect(Collectors.toList());
     return participants;
   }
 

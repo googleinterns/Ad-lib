@@ -54,12 +54,18 @@ public class AddParticipantServlet extends HttpServlet {
   private static final String REQUEST_SAVE_PREFERENCE = "savePreference";
   private static final String REQUEST_MATCH_PREFERENCE = "matchPreference";
 
+  // Get DatastoreService and instantiate Match and Participant Datastores
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private final MatchDatastore matchDatastore = new MatchDatastore(datastore);
+  private final ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
+  private final UserDatastore userDatastore = new UserDatastore(datastore);
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+    // Retrieve JSON object request
     JSONObject obj = retrieveRequestBody(request);
     if (obj == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not read request body");
+      response.sendError(HttpServletResponse.SC_ACCEPTED, "Could not read request body");
     }
     JSONObject formDetails = obj.getJSONObject(REQUEST_FORM_DETAILS);
 
@@ -67,33 +73,32 @@ public class AddParticipantServlet extends HttpServlet {
     long endTimeAvailable = formDetails.getLong(REQUEST_END_TIME_AVAILABLE);
     long startTimeAvailable = Instant.now().toEpochMilli();
 
+    // Get all participant inputs
     int duration = formDetails.getInt(REQUEST_DURATION);
     if (duration <= 0) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
+      response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Invalid duration.");
       return;
     }
     String role = formDetails.getString(REQUEST_ROLE);
     String productArea = formDetails.getString(REQUEST_PRODUCT_AREA);
-    // TODO (: get correct interests format
     JSONArray interestsJsonArray = formDetails.getJSONArray(REQUEST_INTERESTS);
     int numInterests = interestsJsonArray.length();
     List<String> interests = new ArrayList<String>();
     for (int i = 0; i < numInterests; i++) {
       interests.add(interestsJsonArray.getString(i));
     }
-
     boolean savePreference = formDetails.getBoolean(REQUEST_SAVE_PREFERENCE);
-    String matchPreferenceString = formDetails.getString(REQUEST_MATCH_PREFERENCE);
-    MatchPreference matchPreference = getMatchPreference(matchPreferenceString);
+    MatchPreference matchPreference =
+        getMatchPreference(formDetails.getString(REQUEST_MATCH_PREFERENCE));
     if (matchPreference == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid match preference.");
+      response.sendError(HttpServletResponse.SC_CONFLICT, "Invalid match preference.");
       return;
     }
     long timestamp = System.currentTimeMillis();
 
     String username = getUsername();
     if (username == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not retrieve email.");
+      response.sendError(HttpServletResponse.SC_CONTINUE, "Could not retrieve email.");
       return;
     }
 
@@ -112,17 +117,11 @@ public class AddParticipantServlet extends HttpServlet {
             MatchStatus.UNMATCHED,
             timestamp);
 
-    // Get DatastoreService and instiate Match and Participant Datastores
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    MatchDatastore matchDatastore = new MatchDatastore(datastore);
-    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
-    UserDatastore userDatastore = new UserDatastore(datastore);
-
     // Check if new participant already in datastore (unmatched, in queue)
     // TODO: FIX! What if matched but not returned yet
     Participant existingParticipant = participantDatastore.getParticipantFromUsername(username);
     if (existingParticipant != null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Already submitted form");
+      response.sendError(HttpServletResponse.SC_CREATED, "Already submitted form");
       return;
     }
 
@@ -181,20 +180,15 @@ public class AddParticipantServlet extends HttpServlet {
 
   /** Parse match preference string to */
   private static MatchPreference getMatchPreference(String matchPreferenceString) {
-    MatchPreference matchPreference;
     switch (matchPreferenceString) {
       case "different":
-        matchPreference = MatchPreference.DIFFERENT;
-        break;
+        return MatchPreference.DIFFERENT;
       case "any":
-        matchPreference = MatchPreference.ANY;
-        break;
+        return MatchPreference.ANY;
       case "similar":
-        matchPreference = MatchPreference.SIMILAR;
-        break;
+        return MatchPreference.SIMILAR;
       default:
-        matchPreference = null;
+        return null;
     }
-    return matchPreference;
   }
 }

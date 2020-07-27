@@ -77,7 +77,7 @@ public class SearchMatchServlet extends HttpServlet {
     if (participant.getMatchStatus() == MatchStatus.UNMATCHED) {
       if (isExpired(participant)) {
         participantDatastore.removeParticipant(getUsername());
-        sendExpiredResponse(response, participant);
+        sendExpiredResponse(response);
         return;
       }
       // No match yet

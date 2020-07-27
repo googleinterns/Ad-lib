@@ -89,7 +89,7 @@ export default function App() {
       }
     });
     const interval = setInterval(parseServletResponseAndUpdateUI,
-      matchDataRefreshRateMilliseconds);
+        matchDataRefreshRateMilliseconds);
   }
 
   switch (currentPage) {

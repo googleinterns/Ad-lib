@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from 'react';
-import App from './App';
+import App, {fetchMatch} from './App';
 import renderer from 'react-test-renderer';
 import axios from 'axios';
 
@@ -38,16 +38,12 @@ describe('App', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  it('should initiate GET request using axios() to servlet', () => {
-    const servletEndpoint = '/api/v1/search-match';
+  it('should initiate GET request using axios() to servlet', async () => {
     const mockMatchStatus = {matchStatus: 'true'};
     const mockData = {data: mockMatchStatus};
+    axios.get.mockResolvedValue(mockData);
 
-    axios.get.mockImplementation(() => Promise.resolve(mockData));
-    const responseData = axios.get(servletEndpoint);
-
-    responseData.then((response) => {
-      expect(response.data).toEqual(mockData);
-    }).catch((error) => {});
+    const response = await fetchMatch();
+    return expect(response).toEqual(mockMatchStatus);
   });
 });

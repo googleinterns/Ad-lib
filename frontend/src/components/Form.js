@@ -150,10 +150,9 @@ export default function Form(props) {
           if (response.data != null) {
             // TODO(#33): change alert to a redirection to loading page view
             alert('Successful');
+            props.onSubmit();
           }
         });
-
-    props.onSubmit();
   }
 
   return (

@@ -118,7 +118,7 @@ public class SearchMatchServlet extends HttpServlet {
   }
 
   /** Send JSON response for expired participant that has been removed from datastore */
-  private void sendExpiredResponse(HttpServletResponse response, Participant participant)
+  private void sendExpiredResponse(HttpServletResponse response)
       throws IOException {
     JSONObject expired = new JSONObject();
     expired.put(JSON_MATCH_STATUS, "expired");

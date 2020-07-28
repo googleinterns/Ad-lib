@@ -112,6 +112,16 @@
     <version>v1-rev110-1.25.0</version>
 </dependency>
 
+<!-- https://mvnrepository.com/artifact/com.google.apis/google-api-services-calendar -->
+<dependency>
+    <groupId>com.google.apis</groupId>
+    <artifactId>google-api-services-calendar</artifactId>
+    <version>v3-rev411-1.25.0</version>
+</dependency>
+
+<!-- Thanks for using https://jar-download.com -->
+
+
 
     <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
 <dependency>

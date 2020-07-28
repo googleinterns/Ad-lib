@@ -46,9 +46,9 @@ export default function NoMatchPage(props) {
     <div>
       <Card className={classes.content}>
         <CardContent>
-          <h3>Sorry, We could not find you a match :(</h3>
+          <h3>Sorry, we could not find you a match :(</h3>
           <p>It looks like you are only free until
-            {endTimeAvailable.toString()}, and we could not find you a match
+             {endTimeAvailable.toString()}, and we could not find you a match
              to meet for {props.matchInformation.duration} minutes before then.
              Please try again later, and happy working!</p>
         </CardContent>

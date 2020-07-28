@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 
 // Add matchInfomation to props validation
 NoMatchPage.propTypes = {
-  matchInformation: PropTypes.Object,
+  matchInformation: PropTypes.string,
 };
 
 /**

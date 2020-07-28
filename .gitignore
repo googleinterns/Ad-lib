@@ -16,6 +16,7 @@
 # misc
 .idea
 lib
+
 google-java-format-1.8-all-deps.jar
 credentials.json
 .DS_Store
@@ -23,6 +24,10 @@ credentials.json
 .env.development.local
 .env.test.local
 .env.production.local
+credentials.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

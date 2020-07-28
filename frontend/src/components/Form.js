@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
@@ -56,10 +57,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Add onSubmit to props validation
+Form.propTypes = {
+  onSubmit: PropTypes.func,
+};
+
 /**
  * Validates from inputs on submission and alerts user on error
- * @param {String} role
- * @param {String} productArea
  * @param {Number} duration in minutes
  * @param {Number} endTimeAvailableMilliseconds
  * @param {Number} currentTimeMilliseconds
@@ -100,7 +104,7 @@ export default function Form(props) {
   const [role, setRole] = React.useState('');
   const [interests, setInterests] = React.useState([]);
   const [savePreference, setSavePreference] = React.useState(true);
-  const [matchPreference, setMatchPreference] = React.useState('none');
+  const [matchPreference, setMatchPreference] = React.useState('any');
 
   /**
    * Method that controls the disabled attribute of MatchPreference radio group
@@ -144,10 +148,9 @@ export default function Form(props) {
           if (response.data != null) {
             // TODO(#33): change alert to a redirection to loading page view
             alert('Successful');
+            props.onSubmit();
           }
         });
-
-    // TO-DO(#57): call getMatch() to initiate servlet GET request
   }
 
   return (
@@ -186,7 +189,8 @@ export default function Form(props) {
         <div className={classes.padding}>
           <MatchPreference
             onChange={(value) => setMatchPreference(value)}
-            shouldDisableMatchPreferenceFields={shouldDisableMatchPreferenceFields()}
+            shouldDisableMatchPreferenceFields={
+              shouldDisableMatchPreferenceFields()}
           />
         </div>
       </div>

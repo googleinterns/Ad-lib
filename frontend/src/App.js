@@ -81,15 +81,15 @@ export default function App() {
       console.log(response);
       if (response === null) {
         setCurrentPage('error');
-        clearInterval(interval);
+        clearTimeout(timeoutInterval);
       } else if (response.matchStatus === 'true') {
         match = response;
         setCurrentPage('match');
-        clearInterval(interval);
+        clearTimeout(timeoutInterval);
       }
     });
-    const interval = setInterval(parseServletResponseAndUpdateUI,
-        matchDataRefreshRateMilliseconds);
+    const timeoutInterval = setTimeout(parseServletResponseAndUpdateUI,
+      matchDataRefreshRateMilliseconds);
   }
 
   switch (currentPage) {

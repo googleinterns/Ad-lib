@@ -12,8 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// jest-dom adds custom jest matchers for asserting on DOM nodes.
-// allows you to do things like:
-// expect(element).toHaveTextContent(/react/i)
-// learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom/extend-expect';
+import React from 'react';
+import DurationDropdown from './DurationDropdown';
+import renderer from 'react-test-renderer';
+
+describe('Duration Dropdown', () => {
+  it('should be defined', () => {
+    expect(DurationDropdown).toBeDefined();
+  });
+  it('should render correctly', () => {
+    const tree = renderer.create(<DurationDropdown />).toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+});

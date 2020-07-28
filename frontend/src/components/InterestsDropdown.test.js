@@ -13,24 +13,34 @@
 // limitations under the License.
 
 import React from 'react';
-import App from './App';
+import InterestsDropdown from './InterestsDropdown';
 import renderer from 'react-test-renderer';
+import Adapter from 'enzyme-adapter-react-16';
+import {configure, shallow} from 'enzyme';
 
+configure({adapter: new Adapter()});
+
+let menuItems;
 beforeAll(() => {
-  const DATE_TO_USE = new Date('2020');
-  const mockedDate = Date;
-  global.Date = jest.fn(() => DATE_TO_USE);
-  global.Date.UTC = mockedDate.UTC;
-  global.Date.parse = mockedDate.parse;
-  global.Date.now = mockedDate.now;
+  menuItems = shallow(<InterestsDropdown />)
+      .find('[data-testid="menu-option"]');
 });
 
-describe('App', () => {
+describe('Interests Dropdown', () => {
   it('should be defined', () => {
-    expect(App).toBeDefined();
+    expect(InterestsDropdown).toBeDefined();
   });
   it('should render correctly', () => {
-    const tree = renderer.create(<App />).toJSON();
+    const tree = renderer.create(<InterestsDropdown />).toJSON();
     expect(tree).toMatchSnapshot();
+  });
+  it('should be populated with more than one interest', () => {
+    expect(menuItems.length).toBeGreaterThan(0);
+  });
+  it('should be populated in alphabetical order', () => {
+    const menuOptions = menuItems.map((node) => node.key());
+    const sortedMenuOptions = menuOptions.sort();
+
+    expect(menuOptions).toBe(sortedMenuOptions);
   });
 });

@@ -16,159 +16,163 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.FindMatchQuery;
 import com.google.sps.data.Match;
+import com.google.sps.data.MatchPreference;
+import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
+import com.google.sps.data.User;
+import com.google.sps.datastore.MatchDatastore;
+import com.google.sps.datastore.ParticipantDatastore;
+import com.google.sps.datastore.UserDatastore;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONObject;
 
-/** Servlet that returns some example content. */
+/** Servlet that adds a participant to the queue and tries to find them a match immediately */
 @WebServlet("/api/v1/add-participant")
 public class AddParticipantServlet extends HttpServlet {
 
-  // Datastore Key/Property constants
-  private static final String KEY_PARTICIPANT = "Participant";
-  private static final String KEY_MATCH = "Match";
-  private static final String PROPERTY_USERNAME = "username";
-  private static final String PROPERTY_STARTTIMEAVAILABLE = "startTimeAvailable";
-  private static final String PROPERTY_ENDTIMEAVAILABLE = "endTimeAvailable";
-  private static final String PROPERTY_DURATION = "duration";
-  private static final String PROPERTY_TIMESTAMP = "timestamp";
-  private static final String PROPERTY_FIRSTPARTICIPANT = "firstParticipant";
-  private static final String PROPERTY_SECONDPARTICIPANT = "secondParticipant";
+  // HTTP Request JSON key constants
+  private static final String REQUEST_FORM_DETAILS = "formDetails";
+  private static final String REQUEST_END_TIME_AVAILABLE = "endTimeAvailable";
+  private static final String REQUEST_DURATION = "duration";
+  private static final String REQUEST_ROLE = "role";
+  private static final String REQUEST_PRODUCT_AREA = "productArea";
+  private static final String REQUEST_SAVE_PREFERENCE = "savePreference";
+  private static final String REQUEST_MATCH_PREFERENCE = "matchPreference";
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Request parameter values
-    // TODO: Check input values are filled (before allowing to submit)
-    UserService userService = UserServiceFactory.getUserService();
-    String email = userService.getCurrentUser().getEmail();
-    if (email == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid email.");
-      return;
+
+    JSONObject obj = retrieveRequestBody(request);
+    if (obj == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not read request body");
     }
-    String username = email.split("@")[0];
+    JSONObject formDetails = obj.getJSONObject(REQUEST_FORM_DETAILS);
 
-    String timezone = request.getParameter("timezone");
-    ZoneId zoneId = ZoneId.of(timezone); // TODO: convert input timezone to valid ZoneId
-    ZonedDateTime startTimeAvailable =
-        ZonedDateTime.now(zoneId); // TODO: set to future time if not available now
-    Instant endTimeAvailableInstant =
-        Instant.ofEpochMilli(
-            Long.parseLong(
-                request.getParameter("endTimeAvailable"))); // TODO: figure out input format
-    ZonedDateTime endTimeAvailable = endTimeAvailableInstant.atZone(zoneId);
+    // Get endTimeAvailable and startTimeAvailable in milliseconds
+    long endTimeAvailable = formDetails.getLong(REQUEST_END_TIME_AVAILABLE);
+    long startTimeAvailable = Instant.now().toEpochMilli();
 
-    int duration = convertToPositiveInt(request.getParameter("duration"));
+    int duration = formDetails.getInt(REQUEST_DURATION);
     if (duration <= 0) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
       return;
     }
-
+    String role = formDetails.getString(REQUEST_ROLE);
+    String productArea = formDetails.getString(REQUEST_PRODUCT_AREA);
+    boolean savePreference = formDetails.getBoolean(REQUEST_SAVE_PREFERENCE);
+    String matchPreferenceString = formDetails.getString(REQUEST_MATCH_PREFERENCE);
+    MatchPreference matchPreference;
+    switch (matchPreferenceString) {
+      case "different":
+        matchPreference = MatchPreference.DIFFERENT;
+        break;
+      case "any":
+        matchPreference = MatchPreference.ANY;
+        break;
+      case "similar":
+        matchPreference = MatchPreference.SIMILAR;
+        break;
+      default:
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid match preference.");
+        return;
+    }
     long timestamp = System.currentTimeMillis();
 
-    // id is irrelevant, only relevant when getting from datastore
+    String username = getUsername();
+    if (username == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not retrieve email.");
+      return;
+    }
+
+    // Create new Participant from input parameters
     Participant newParticipant =
         new Participant(
-            /* id= */ -1L, username, startTimeAvailable, endTimeAvailable, duration, timestamp);
+            username,
+            startTimeAvailable,
+            endTimeAvailable,
+            duration,
+            role,
+            productArea,
+            matchPreference,
+            /* matchId=*/ 0,
+            MatchStatus.UNMATCHED,
+            timestamp);
 
+    // Get DatastoreService and instiate Match and Participant Datastores
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    MatchDatastore matchDatastore = new MatchDatastore(datastore);
+    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
+    UserDatastore userDatastore = new UserDatastore(datastore);
 
-    // Find immediate match if possibl;
-    FindMatchQuery query = new FindMatchQuery(Clock.systemUTC());
-    Match match = query.findMatch(getParticipants(datastore), newParticipant);
+    // Check if new participant already in datastore (unmatched, in queue)
+    // TODO: FIX! What if matched but not returned yet
+    Participant existingParticipant = participantDatastore.getParticipantFromUsername(username);
+    if (existingParticipant != null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Already submitted form");
+      return;
+    }
 
-    // Match found, add to datastore, delete matched participants from datastore
+    // Add User to datastore if opted to save preferences
+    if (savePreference) {
+      User user = new User(username, duration, role, productArea, matchPreference);
+      userDatastore.addUser(user);
+    }
+
+    // Find immediate match if possible
+    FindMatchQuery query = new FindMatchQuery(Clock.systemUTC(), participantDatastore);
+    Match match = query.findMatch(newParticipant);
+
     if (match != null) {
-      addMatchToDatastore(match, datastore);
-      deleteParticipantFromDatastore(match.getSecondParticipant(), datastore);
-    } else {
-      // Match not found, insert participant entity into datastore
-      Entity participantEntity = new Entity(KEY_PARTICIPANT);
-      participantEntity.setProperty(PROPERTY_USERNAME, username);
-      participantEntity.setProperty(PROPERTY_STARTTIMEAVAILABLE, startTimeAvailable);
-      participantEntity.setProperty(PROPERTY_ENDTIMEAVAILABLE, endTimeAvailable);
-      participantEntity.setProperty(PROPERTY_DURATION, duration);
-      participantEntity.setProperty(PROPERTY_TIMESTAMP, timestamp);
-      datastore.put(participantEntity);
-    }
+      // Match found, add to match datastore, update participant datastore
+      long matchId = matchDatastore.addMatch(match);
 
-    // Redirect back to the HTML page
-    response.sendRedirect("/index.html");
-  }
-
-  /** Return list of current participants from datastore */
-  private List<Participant> getParticipants(DatastoreService datastore) {
-    // TODO: only return participants who are available now (not sometime in future)
-
-    // Create and sort participant queries by time
-    Query query = new Query(KEY_PARTICIPANT).addSort("timestamp", SortDirection.DESCENDING);
-    PreparedQuery results = datastore.prepare(query);
-
-    // Convert list of entities to list of participants
-    List<Participant> participants = new ArrayList<Participant>();
-    for (Entity entity : results.asIterable()) {
-      long id = (long) entity.getKey().getId();
-      String username = (String) entity.getProperty(PROPERTY_USERNAME);
-      ZonedDateTime startTimeAvailable =
-          (ZonedDateTime) entity.getProperty(PROPERTY_STARTTIMEAVAILABLE);
-      ZonedDateTime endTimeAvailable =
-          (ZonedDateTime) entity.getProperty(PROPERTY_ENDTIMEAVAILABLE);
-      int duration = (int) entity.getProperty(PROPERTY_DURATION);
-      long timestamp = (long) entity.getProperty(PROPERTY_TIMESTAMP);
+      // Update current participant entity with new matchId and null availability
       Participant currParticipant =
-          new Participant(id, username, startTimeAvailable, endTimeAvailable, duration, timestamp);
-      participants.add(currParticipant);
+          participantDatastore.getParticipantFromUsername(match.getSecondParticipantUsername());
+      participantDatastore.addParticipant(currParticipant.foundMatch(matchId));
+
+      // Add new participant to datastore with new matchId and null availability
+      participantDatastore.addParticipant(newParticipant.foundMatch(matchId));
+    } else {
+      // Match not found, add participant to datastore
+      participantDatastore.addParticipant(newParticipant);
     }
-    return participants;
+
+    // Confirm received form input
+    response.setContentType("text/plain;charset=UTF-8");
+    response.getWriter().println("Received form input details!");
   }
 
-  /** Add Match pair to datastore */
-  private void addMatchToDatastore(Match match, DatastoreService datastore) {
-    // Set properties of entity
-    Entity matchEntity = new Entity(KEY_MATCH);
-    matchEntity.setProperty(PROPERTY_FIRSTPARTICIPANT, match.getFirstParticipant());
-    matchEntity.setProperty(PROPERTY_SECONDPARTICIPANT, match.getSecondParticipant());
-    matchEntity.setProperty(PROPERTY_DURATION, match.getDuration());
-    matchEntity.setProperty(PROPERTY_TIMESTAMP, match.getTimestamp());
-
-    // Insert entity into datastore
-    datastore.put(matchEntity);
-  }
-
-  /** Delete matched participants from datastore */
-  private void deleteParticipantFromDatastore(Participant participant, DatastoreService datastore) {
-    Key participantEntityKey = KeyFactory.createKey(KEY_PARTICIPANT, participant.getId());
-    datastore.delete(participantEntityKey);
-  }
-
-  /** Return positive integer value, or -1 if invalid or negative */
-  private static int convertToPositiveInt(String s) {
-    if (s == null) {
-      return -1;
-    }
+  /** Retrieve JSON body payload and convert to a JSONObject for parsing purposes */
+  private JSONObject retrieveRequestBody(HttpServletRequest request) throws IOException {
+    StringBuilder requestBuffer = new StringBuilder();
     try {
-      int parsed = Integer.parseInt(s);
-      return (parsed >= 0) ? parsed : -1;
-    } catch (NumberFormatException e) {
-      return -1;
+      BufferedReader reader = request.getReader();
+      String currentLine;
+      while ((currentLine = reader.readLine()) != null) {
+        requestBuffer.append(currentLine);
+      }
+    } catch (IOException e) {
+      return null;
     }
+    return new JSONObject(requestBuffer.toString());
+  }
+
+  /** Retrieve user email address via Users API and parse for username */
+  private String getUsername() {
+    UserService userService = UserServiceFactory.getUserService();
+    String email = userService.getCurrentUser().getEmail();
+    return email != null ? email.split("@")[0] : null;
   }
 }

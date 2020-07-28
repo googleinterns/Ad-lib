@@ -30,6 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 @RunWith(JUnit4.class)
 public final class RemoveParticipantServletTest {
 
+  private static final RemoveParticipantServlet removeParticipantServlet = mock(RemoveParticipantServlet.class);
+
   // Default values
   private static final long START_TIME_AVAILABLE_DEFAULT = 0;
   private static final long END_TIME_AVAILABLE_DEFAULT =
@@ -43,16 +45,16 @@ public final class RemoveParticipantServletTest {
   private static final long TIMESTAMP_DEFAULT = 0;
   private static final String USER = "User";
 
+  // Get DatastoreService and instantiate Participant Datastore
+  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private static final ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
+
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
   @Before
   public void setUp() {
     helper.setUp();
-
-    // Get DatastoreService and instantiate Participant Datastore
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
 
     // Add one participant to datastore
     Participant participant =
@@ -67,7 +69,6 @@ public final class RemoveParticipantServletTest {
             MATCH_ID_DEFAULT,
             MATCH_STATUS_DEFAULT,
             TIMESTAMP_DEFAULT);
-
     participantDatastore.addParticipant(participant);
   }
 
@@ -76,9 +77,14 @@ public final class RemoveParticipantServletTest {
     helper.tearDown();
   }
 
+  @Begin
+  public void setUpTests() {
+    when(removeParticipantServlet.getUsername()).thenReturn("User");
+  }
+
   @Test
   public void testDoPost_shouldRemoveParticipant() {
-    participantDatastore.removeParticipant(participant.getUsername());
+    participantDatastore.removeParticipant(removeParticipantServlet.getUsername());
 
     Participant participantFromUsername = participantDatastore.getParticipantFromUsername(PERSON_A);
     assertThat(participantFromUsername).isNull();

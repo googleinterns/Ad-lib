@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from 'react';
-import NoMatchPage from './NoMatchPage'
+import NoMatchPage from './NoMatchPage';
 import renderer from 'react-test-renderer';
 
 describe('NoMatch Page', () => {

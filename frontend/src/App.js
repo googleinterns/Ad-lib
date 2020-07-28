@@ -86,7 +86,9 @@ export default function App() {
         setCurrentPage('match');
         clearTimeout(timeoutInterval);
       } else if (response.matchStatus === 'expired') {
-        window.matchUserInfo = response;
+        window.noMatchDuration = response.duration;
+        const endTimeAvailableDate = new Date(response.endTimeAvailable);
+        window.noMatchEndTimeAvailable = endTimeAvailableDate.toString();
         setCurrentPage('no-match');
         clearTimeout(timeoutInterval);
       }
@@ -133,7 +135,10 @@ export default function App() {
         <div>
           <MenuBar />
           <div className={classes.centerHorizontal}>
-            <NoMatchPage matchInformation={window.matchUserInfo}/>
+            <NoMatchPage
+              noMatchEndTimeAvailable={window.noMatchEndTimeAvailable}
+              noMatchDuration={window.noMatchDuration}
+            />
           </div>
         </div>
       );

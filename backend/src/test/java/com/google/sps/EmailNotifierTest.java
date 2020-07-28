@@ -13,7 +13,6 @@ import com.google.sps.notifs.EmailNotifier;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.GeneralSecurityException;
 import java.util.Properties;
 import javax.mail.Address;
 import javax.mail.MessagingException;
@@ -40,8 +39,8 @@ public class EmailNotifierTest {
 
   @Before
   public void setUp() throws IOException {
-    testEmail = "jdoe@gmail.com";
-    testName = "John";
+    testEmail = "grantjustice@google.com";
+    testName = "grantjustice";
     testString = "Text Text";
     gmail = mock(Gmail.class);
     // Mock to return list of users
@@ -50,7 +49,7 @@ public class EmailNotifierTest {
     messages = mock(Gmail.Users.Messages.class);
     send = mock(Gmail.Users.Messages.Send.class);
     // Test Instance of email notifier class.
-    emailNotifier = new EmailNotifier(testName, testEmail, gmail);
+    emailNotifier = new EmailNotifier(gmail);
     // Emulating real behavior due to when method, will return list of users.
     when(gmail.users()).thenReturn(users);
     // Emulating real behaviour due to when method, will return list of messages
@@ -68,50 +67,58 @@ public class EmailNotifierTest {
   }
 
   @Test
-  public void testMessageHasCorrectApplicationName()
-      throws MessagingException, IOException, GeneralSecurityException {
+  public void testMessageHasCorrectApplicationName() throws MessagingException, IOException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
 
-    emailNotifier.notifyUser();
+    emailNotifier.sendExpiredEmail(testName, testEmail);
 
     verify(messages).send(any(), argument.capture());
     String applicationName = convertToMimeMessage(argument.getValue()).getFrom()[0].toString();
-    assertThat(applicationName).isEqualTo("Adlib-Step@gmail.com");
+    assertThat(applicationName).isEqualTo("grantjustice@google.com");
   }
 
   @Test
-  public void testMessageHasCorrectSubject()
-      throws MessagingException, IOException, GeneralSecurityException {
+  public void testMessageHasMatchFoundSubject() throws MessagingException, IOException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
 
-    emailNotifier.notifyUser();
+    emailNotifier.sendMatchEmail(testName, testEmail);
 
     verify(messages).send(any(), argument.capture());
     String subjectName = convertToMimeMessage(argument.getValue()).getSubject();
-    assertThat(subjectName).isEqualTo("Ad-Lib Meeting Found");
+    assertThat(subjectName).isEqualTo("Ad-lib: We found you a match!");
   }
 
   @Test
-  public void testMessageShouldHaveCorrectBodyText()
-      throws MessagingException, IOException, GeneralSecurityException {
+  public void testMessageHasMatchExpiredSubject() throws MessagingException, IOException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
 
-    emailNotifier.notifyUser();
+    emailNotifier.sendExpiredEmail(testName, testEmail);
+
+    verify(messages).send(any(), argument.capture());
+    String subjectName = convertToMimeMessage(argument.getValue()).getSubject();
+    assertThat(subjectName).isEqualTo("Ad-lib: Sorry, we couldn't find you a match!");
+  }
+
+  @Test
+  public void testMessageShouldHaveCorrectBodyText() throws MessagingException, IOException {
+    ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
+
+    emailNotifier.sendMatchEmail(testName, testEmail);
 
     verify(messages).send(any(), argument.capture());
     String bodyText = convertToMimeMessage(argument.getValue()).getContent().toString();
     assertThat(bodyText)
         .isEqualTo(
-            " Hey John Please Join your Ad-Lib meeting via the link below : \n"
-                + " http://meet.google.com/new");
+            " We found you a match with grantjustice "
+                + " Check your calendar for your meeting event,"
+                + " and feel free to join the Meet call now!\n");
   }
 
   @Test
-  public void testMessageShouldHaveIncorrectBodyText()
-      throws MessagingException, IOException, GeneralSecurityException {
+  public void testMessageShouldHaveIncorrectBodyText() throws MessagingException, IOException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
 
-    emailNotifier.notifyUser();
+    emailNotifier.sendMatchEmail(testName, testEmail);
 
     verify(messages).send(eq("me"), argument.capture());
     String realString = convertToMimeMessage(argument.getValue()).getContent().toString();
@@ -119,11 +126,10 @@ public class EmailNotifierTest {
   }
 
   @Test
-  public void testMessageShouldHaveCorrectRecipients()
-      throws MessagingException, IOException, GeneralSecurityException {
+  public void testMessageShouldHaveCorrectRecipients() throws MessagingException, IOException {
     ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
 
-    emailNotifier.notifyUser();
+    emailNotifier.sendExpiredEmail(testName, testEmail);
 
     verify(messages).send(any(), argument.capture());
     Address[] allRecipients = convertToMimeMessage(argument.getValue()).getAllRecipients();

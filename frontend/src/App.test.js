@@ -38,12 +38,13 @@ describe('App', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  it('should initiate GET request using axios() to servlet', async () => {
+  it('should initiate GET request using axios() to servlet', () => {
     const mockMatchStatus = {matchStatus: 'true'};
     const mockData = {data: mockMatchStatus};
     axios.get.mockResolvedValue(mockData);
 
-    const response = await fetchMatch();
-    return expect(response).toEqual(mockMatchStatus);
+    return fetchMatch().then((response) => {
+      expect(response).toEqual(mockMatchStatus);
+    });
   });
 });

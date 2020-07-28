@@ -45,8 +45,8 @@ public class SearchMatchServlet extends HttpServlet {
 
   // JSON key constants
   private static final String JSON_MATCH_STATUS = "matchStatus";
-  private static final String JSON_FIRST_PARTICIPANT_USERNAME = "firstParticipantUsername";
-  private static final String JSON_SECOND_PARTICIPANT_USERNAME = "secondParticipantUsername";
+  private static final String JSON_THIS_USERNAME = "thisUsername";
+  private static final String JSON_MATCH_USERNAME = "matchUsername";
   private static final String JSON_DURATION = "duration";
 
   // Create GmailFactory and use it to instantiate Email Notifier
@@ -68,8 +68,8 @@ public class SearchMatchServlet extends HttpServlet {
     Participant participant = participantDatastore.getParticipantFromUsername(getUsername());
     if (participant == null) {
       response.sendError(
-          HttpServletResponse.SC_BAD_REQUEST,
-          "Participant with username " + getUsername() + "does not exist.");
+          HttpServletResponse.SC_CONFLICT,
+          "Participant with username " + getUsername() + "does not exist in datastore.");
       return;
     }
 
@@ -90,14 +90,13 @@ public class SearchMatchServlet extends HttpServlet {
     Match match = matchDatastore.getMatchFromId(matchId);
     if (match == null) {
       response.sendError(
-          HttpServletResponse.SC_BAD_REQUEST,
+          HttpServletResponse.SC_BAD_GATEWAY,
           "No match entity in datastore with match id " + matchId + ".");
       return;
     }
 
     // Remove matched participants from datastore
-    participantDatastore.removeParticipant(match.getFirstParticipantUsername());
-    participantDatastore.removeParticipant(match.getSecondParticipantUsername());
+    participantDatastore.removeParticipant(getUsername());
 
     sendMatchResponse(response, match);
   }
@@ -138,10 +137,15 @@ public class SearchMatchServlet extends HttpServlet {
 
   /** Send JSON response for found a match */
   private void sendMatchResponse(HttpServletResponse response, Match match) throws IOException {
+    String thisUsername = getUsername();
+    String matchUsername =
+        thisUsername.equals(match.getFirstParticipantUsername())
+            ? match.getSecondParticipantUsername()
+            : match.getFirstParticipantUsername();
     JSONObject matchExists = new JSONObject();
     matchExists.put(JSON_MATCH_STATUS, "true");
-    matchExists.put(JSON_FIRST_PARTICIPANT_USERNAME, match.getFirstParticipantUsername());
-    matchExists.put(JSON_SECOND_PARTICIPANT_USERNAME, match.getSecondParticipantUsername());
+    matchExists.put(JSON_THIS_USERNAME, thisUsername);
+    matchExists.put(JSON_MATCH_USERNAME, matchUsername);
     matchExists.put(JSON_DURATION, match.getDuration());
     sendMatchEmailResponse();
     // Send the JSON back as the response
@@ -159,6 +163,7 @@ public class SearchMatchServlet extends HttpServlet {
     return email != null ? email.split("@")[0] : null;
   }
 
+  /** Create or get and return EmailNotifier */
   private EmailNotifier createOrGetEmailNotifier() throws GeneralSecurityException, IOException {
     if (emailNotifier != null) {
       return emailNotifier;
@@ -167,6 +172,7 @@ public class SearchMatchServlet extends HttpServlet {
     return emailNotifier;
   }
 
+  /** Send email notification when found a match */
   private void sendMatchEmailResponse() {
     try {
       emailNotifier = createOrGetEmailNotifier();
@@ -176,6 +182,7 @@ public class SearchMatchServlet extends HttpServlet {
     }
   }
 
+  /** Send email notification when participant is expired */
   private void sendExpiredEmailResponse() {
     try {
       emailNotifier = createOrGetEmailNotifier();

@@ -117,14 +117,6 @@ public class AddParticipantServlet extends HttpServlet {
             MatchStatus.UNMATCHED,
             timestamp);
 
-    // Check if new participant already in datastore (unmatched, in queue)
-    // TODO: Fix
-    /*Participant existingParticipant = participantDatastore.getParticipantFromUsername(username);
-    if (existingParticipant != null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Already submitted form");
-      return;
-    }*/
-
     // Add User to datastore if opted to save preferences
     if (savePreference) {
       User user = new User(username, duration, role, productArea, interests, matchPreference);
@@ -140,9 +132,9 @@ public class AddParticipantServlet extends HttpServlet {
       long matchId = matchDatastore.addMatch(match);
 
       // Update current participant entity with new matchId and null availability
-      Participant currParticipant =
+      Participant secondParticipant =
           participantDatastore.getParticipantFromUsername(match.getSecondParticipantUsername());
-      participantDatastore.addParticipant(currParticipant.foundMatch(matchId));
+      participantDatastore.addParticipant(secondParticipant.foundMatch(matchId));
 
       // Add new participant to datastore with new matchId and null availability
       participantDatastore.addParticipant(newParticipant.foundMatch(matchId));

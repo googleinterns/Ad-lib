@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from 'react';
-import LoadingPage from './LoadingPage'
+import LoadingPage from './LoadingPage';
 import renderer from 'react-test-renderer';
 
 describe('Loading Page', () => {

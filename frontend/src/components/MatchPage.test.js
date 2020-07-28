@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from 'react';
-import MatchPage from './MatchPage'
+import MatchPage from './MatchPage';
 import renderer from 'react-test-renderer';
 
 describe('Match Page', () => {

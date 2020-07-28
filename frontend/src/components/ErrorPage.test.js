@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from 'react';
-import ErrorPage from './ErrorPage'
+import ErrorPage from './ErrorPage';
 import renderer from 'react-test-renderer';
 
 describe('Error Page', () => {

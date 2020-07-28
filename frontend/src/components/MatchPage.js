@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import {makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -27,6 +28,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Add matchInfomation to props validation
+MatchPage.propTypes = {
+  matchInformation: PropTypes.string,
+};
+
 /**
  * Define MatchPage component
  * @param {Object} props
@@ -39,10 +45,9 @@ export default function MatchPage(props) {
       <Card className={classes.content}>
         <CardContent>
           <h3>We found you a match!</h3>
-          {/* TO-DO(#78): Display more personalized info on page*/}
-          <p>This Googler is so excited to meet you.</p>
+          <p>{props.matchInformation} is so excited to meet you!</p>
           <p>Please check your Calendar to find the event and Meet link and
-          join to meet your new friend</p>
+          join to meet your new friend.</p>
         </CardContent>
       </Card>
     </div>

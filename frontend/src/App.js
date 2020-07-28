@@ -55,7 +55,6 @@ export async function fetchMatch() {
  * @return {App} App component
  */
 export default function App() {
-  let match;
   const classes = useStyles();
   const matchDataRefreshRateMilliseconds = 30000;
   const defaultPageView = 'form';
@@ -81,14 +80,20 @@ export default function App() {
       console.log(response);
       if (response === null) {
         setCurrentPage('error');
-        clearInterval(interval);
+        clearTimeout(timeoutInterval);
       } else if (response.matchStatus === 'true') {
-        match = response;
+        window.matchUserInfo = response.matchUsername;
         setCurrentPage('match');
-        clearInterval(interval);
+        clearTimeout(timeoutInterval);
+      } else if (response.matchStatus === 'expired') {
+        window.noMatchDuration = response.duration;
+        const endTimeAvailableDate = new Date(response.endTimeAvailable);
+        window.noMatchEndTimeAvailable = endTimeAvailableDate.toString();
+        setCurrentPage('no-match');
+        clearTimeout(timeoutInterval);
       }
     });
-    const interval = setInterval(parseServletResponseAndUpdateUI,
+    const timeoutInterval = setTimeout(parseServletResponseAndUpdateUI,
         matchDataRefreshRateMilliseconds);
   }
 
@@ -121,7 +126,7 @@ export default function App() {
         <div>
           <MenuBar />
           <div className={classes.centerHorizontal}>
-            <MatchPage matchInformation={match}/>
+            <MatchPage matchInformation={window.matchUserInfo}/>
           </div>
         </div>
       );
@@ -130,7 +135,10 @@ export default function App() {
         <div>
           <MenuBar />
           <div className={classes.centerHorizontal}>
-            <NoMatchPage matchInformation={match}/>
+            <NoMatchPage
+              noMatchEndTimeAvailable={window.noMatchEndTimeAvailable}
+              noMatchDuration={window.noMatchDuration}
+            />
           </div>
         </div>
       );

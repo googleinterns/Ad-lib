@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from 'react';
-import FormContent from './FormContent'
+import FormContent from './FormContent';
 import renderer from 'react-test-renderer';
 
 describe('Form Content', () => {

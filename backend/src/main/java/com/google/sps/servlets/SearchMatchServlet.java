@@ -33,7 +33,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import main.java.com.google.sps.GmailFactory;
+import main.java.com.google.sps.GoogleClassFactory;
 import org.json.simple.JSONObject;
 
 /** Servlet that searches for the participant's current match and removes participant if expired */
@@ -49,8 +49,8 @@ public class SearchMatchServlet extends HttpServlet {
   private static final String JSON_SECOND_PARTICIPANT_USERNAME = "secondParticipantUsername";
   private static final String JSON_DURATION = "duration";
 
-  // Create GmailFactory and use it to instantiate Email Notifier
-  private final GmailFactory gmFactory = new GmailFactory();
+  // Create GoogleClassFactory and use it to instantiate Email Notifier
+  private final GoogleClassFactory gmFactory = new GoogleClassFactory();
   // Get DatastoreService and instiate Match and Participant Datastores
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private final MatchDatastore matchDatastore = new MatchDatastore(datastore);
@@ -163,7 +163,7 @@ public class SearchMatchServlet extends HttpServlet {
     if (emailNotifier != null) {
       return emailNotifier;
     }
-    emailNotifier = new EmailNotifier(gmFactory.build());
+    emailNotifier = new EmailNotifier(gmFactory.buildGmail());
     return emailNotifier;
   }
 

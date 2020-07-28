@@ -10,6 +10,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.api.services.calendar.Calendar;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.common.collect.ImmutableList;
@@ -21,7 +22,7 @@ import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
-public class GmailFactory {
+public class GoogleClassFactory {
 
   /**
    * Global instance of the scopes required by this quickstart. If modifying these scopes, delete
@@ -60,9 +61,17 @@ public class GmailFactory {
     return new AuthorizationCodeInstalledApp(flow, receiver).authorize(AUTH_USER);
   }
 
-  public Gmail build() throws GeneralSecurityException, IOException {
+  public Gmail buildGmail() throws GeneralSecurityException, IOException {
+
     NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     return new Gmail.Builder(httpTransport, JSON_FACTORY, getCredentials(httpTransport))
+        .setApplicationName(APPLICATION_NAME)
+        .build();
+  }
+
+  public Calendar buildCalendar() throws IOException, GeneralSecurityException {
+    NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    return new Calendar.Builder(httpTransport, JSON_FACTORY, getCredentials(httpTransport))
         .setApplicationName(APPLICATION_NAME)
         .build();
   }

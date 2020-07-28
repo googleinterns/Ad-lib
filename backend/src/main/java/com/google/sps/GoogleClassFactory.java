@@ -68,11 +68,11 @@ public class GoogleClassFactory {
         .setApplicationName(APPLICATION_NAME)
         .build();
   }
-  
+
   public Calendar buildCalendar() throws IOException, GeneralSecurityException {
     NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     return new Calendar.Builder(httpTransport, JSON_FACTORY, getCredentials(httpTransport))
-            .setApplicationName(APPLICATION_NAME)
-            .build();
+        .setApplicationName(APPLICATION_NAME)
+        .build();
   }
-  }
+}

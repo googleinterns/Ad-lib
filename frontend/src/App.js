@@ -89,7 +89,7 @@ export default function App() {
       }
     });
     const timeoutInterval = setTimeout(parseServletResponseAndUpdateUI,
-      matchDataRefreshRateMilliseconds);
+        matchDataRefreshRateMilliseconds);
   }
 
   switch (currentPage) {

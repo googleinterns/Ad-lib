@@ -30,7 +30,7 @@ import org.apache.commons.codec.binary.Base64;
 public class EmailNotifier {
 
   //   TODO(#35): Create a dummy email account for ad lib itself to send emails.
-  private static final String APPLICATION_EMAIL = "Adlib-Step@gmail.com";
+  private static final String APPLICATION_EMAIL = "grantjustice@google.com";
 
   /**
    * The user's email address. The special value me can be used to indicate the authenticated user.
@@ -113,7 +113,7 @@ public class EmailNotifier {
             expiredRecipientEmail,
             "Ad-lib: Sorry, we couldn't find you a match!",
             String.format(
-                " Sorry %s We couldn't find a match for you this time, but we encourage you to "
+                " Sorry %s, we couldn't find a match for you this time, but we encourage you to "
                     + " please try again later! \n "
                     + " Best, \n"
                     + " The Ad-lib team \n",

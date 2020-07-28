@@ -142,6 +142,8 @@ export default function Form(props) {
       savePreference: savePreference,
     };
 
+    console.log(formDetails);
+
     // Send form details to AddParticipantServlet and alert user on success
     axios.post('/api/v1/add-participant', {formDetails})
         .then((response) => {

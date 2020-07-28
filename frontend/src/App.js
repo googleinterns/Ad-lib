@@ -12,14 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import axios from 'axios';
 import {makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
 import './App.css';
-import MenuBar from './components/MenuBar.js';
-import Form from './components/Form.js';
+import MenuBar from './components/MenuBar';
+import Form from './components/Form';
+import LoadingPage from './components/LoadingPage';
+import MatchPage from './components/MatchPage';
+import NoMatchPage from './components/NoMatchPage';
+import ErrorPage from './components/ErrorPage';
+import FormContent from './components/FormContent';
 
 /**
  * Establishes style to use on rendering components
@@ -52,51 +56,97 @@ export async function fetchMatch() {
  */
 export default function App() {
   const classes = useStyles();
-  const matchDataRefreshRate = 5000;
-  const MATCHED = 'Matched';
-  const UNMATCHED = 'Unmatched';
-  const [matchStatus, setMatchStatus] = React.useState(UNMATCHED);
+  const matchDataRefreshRateMilliseconds = 30000;
+  const defaultPageView = 'form';
+  const pageViewKey = 'pageViewState';
 
-  /** Initiate GET request to search-match servlet */
+  /**
+   * Set current page view to state retrieved from local storage or
+   * default view if no state is currently saved
+   * */
+  const [currentPage, setCurrentPage] = React.useState(
+      localStorage.getItem(pageViewKey) || defaultPageView,
+  );
+
+  // Load page view state from local storage using useEffect hook
+  useEffect(() => {
+    localStorage.setItem(pageViewKey, currentPage);
+  }, [pageViewKey, currentPage]);
+
+  /** Parse servlet response and update page view */
   function parseServletResponseAndUpdateUI() {
+    setCurrentPage('loading');
     fetchMatch().then((response) => {
       console.log(response);
       if (response === null) {
-        // TO-DO(#76): Add 'Oops, something went wrong' page view
-        alert('Oops, something went wrong. Please try again later');
-        clearInterval(interval);
+        setCurrentPage('error');
+        clearTimeout(timeoutInterval);
       } else if (response.matchStatus === 'true') {
-        setMatchStatus(MATCHED);
-        clearInterval(interval);
+        window.matchUserInfo = response.matchUsername;
+        setCurrentPage('match');
+        clearTimeout(timeoutInterval);
+      } else if (response.matchStatus === 'expired') {
+        window.matchUserInfo = response;
+        setCurrentPage('no-match');
+        clearTimeout(timeoutInterval);
       }
     });
-    const interval = setInterval(parseServletResponseAndUpdateUI,
-        matchDataRefreshRate);
+    const timeoutInterval = setTimeout(parseServletResponseAndUpdateUI,
+        matchDataRefreshRateMilliseconds);
   }
 
-  return (
-    <div>
-      <MenuBar />
-      <div className={classes.centerHorizontal}>
-        <Card className={classes.content}>
-          <CardContent>
-            <h3>Meet fellow Googlers <em>now</em>!</h3>
-            <p>Miss bumping into new faces at the office? Want an easy, fun,
-               spontaneous way of meeting Googlers virtually? Now you can!</p>
-            <p>Ad-lib matches you with a fellow Googler in the queue, notifies
-               you through email when you’ve been matched, and adds an event to
-               your Calendar with a Meet link for you to join immediately! It
-               also provides a starter question to get the conversation
-               flowing!</p>
-          </CardContent>
-        </Card>
-        <Card className={classes.content}>
-          <Form
-            onSubmit={parseServletResponseAndUpdateUI}
-          />
-        </Card>
-      </div>
-      <p id="match-status">{matchStatus}</p>
-    </div>
-  );
+  switch (currentPage) {
+    case 'form':
+      return (
+        <div>
+          <MenuBar />
+          <div className={classes.centerHorizontal}>
+            <FormContent />
+            <Card className={classes.content}>
+              <Form
+                onSubmit={parseServletResponseAndUpdateUI}
+              />
+            </Card>
+          </div>
+        </div>
+      );
+    case 'loading':
+      return (
+        <div>
+          <MenuBar />
+          <div className={classes.centerHorizontal}>
+            <LoadingPage />
+          </div>
+        </div>
+      );
+    case 'match':
+      return (
+        <div>
+          <MenuBar />
+          <div className={classes.centerHorizontal}>
+            <MatchPage matchInformation={window.matchUserInfo}/>
+          </div>
+        </div>
+      );
+    case 'no-match':
+      return (
+        <div>
+          <MenuBar />
+          <div className={classes.centerHorizontal}>
+            <NoMatchPage matchInformation={window.matchUserInfo}/>
+          </div>
+        </div>
+      );
+    case 'error':
+      return (
+        <div>
+          <MenuBar />
+          <div className={classes.centerHorizontal}>
+            <ErrorPage />
+          </div>
+        </div>
+      );
+    default:
+      break;
+  }
 }

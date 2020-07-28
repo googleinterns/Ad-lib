@@ -37,8 +37,8 @@ export default function ErrorPage() {
     <div>
       <Card className={classes.content}>
         <CardContent>
-          <h3>Oops, something went wrong</h3>
-          <p>We encourage you to please try again later!</p>
+          <h3>Oops, something went wrong!</h3>
+          <p>We apologize for the inconvenience. Please try again later!</p>
         </CardContent>
       </Card>
     </div>

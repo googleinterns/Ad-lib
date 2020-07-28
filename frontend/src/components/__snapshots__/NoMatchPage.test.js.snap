@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NoMatch Page should render correctly 1`] = `
+<div>
+  <div
+    className="MuiPaper-root MuiCard-root makeStyles-content-1 MuiPaper-elevation1 MuiPaper-rounded"
+  >
+    <div
+      className="MuiCardContent-root"
+    >
+      <h3>
+        Sorry, we could not find you a match :(
+      </h3>
+      <p>
+        It looks like you are only free until
+        , and we could not find you a match to meet for 
+         minutes before then. Please try again later, and happy working!
+      </p>
+    </div>
+  </div>
+</div>
+`;

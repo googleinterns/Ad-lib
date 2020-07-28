@@ -30,7 +30,8 @@ const useStyles = makeStyles((theme) => ({
 
 // Add matchInfomation to props validation
 NoMatchPage.propTypes = {
-  matchInformation: PropTypes.string,
+  noMatchEndTimeAvailable: PropTypes.string,
+  noMatchDuration: PropTypes.string,
 };
 
 /**
@@ -40,17 +41,15 @@ NoMatchPage.propTypes = {
  */
 export default function NoMatchPage(props) {
   const classes = useStyles();
-  const endTimeAvailable = new Date(props.matchInformation.endTimeAvailable);
-
   return (
     <div>
       <Card className={classes.content}>
         <CardContent>
           <h3>Sorry, we could not find you a match :(</h3>
           <p>It looks like you are only free until
-             {endTimeAvailable.toString()}, and we could not find you a match
-             to meet for {props.matchInformation.duration} minutes before then.
-             Please try again later, and happy working!</p>
+            {props.noMatchEndTimeAvailable}, and we could not find you a match
+             to meet for {props.noMatchDuration} minutes before then. Please
+             try again later, and happy working!</p>
         </CardContent>
       </Card>
     </div>

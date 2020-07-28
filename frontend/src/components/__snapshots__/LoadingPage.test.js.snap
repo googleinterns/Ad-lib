@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Loading Page should render correctly 1`] = `
+<div>
+  <div
+    className="MuiPaper-root MuiCard-root makeStyles-content-1 MuiPaper-elevation1 MuiPaper-rounded"
+  >
+    <div
+      className="MuiCardContent-root"
+    >
+      <h3>
+        Finding you a match...
+      </h3>
+      <p>
+        <em>
+          This part may take some time as we wait for more Googlers to enter the queue.
+        </em>
+      </p>
+      <p>
+        While you’re waiting on this page, you can continue working, learn about 
+        <a
+          href="https://guidetoallyship.com/"
+        >
+          Allyship
+        </a>
+        , or even make a smoothie! We will send you an 
+        <b>
+          email 
+        </b>
+        and 
+        <b>
+          Calendar invite
+        </b>
+         as soon as we find you a match!
+      </p>
+      <button
+        className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
+        disabled={false}
+        onBlur={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={0}
+        type="button"
+      >
+        <span
+          className="MuiButton-label"
+        >
+          Exit Queue
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+`;

@@ -65,4 +65,44 @@ exports[`Interests Dropdown should render correctly 1`] = `
     </div>
   </div>
 </div>
+------------HTML PREVIEW---------------
+<div>
+  <div
+    class="MuiFormControl-root"
+    style="width:180px;"
+  >
+    <label
+      class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
+      id="interests"
+    >
+      Interests
+    </label>
+    <div class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl">
+      <div
+        aria-haspopup="listbox"
+        aria-label="interests"
+        aria-labelledby="interests"
+        class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+        id="interests"
+        role="button"
+      >
+        <span></span>
+      </div>
+      <input
+        aria-hidden
+        class="MuiSelect-nativeInput"
+        name="interests"
+        value=""
+      >
+      <svg
+        aria-hidden
+        class="MuiSvgIcon-root MuiSelect-icon"
+        focusable="false"
+        viewBox="0 0 24 24"
+      >
+        <path d="M7 10l5 5 5-5z"></path>
+      </svg>
+    </div>
+  </div>
+</div>
 `;

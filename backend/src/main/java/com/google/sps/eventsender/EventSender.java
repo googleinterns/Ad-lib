@@ -28,9 +28,8 @@ import java.util.List;
 public class EventSender {
 
   private static final String APPLICATION_NAME = "Ad-Lib";
-  private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
   private static final String TOKENS_DIRECTORY_PATH = "tokens";
-
+  private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
   /**
    * Global instance of the scopes required by this quickstart. If modifying these scopes, delete
    * your previously saved tokens/ folder.
@@ -38,32 +37,11 @@ public class EventSender {
   private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
 
   private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
+  private final Calendar service;
 
-  /**
-   * Creates an authorized Credential object.
-   *
-   * @param HTTP_TRANSPORT The network HTTP Transport.
-   * @return An authorized Credential object.
-   * @throws IOException If the credentials.json file cannot be found.
-   */
-  private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
-      throws IOException {
-    // Load client secrets.
-    InputStream in = EventSender.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
-    if (in == null) {
-      throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
-    }
-    GoogleClientSecrets clientSecrets =
-        GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
-
-    // Build flow and trigger user authorization request.
-    GoogleAuthorizationCodeFlow flow =
-        new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-            .setDataStoreFactory(new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH)))
-            .setAccessType("offline")
-            .build();
-    LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-    return new AuthorizationCodeInstalledApp(flow, receiver).authorize("me");
+  /** @param service Calendar service dependency. */
+  public EventSender(Calendar service) {
+    this.service = service;
   }
 
   /**
@@ -123,10 +101,9 @@ public class EventSender {
   /**
    * TODO(): Currently assumes that the users will be within the same timezone.
    *
-   * Main method of this
-   * API, creates an Ad-lib event ideally the moment that a match is found. Upon receiving the two
-   * participants as well as the meetingStart and meetingEndTime as well as their time zone
-   * configures the event as well as ads hangout link.
+   * <p>Main method of this API, creates an Ad-lib event ideally the moment that a match is found.
+   * Upon receiving the two participants as well as the meetingStart and meetingEndTime as well as
+   * their time zone configures the event as well as ads hangout link.
    *
    * @param participant1 First Participant that has been matched to someone
    * @param participant2 Second Participant that has been matched to someone
@@ -137,7 +114,7 @@ public class EventSender {
    * @param timezone Timezone that they plan to meet in.
    * @return
    */
-  public Event createAdLibEvent(
+  public Event createEvent(
       com.google.sps.data.Participant participant1,
       com.google.sps.data.Participant participant2,
       DateTime meetingStartTime,
@@ -149,7 +126,7 @@ public class EventSender {
         .setStart(setMeetingStartTime(meetingStartTime, timezone))
         .setEnd(setMeetingEndTime(meetingEndTime, timezone))
         .setReminders(setReminderNotifications())
-        .setConferenceData(createAdLibVideoMeeting())
+        .setConferenceData(createVideoMeeting())
         .setAttendees(Arrays.asList(createParticipantsArray(participant1, participant2)));
   }
 
@@ -158,7 +135,7 @@ public class EventSender {
    *
    * @return tHe ConferenceData Object
    */
-  public ConferenceData createAdLibVideoMeeting() {
+  public ConferenceData createVideoMeeting() {
     ConferenceData conferenceData = new ConferenceData();
     CreateConferenceRequest conferenceRequest =
         new CreateConferenceRequest().setRequestId("Ad-lib");
@@ -182,7 +159,7 @@ public class EventSender {
   }
 
   /**
-   * Main fucntion that wll be utilzied in implemntation. Makes os the the previously defined
+   * Main function that wll be utilized in implementation. Makes os the the previously defined
    * methods in order to , once given a recive, adds the events with to the calendar of the event
    * attendees.
    *
@@ -190,15 +167,7 @@ public class EventSender {
    * @throws IOException If the credentials folder is wrong
    * @throws GeneralSecurityException In case of any other exceptions
    */
-  public void addAdlibEventToCalendar(Event event) throws IOException, GeneralSecurityException {
-
-    // Build a new authorized API client service.
-    final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-    Calendar service =
-        new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-            .setApplicationName(APPLICATION_NAME)
-            .build();
-
+  public void addEventToCalendar(Event event) throws IOException, GeneralSecurityException {
     service
         .events()
         .insert(event.getAttendees().get(1).getEmail(), event)

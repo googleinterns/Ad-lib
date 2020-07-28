@@ -40,9 +40,9 @@ export default function MatchPage(props) {
         <CardContent>
           <h3>We found you a match!</h3>
           {/* TO-DO(#78): Display more personalized info on page*/}
-          <p>This Googler is so excited to meet you.</p>
+          <p>This Googler is so excited to meet you!</p>
           <p>Please check your Calendar to find the event and Meet link and
-          join to meet your new friend</p>
+          join to meet your new friend.</p>
         </CardContent>
       </Card>
     </div>

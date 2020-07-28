@@ -74,7 +74,7 @@ public class EmailNotifierTest {
 
     verify(messages).send(any(), argument.capture());
     String applicationName = convertToMimeMessage(argument.getValue()).getFrom()[0].toString();
-    assertThat(applicationName).isEqualTo("Adlib-Step@gmail.com");
+    assertThat(applicationName).isEqualTo("grantjustice@google.com");
   }
 
   @Test

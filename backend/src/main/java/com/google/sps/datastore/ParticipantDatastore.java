@@ -30,10 +30,8 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.sps.data.MatchPreference;
 import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
-import java.time.Clock;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -130,26 +128,23 @@ public final class ParticipantDatastore {
     return getParticipantFromEntity(entity);
   }
 
-  /** Return list of all unmatched participants with duration and compatible endTimeAvailable */
-  public List<Participant> getParticipantsCompatibleTimeAvailibility(
-      int duration, long endTimeAvailable, int paddingTime, Clock clock)
+  /** Return list of all unmatched participants with duration */
+  public List<Participant> getParticipantsCompatibleTimeAvailibility(int duration)
       throws DatastoreNeedIndexException {
+    Query query = new Query(KIND_PARTICIPANT);
+
     // Create filters to get only unmatched participants with compatible time availability
-    Filter sameDuration = new FilterPredicate(PROPERTY_DURATION, FilterOperator.EQUAL, duration);
-    Filter unmatched =
+    Filter sameDurationFilter =
+        new FilterPredicate(PROPERTY_DURATION, FilterOperator.EQUAL, duration);
+    Filter unmatchedFilter =
         new FilterPredicate(
             PROPERTY_MATCH_STATUS, FilterOperator.EQUAL, MatchStatus.UNMATCHED.getValue());
-    Filter compatibleTime =
-        new FilterPredicate(
-            PROPERTY_END_TIME_AVAILABLE,
-            FilterOperator.GREATER_THAN,
-            clock.millis() + TimeUnit.MINUTES.toMillis(duration + paddingTime));
 
     // Combine filters into one, and filter query
-    CompositeFilter composite =
-        CompositeFilterOperator.and(sameDuration, unmatched, compatibleTime);
+    CompositeFilter compositeFilter =
+        CompositeFilterOperator.and(/*compatibleTimeFilter, */ sameDurationFilter, unmatchedFilter);
 
-    Query query = new Query(KIND_PARTICIPANT).setFilter(composite);
+    query.setFilter(compositeFilter);
 
     List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
     List<Participant> participants =

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<datastore-indexes
-  autoGenerate="true">
-    <datastore-index kind="Participant" ancestor="false" source="manual">
-      <property name="duration" direction="asc"/>
-      <property name="matchStatus" direction="asc"/>
-      <property name="endTimeAvailable" direction="asc"/>
-    </datastore-index>
-</datastore-indexes>

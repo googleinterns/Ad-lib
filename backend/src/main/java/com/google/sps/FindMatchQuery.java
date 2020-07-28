@@ -21,6 +21,7 @@ import com.google.sps.datastore.ParticipantDatastore;
 import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 
 /** Class used to find a match for new Participant with unmatched Participants in datastore */
@@ -51,11 +52,23 @@ public final class FindMatchQuery {
     // Get list of unmatched participants with same duration as and compatible time availaiblity
     // with firstParticipant
     List<Participant> compatibleTimeAvailabilityParticipants =
-        participantDatastore.getParticipantsCompatibleTimeAvailibility(
-            duration, firstParticipant.getEndTimeAvailable(), PADDING_MINUTES, clock);
+        participantDatastore.getParticipantsCompatibleTimeAvailibility(duration);
 
     // Compare first participant preferences with other participants to find match
     for (Participant secondParticipant : compatibleTimeAvailabilityParticipants) {
+      // Make sure the first participant is not the same as the second
+      if (firstParticipant.getUsername().equals(secondParticipant.getUsername())) {
+        continue;
+      }
+
+      // Check endTimeAvailable compatbility
+      boolean compatibleTime =
+          secondParticipant.getEndTimeAvailable()
+              <= clock.millis() + TimeUnit.MINUTES.toMillis(duration + PADDING_MINUTES);
+      if (compatibleTime) {
+        continue;
+      }
+
       // Check match preference compatibility and get combined preference if compatible
       MatchPreference combinedMatchPreference =
           getCombinedMatchPreference(

@@ -171,7 +171,7 @@ public final class FindMatchQueryTest {
   }
 
   @Test
-  public void compatibleTime() {
+  public void compatibleTimeNotDuration() {
     // Two participants who are compatible in available time but NOT duration
     Participant participantA =
         new Participant(
@@ -210,7 +210,7 @@ public final class FindMatchQueryTest {
   }
 
   @Test
-  public void compatibleDuration() {
+  public void compatibleDurationNotTime() {
     // Two participants who are compatible in duration but NOT available time
     Participant participantA =
         new Participant(

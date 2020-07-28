@@ -118,12 +118,12 @@ public class AddParticipantServlet extends HttpServlet {
             timestamp);
 
     // Check if new participant already in datastore (unmatched, in queue)
-    // TODO: FIX! What if matched but not returned yet
-    Participant existingParticipant = participantDatastore.getParticipantFromUsername(username);
+    // TODO: Fix
+    /*Participant existingParticipant = participantDatastore.getParticipantFromUsername(username);
     if (existingParticipant != null) {
-      response.sendError(HttpServletResponse.SC_CREATED, "Already submitted form");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Already submitted form");
       return;
-    }
+    }*/
 
     // Add User to datastore if opted to save preferences
     if (savePreference) {

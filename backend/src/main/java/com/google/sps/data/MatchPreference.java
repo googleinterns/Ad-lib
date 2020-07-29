@@ -41,4 +41,17 @@ public enum MatchPreference {
     }
     throw new IllegalStateException("Unknown enum value.");
   }
+
+  public static MatchPreference forStringValue(String value) {
+    switch (value) {
+      case "different":
+        return MatchPreference.DIFFERENT;
+      case "any":
+        return MatchPreference.ANY;
+      case "similar":
+        return MatchPreference.SIMILAR;
+      default:
+        return null;
+    }
+  }
 }

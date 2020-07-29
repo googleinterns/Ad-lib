@@ -47,6 +47,7 @@ public class SearchMatchServlet extends HttpServlet {
   private static final String JSON_MATCH_STATUS = "matchStatus";
   private static final String JSON_THIS_USERNAME = "thisUsername";
   private static final String JSON_MATCH_USERNAME = "matchUsername";
+  private static final String JSON_END_TIME_AVAILABLE = "endTimeAvailable";
   private static final String JSON_DURATION = "duration";
 
   // Create GmailFactory and use it to instantiate Email Notifier
@@ -68,7 +69,7 @@ public class SearchMatchServlet extends HttpServlet {
     Participant participant = participantDatastore.getParticipantFromUsername(getUsername());
     if (participant == null) {
       response.sendError(
-          HttpServletResponse.SC_CONFLICT,
+          HttpServletResponse.SC_BAD_REQUEST,
           "Participant with username " + getUsername() + "does not exist in datastore.");
       return;
     }
@@ -77,7 +78,7 @@ public class SearchMatchServlet extends HttpServlet {
     if (participant.getMatchStatus() == MatchStatus.UNMATCHED) {
       if (isExpired(participant)) {
         participantDatastore.removeParticipant(getUsername());
-        sendExpiredResponse(response);
+        sendExpiredResponse(response, participant);
         return;
       }
       // No match yet
@@ -90,7 +91,7 @@ public class SearchMatchServlet extends HttpServlet {
     Match match = matchDatastore.getMatchFromId(matchId);
     if (match == null) {
       response.sendError(
-          HttpServletResponse.SC_BAD_GATEWAY,
+          HttpServletResponse.SC_BAD_REQUEST,
           "No match entity in datastore with match id " + matchId + ".");
       return;
     }
@@ -117,10 +118,13 @@ public class SearchMatchServlet extends HttpServlet {
   }
 
   /** Send JSON response for expired participant that has been removed from datastore */
-  private void sendExpiredResponse(HttpServletResponse response) throws IOException {
+  private void sendExpiredResponse(HttpServletResponse response, Participant participant)
+      throws IOException {
     JSONObject expired = new JSONObject();
     expired.put(JSON_MATCH_STATUS, "expired");
-    sendExpiredEmailResponse();
+    expired.put(JSON_END_TIME_AVAILABLE, participant.getEndTimeAvailable());
+    expired.put(JSON_DURATION, participant.getDuration());
+    sendExpiredEmail();
     // Send the JSON back as the response
     response.setContentType("application/json");
     response.getWriter().println(expired.toString());
@@ -147,7 +151,7 @@ public class SearchMatchServlet extends HttpServlet {
     matchExists.put(JSON_THIS_USERNAME, thisUsername);
     matchExists.put(JSON_MATCH_USERNAME, matchUsername);
     matchExists.put(JSON_DURATION, match.getDuration());
-    sendMatchEmailResponse();
+    sendMatchEmail();
     // Send the JSON back as the response
     response.setContentType("application/json");
     response.getWriter().println(matchExists.toString());
@@ -173,7 +177,7 @@ public class SearchMatchServlet extends HttpServlet {
   }
 
   /** Send email notification when found a match */
-  private void sendMatchEmailResponse() {
+  private void sendMatchEmail() {
     try {
       emailNotifier = createOrGetEmailNotifier();
       emailNotifier.sendMatchEmail(getUsername(), userService.getCurrentUser().getEmail());
@@ -183,7 +187,7 @@ public class SearchMatchServlet extends HttpServlet {
   }
 
   /** Send email notification when participant is expired */
-  private void sendExpiredEmailResponse() {
+  private void sendExpiredEmail() {
     try {
       emailNotifier = createOrGetEmailNotifier();
       emailNotifier.sendExpiredEmail(getUsername(), userService.getCurrentUser().getEmail());

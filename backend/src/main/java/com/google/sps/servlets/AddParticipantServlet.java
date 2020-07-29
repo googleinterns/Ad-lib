@@ -65,7 +65,7 @@ public class AddParticipantServlet extends HttpServlet {
     // Retrieve JSON object request
     JSONObject obj = retrieveRequestBody(request);
     if (obj == null) {
-      response.sendError(HttpServletResponse.SC_ACCEPTED, "Could not read request body");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not read request body");
     }
     JSONObject formDetails = obj.getJSONObject(REQUEST_FORM_DETAILS);
 
@@ -76,7 +76,7 @@ public class AddParticipantServlet extends HttpServlet {
     // Get all participant inputs
     int duration = formDetails.getInt(REQUEST_DURATION);
     if (duration <= 0) {
-      response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Invalid duration.");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
       return;
     }
     String role = formDetails.getString(REQUEST_ROLE);
@@ -91,14 +91,14 @@ public class AddParticipantServlet extends HttpServlet {
     MatchPreference matchPreference =
         getMatchPreference(formDetails.getString(REQUEST_MATCH_PREFERENCE));
     if (matchPreference == null) {
-      response.sendError(HttpServletResponse.SC_CONFLICT, "Invalid match preference.");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid match preference.");
       return;
     }
     long timestamp = System.currentTimeMillis();
 
     String username = getUsername();
     if (username == null) {
-      response.sendError(HttpServletResponse.SC_CONTINUE, "Could not retrieve email.");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not retrieve email.");
       return;
     }
 

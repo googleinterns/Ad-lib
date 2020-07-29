@@ -39,11 +39,11 @@ public enum MatchPreference {
         return preference;
       }
     }
-    throw new IllegalStateException("Unknown enum value.");
+    throw new IllegalStateException("Unknown enum int value.");
   }
 
   public static MatchPreference forStringValue(String value) {
-    switch (value) {
+    switch (value.toLowerCase()) {
       case "different":
         return MatchPreference.DIFFERENT;
       case "any":
@@ -51,7 +51,7 @@ public enum MatchPreference {
       case "similar":
         return MatchPreference.SIMILAR;
       default:
-        return null;
+        throw new IllegalStateException("Unknown enum String value.");
     }
   }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="17" failures="0" name="com.google.sps.FindMatchQueryTest" time="0.436" errors="0" skipped="0">
+<testsuite tests="17" failures="0" name="com.google.sps.FindMatchQueryTest" time="0.581" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
     <property name="java.vm.version" value="11.0.7+10-post-Debian-3deb10u1"/>
@@ -60,21 +60,21 @@
     <property name="sun.cpu.endian" value="little"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase classname="com.google.sps.FindMatchQueryTest" name="oneFilledFiveOtherFilledThreeAllMatching" time="0.08"/>
-  <testcase classname="com.google.sps.FindMatchQueryTest" name="areBlankBothAny" time="0.013"/>
-  <testcase classname="com.google.sps.FindMatchQueryTest" name="barelyNotCompatibleAvailibility" time="0.02"/>
-  <testcase classname="com.google.sps.FindMatchQueryTest" name="areCompletelyDifferentPreferSimilar" time="0.023"/>
-  <testcase classname="com.google.sps.FindMatchQueryTest" name="areDifferentPreferDifferentAny" time="0.023"/>
-  <testcase classname="com.google.sps.FindMatchQueryTest" name="areSimilarNoPreference" time="0.022"/>
-  <testcase classname="com.google.sps.FindMatchQueryTest" name="compatibleDurationNotTime" time="0.042"/>
-  <testcase classname="com.google.sps.FindMatchQueryTest" name="compatibleTimeNotDuration" time="0.016"/>
-  <testcase classname="com.google.sps.FindMatchQueryTest" name="areDifferentNoPreference" time="0.018"/>
-  <testcase classname="com.google.sps.FindMatchQueryTest" name="compatibleTimeAndDuration" time="0.012"/>
-  <testcase classname="com.google.sps.FindMatchQueryTest" name="areDifferentPreferDifferent" time="0.018"/>
-  <testcase classname="com.google.sps.FindMatchQueryTest" name="threeParticipantsAC" time="0.016"/>
-  <testcase classname="com.google.sps.FindMatchQueryTest" name="threeParticipantsBC" time="0.024"/>
-  <testcase classname="com.google.sps.FindMatchQueryTest" name="threeParticipantsTwoMatches" time="0.052"/>
-  <testcase classname="com.google.sps.FindMatchQueryTest" name="barelyCompatibleAvailability" time="0.021"/>
-  <testcase classname="com.google.sps.FindMatchQueryTest" name="areSimilarPreferDifferent" time="0.019"/>
-  <testcase classname="com.google.sps.FindMatchQueryTest" name="areSimilarPreferSimilarAny" time="0.017"/>
+  <testcase classname="com.google.sps.FindMatchQueryTest" name="oneFilledFiveOtherFilledThreeAllMatching" time="0.154"/>
+  <testcase classname="com.google.sps.FindMatchQueryTest" name="areBlankBothAny" time="0.023"/>
+  <testcase classname="com.google.sps.FindMatchQueryTest" name="barelyNotCompatibleAvailibility" time="0.028"/>
+  <testcase classname="com.google.sps.FindMatchQueryTest" name="areCompletelyDifferentPreferSimilar" time="0.03"/>
+  <testcase classname="com.google.sps.FindMatchQueryTest" name="areDifferentPreferDifferentAny" time="0.033"/>
+  <testcase classname="com.google.sps.FindMatchQueryTest" name="areSimilarNoPreference" time="0.038"/>
+  <testcase classname="com.google.sps.FindMatchQueryTest" name="compatibleDurationNotTime" time="0.037"/>
+  <testcase classname="com.google.sps.FindMatchQueryTest" name="compatibleTimeNotDuration" time="0.027"/>
+  <testcase classname="com.google.sps.FindMatchQueryTest" name="areDifferentNoPreference" time="0.028"/>
+  <testcase classname="com.google.sps.FindMatchQueryTest" name="compatibleTimeAndDuration" time="0.019"/>
+  <testcase classname="com.google.sps.FindMatchQueryTest" name="areDifferentPreferDifferent" time="0.014"/>
+  <testcase classname="com.google.sps.FindMatchQueryTest" name="threeParticipantsAC" time="0.032"/>
+  <testcase classname="com.google.sps.FindMatchQueryTest" name="threeParticipantsBC" time="0.026"/>
+  <testcase classname="com.google.sps.FindMatchQueryTest" name="threeParticipantsTwoMatches" time="0.044"/>
+  <testcase classname="com.google.sps.FindMatchQueryTest" name="barelyCompatibleAvailability" time="0.014"/>
+  <testcase classname="com.google.sps.FindMatchQueryTest" name="areSimilarPreferDifferent" time="0.015"/>
+  <testcase classname="com.google.sps.FindMatchQueryTest" name="areSimilarPreferSimilarAny" time="0.019"/>
 </testsuite>

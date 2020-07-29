@@ -29,6 +29,8 @@ import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
 import com.google.sps.datastore.ParticipantDatastore;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +47,7 @@ public final class ParticipantDatastoreTest {
   private static final int DURATION_DEFAULT = 30;
   private static final String ROLE_DEFAULT = "Software engineer";
   private static final String PRODUCT_AREA_DEFAULT = "Ads";
+  private static final List<String> INTERESTS_DEFAULT = Arrays.asList("Books", "Travel");
   private static final MatchPreference MATCH_PREFERENCE_DEFAULT = MatchPreference.SIMILAR;
   private static final long MATCH_ID_DEFAULT = 0;
   private static final MatchStatus MATCH_STATUS_DEFAULT = MatchStatus.UNMATCHED;
@@ -53,8 +56,6 @@ public final class ParticipantDatastoreTest {
   // Some usernames
   private static final String PERSON_A = "Person A";
   private static final String PERSON_B = "Person B";
-  private static final String PERSON_C = "Person C";
-  private static final String PERSON_D = "Person D";
 
   // Datastore Key/Property constants
   private static final String KIND_PARTICIPANT = "Participant";
@@ -64,6 +65,7 @@ public final class ParticipantDatastoreTest {
   private static final String PROPERTY_DURATION = "duration";
   private static final String PROPERTY_ROLE = "role";
   private static final String PROPERTY_PRODUCT_AREA = "productArea";
+  private static final String PROPERTY_INTERESTS = "interests";
   private static final String PROPERTY_MATCH_PREFERENCE = "matchPreference";
   private static final String PROPERTY_MATCH_ID = "matchId";
   private static final String PROPERTY_MATCH_STATUS = "matchStatus";
@@ -96,6 +98,7 @@ public final class ParticipantDatastoreTest {
             DURATION_DEFAULT,
             ROLE_DEFAULT,
             PRODUCT_AREA_DEFAULT,
+            INTERESTS_DEFAULT,
             MATCH_PREFERENCE_DEFAULT,
             MATCH_ID_DEFAULT,
             MATCH_STATUS_DEFAULT,
@@ -114,6 +117,10 @@ public final class ParticipantDatastoreTest {
         .isEqualTo(DURATION_DEFAULT);
     assertThat((String) entity.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
     assertThat((String) entity.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
+    assertThat(
+            ParticipantDatastore.convertStringToList(
+                (String) entity.getProperty(PROPERTY_INTERESTS)))
+        .isEqualTo(INTERESTS_DEFAULT);
     assertThat(
             MatchPreference.forIntValue(
                 ((Long) entity.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()))
@@ -138,6 +145,7 @@ public final class ParticipantDatastoreTest {
             DURATION_DEFAULT,
             ROLE_DEFAULT,
             PRODUCT_AREA_DEFAULT,
+            INTERESTS_DEFAULT,
             MATCH_PREFERENCE_DEFAULT,
             MATCH_ID_DEFAULT,
             MATCH_STATUS_DEFAULT,
@@ -150,6 +158,7 @@ public final class ParticipantDatastoreTest {
             DURATION_DEFAULT,
             ROLE_DEFAULT,
             PRODUCT_AREA_DEFAULT,
+            INTERESTS_DEFAULT,
             MATCH_PREFERENCE_DEFAULT,
             MATCH_ID_DEFAULT,
             MATCH_STATUS_DEFAULT,
@@ -172,6 +181,10 @@ public final class ParticipantDatastoreTest {
     assertThat((String) entityA.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
     assertThat((String) entityA.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
     assertThat(
+            ParticipantDatastore.convertStringToList(
+                (String) entityA.getProperty(PROPERTY_INTERESTS)))
+        .isEqualTo(INTERESTS_DEFAULT);
+    assertThat(
             MatchPreference.forIntValue(
                 ((Long) entityA.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()))
         .isEqualTo(MATCH_PREFERENCE_DEFAULT);
@@ -189,6 +202,10 @@ public final class ParticipantDatastoreTest {
         .isEqualTo(DURATION_DEFAULT);
     assertThat((String) entityB.getProperty(PROPERTY_ROLE)).isEqualTo(ROLE_DEFAULT);
     assertThat((String) entityB.getProperty(PROPERTY_PRODUCT_AREA)).isEqualTo(PRODUCT_AREA_DEFAULT);
+    assertThat(
+            ParticipantDatastore.convertStringToList(
+                (String) entityB.getProperty(PROPERTY_INTERESTS)))
+        .isEqualTo(INTERESTS_DEFAULT);
     assertThat(
             MatchPreference.forIntValue(
                 ((Long) entityB.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()))
@@ -213,6 +230,7 @@ public final class ParticipantDatastoreTest {
             DURATION_DEFAULT,
             ROLE_DEFAULT,
             PRODUCT_AREA_DEFAULT,
+            INTERESTS_DEFAULT,
             MATCH_PREFERENCE_DEFAULT,
             MATCH_ID_DEFAULT,
             MATCH_STATUS_DEFAULT,
@@ -228,6 +246,7 @@ public final class ParticipantDatastoreTest {
     assertThat(participantFromUsername.getDuration()).isEqualTo(DURATION_DEFAULT);
     assertThat(participantFromUsername.getRole()).isEqualTo(ROLE_DEFAULT);
     assertThat(participantFromUsername.getProductArea()).isEqualTo(PRODUCT_AREA_DEFAULT);
+    assertThat(participantFromUsername.getInterests()).isEqualTo(INTERESTS_DEFAULT);
     assertThat(participantFromUsername.getMatchPreference()).isEqualTo(MATCH_PREFERENCE_DEFAULT);
     assertThat(participantFromUsername.getMatchId()).isEqualTo(MATCH_ID_DEFAULT);
     assertThat(participantFromUsername.getMatchStatus()).isEqualTo(MATCH_STATUS_DEFAULT);
@@ -247,6 +266,7 @@ public final class ParticipantDatastoreTest {
             DURATION_DEFAULT,
             ROLE_DEFAULT,
             PRODUCT_AREA_DEFAULT,
+            INTERESTS_DEFAULT,
             MATCH_PREFERENCE_DEFAULT,
             MATCH_ID_DEFAULT,
             MATCH_STATUS_DEFAULT,
@@ -269,6 +289,7 @@ public final class ParticipantDatastoreTest {
             DURATION_DEFAULT,
             ROLE_DEFAULT,
             PRODUCT_AREA_DEFAULT,
+            INTERESTS_DEFAULT,
             MATCH_PREFERENCE_DEFAULT,
             MATCH_ID_DEFAULT,
             MATCH_STATUS_DEFAULT,

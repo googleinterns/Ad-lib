@@ -16,6 +16,7 @@ package com.google.sps.data;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
+import java.util.List;
 
 /** A user who wants to be matched. */
 public final class Participant {
@@ -32,6 +33,8 @@ public final class Participant {
   private final String role;
   /** Product area at Google */
   private final String productArea;
+  /** List of interests */
+  private final List<String> interests;
   /** Whether they want to be matched with a similar, any, or different Googler */
   private final MatchPreference matchPreference;
   /** Id of match in datastore, 0 if never found a match (can assign 0 at construction) */
@@ -49,6 +52,7 @@ public final class Participant {
       int duration,
       String role,
       String productArea,
+      List<String> interests,
       MatchPreference matchPreference,
       long matchId,
       MatchStatus matchStatus,
@@ -62,6 +66,7 @@ public final class Participant {
     this.duration = duration;
     this.role = role;
     this.productArea = productArea;
+    this.interests = interests;
     this.matchPreference = matchPreference;
     this.matchId = matchId;
     this.matchStatus = matchStatus;
@@ -92,6 +97,10 @@ public final class Participant {
     return productArea;
   }
 
+  public List<String> getInterests() {
+    return interests;
+  }
+
   public MatchPreference getMatchPreference() {
     return matchPreference;
   }
@@ -117,6 +126,7 @@ public final class Participant {
         duration,
         role,
         productArea,
+        interests,
         matchPreference,
         newMatchId,
         MatchStatus.MATCHED,
@@ -132,6 +142,7 @@ public final class Participant {
         .add("role", role)
         .add("productArea", productArea)
         .add("matchPreference", matchPreference.getValue())
+        .add("interests", interests.toString())
         .add("matchId", matchId)
         .add("matchStatus", matchStatus.getValue())
         .add("timestamp", timestamp)

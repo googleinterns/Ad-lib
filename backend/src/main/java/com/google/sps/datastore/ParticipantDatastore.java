@@ -14,12 +14,13 @@
 
 package com.google.sps.datastore;
 
+import com.google.appengine.api.datastore.DatastoreNeedIndexException;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
@@ -29,10 +30,9 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.sps.data.MatchPreference;
 import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
-import java.time.Clock;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -47,6 +47,7 @@ public final class ParticipantDatastore {
   private static final String PROPERTY_DURATION = "duration";
   private static final String PROPERTY_ROLE = "role";
   private static final String PROPERTY_PRODUCT_AREA = "productArea";
+  private static final String PROPERTY_INTERESTS = "interests";
   private static final String PROPERTY_MATCH_PREFERENCE = "matchPreference";
   private static final String PROPERTY_MATCH_ID = "matchId";
   private static final String PROPERTY_MATCH_STATUS = "matchStatus";
@@ -70,6 +71,7 @@ public final class ParticipantDatastore {
     entity.setProperty(PROPERTY_DURATION, participant.getDuration());
     entity.setProperty(PROPERTY_ROLE, participant.getRole());
     entity.setProperty(PROPERTY_PRODUCT_AREA, participant.getProductArea());
+    entity.setProperty(PROPERTY_INTERESTS, convertListToString(participant.getInterests()));
     entity.setProperty(PROPERTY_MATCH_PREFERENCE, participant.getMatchPreference().getValue());
     entity.setProperty(PROPERTY_MATCH_ID, participant.getMatchId());
     entity.setProperty(PROPERTY_MATCH_STATUS, participant.getMatchStatus().getValue());
@@ -108,6 +110,7 @@ public final class ParticipantDatastore {
         ((Long) entity.getProperty(PROPERTY_DURATION)).intValue(),
         (String) entity.getProperty(PROPERTY_ROLE),
         (String) entity.getProperty(PROPERTY_PRODUCT_AREA),
+        convertStringToList((String) entity.getProperty(PROPERTY_INTERESTS)),
         MatchPreference.forIntValue(
             ((Long) entity.getProperty(PROPERTY_MATCH_PREFERENCE)).intValue()),
         (long) entity.getProperty(PROPERTY_MATCH_ID),
@@ -125,34 +128,27 @@ public final class ParticipantDatastore {
     return getParticipantFromEntity(entity);
   }
 
-  /** Return list of all unmatched participants with duration and compatible endTimeAvailable */
-  public List<Participant> getParticipantsCompatibleTimeAvailibility(
-      int duration, long endTimeAvailable, int paddingTime, Clock clock) {
+  /** Return list of all unmatched participants with duration */
+  public List<Participant> getParticipantsCompatibleTimeAvailibility(int duration)
+      throws DatastoreNeedIndexException {
     Query query = new Query(KIND_PARTICIPANT);
 
     // Create filters to get only unmatched participants with compatible time availability
-    Filter unmatched =
+    Filter sameDurationFilter =
+        new FilterPredicate(PROPERTY_DURATION, FilterOperator.EQUAL, duration);
+    Filter unmatchedFilter =
         new FilterPredicate(
             PROPERTY_MATCH_STATUS, FilterOperator.EQUAL, MatchStatus.UNMATCHED.getValue());
-    Filter sameDuration = new FilterPredicate(PROPERTY_DURATION, FilterOperator.EQUAL, duration);
-    Filter compatibleTime =
-        new FilterPredicate(
-            PROPERTY_END_TIME_AVAILABLE,
-            FilterOperator.GREATER_THAN,
-            clock.millis() + TimeUnit.MINUTES.toMillis(duration + paddingTime));
 
     // Combine filters into one, and filter query
-    CompositeFilter composite =
-        CompositeFilterOperator.and(unmatched, sameDuration, compatibleTime);
-    query.setFilter(composite);
+    CompositeFilter compositeFilter =
+        CompositeFilterOperator.and(/*compatibleTimeFilter, */ sameDurationFilter, unmatchedFilter);
 
-    PreparedQuery results = datastore.prepare(query);
+    query.setFilter(compositeFilter);
 
-    // Convert entities to list of participants
-    List<Participant> participants = new ArrayList<Participant>();
-    for (Entity entity : results.asIterable()) {
-      participants.add(getParticipantFromEntity(entity));
-    }
+    List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+    List<Participant> participants =
+        results.stream().map(p -> getParticipantFromEntity(p)).collect(Collectors.toList());
     return participants;
   }
 
@@ -167,5 +163,15 @@ public final class ParticipantDatastore {
               + username
               + " cannot be removed because it is not in the datastore.");
     }
+  }
+
+  /** Convert list of strings to a string with each element delimited by a comma */
+  public static String convertListToString(List<String> list) {
+    return String.join(",", list);
+  }
+
+  /** Convert a string with each element delimited by a comma to a list of strings */
+  public static List<String> convertStringToList(String str) {
+    return Arrays.asList(str.split(","));
   }
 }

@@ -15,6 +15,7 @@
 package com.google.sps.data;
 
 import com.google.common.base.MoreObjects;
+import java.util.List;
 
 /** A user with saved preferences. */
 public final class User {
@@ -27,6 +28,8 @@ public final class User {
   private final String role;
   /** Product area at Google */
   private final String productArea;
+  /** List of interests */
+  private final List<String> interests;
   /** Whether they want to be matched with a similar, any, or different Googler */
   private final MatchPreference matchPreference;
 
@@ -36,11 +39,13 @@ public final class User {
       int duration,
       String role,
       String productArea,
+      List<String> interests,
       MatchPreference matchPreference) {
     this.username = username;
     this.duration = duration;
     this.role = role;
     this.productArea = productArea;
+    this.interests = interests;
     this.matchPreference = matchPreference;
   }
 
@@ -60,6 +65,10 @@ public final class User {
     return productArea;
   }
 
+  public List<String> getInterests() {
+    return interests;
+  }
+
   public MatchPreference getMatchPreference() {
     return matchPreference;
   }
@@ -70,6 +79,7 @@ public final class User {
         .add("duration", duration)
         .add("role", role)
         .add("productArea", productArea)
+        .add("interests", interests)
         .add("matchPreference", matchPreference.getValue())
         .toString();
   }

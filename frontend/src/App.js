@@ -24,6 +24,7 @@ import MatchPage from './components/MatchPage';
 import NoMatchPage from './components/NoMatchPage';
 import ErrorPage from './components/ErrorPage';
 import FormContent from './components/FormContent';
+import ExitQueuePage from './components/ExitQueuePage';
 
 /**
  * Establishes style to use on rendering components
@@ -97,6 +98,11 @@ export default function App() {
         matchDataRefreshRateMilliseconds);
   }
 
+  /** Redirect exit queue request from loading view to exit-queue view */
+  function redirectExitQueueRequest() {
+    setCurrentPage('exit-queue');
+  }
+
   switch (currentPage) {
     case 'form':
       return (
@@ -117,7 +123,7 @@ export default function App() {
         <div>
           <MenuBar />
           <div className={classes.centerHorizontal}>
-            <LoadingPage />
+            <LoadingPage onExitQueueRequest={redirectExitQueueRequest}/>
           </div>
         </div>
       );
@@ -151,6 +157,15 @@ export default function App() {
           </div>
         </div>
       );
+    case 'exit-queue':
+      return (
+        <div>
+          <MenuBar />
+          <div className={classes.centerHorizontal}>
+            <ExitQueuePage />
+          </div>
+        </div>
+      );  
     default:
       break;
   }

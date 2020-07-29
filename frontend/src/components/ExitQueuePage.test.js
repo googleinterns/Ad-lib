@@ -13,32 +13,15 @@
 // limitations under the License.
 
 import React from 'react';
-import mockAxios from 'axios';
-import LoadingPage from './LoadingPage';
+import ExitQueue from './ExitQueuePage';
 import renderer from 'react-test-renderer';
-import {sendPostRequest} from './LoadingPage';
 
-jest.mock('axios');
-
-describe('Loading Page', () => {
+describe('Exit Queue Page', () => {
   it('should be defined', () => {
-    expect(LoadingPage).toBeDefined();
+    expect(ExitQueue).toBeDefined();
   });
-
-  it('should render correctly', () => {
-    const tree = renderer.create(<LoadingPage />).toJSON();
+  test('should render correctly', () => {
+    const tree = renderer.create(<ExitQueue />).toJSON();
     expect(tree).toMatchSnapshot();
-  });
-
-  it('POST request using axios to servlet with form details', () => {
-    const servletEndpoint = '/api/v1/remove-participant';
-    const removeParticipantRequest = "Remove Participant";
-
-    sendPostRequest();
-
-    expect(mockAxios.post).toHaveBeenCalledTimes(1);
-    expect(mockAxios.post).toHaveBeenCalledWith(
-        servletEndpoint, {removeParticipantRequest},
-    );
   });
 });

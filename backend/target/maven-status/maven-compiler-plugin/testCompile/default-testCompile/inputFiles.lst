@@ -1,0 +1,6 @@
+/home/grantjustice/capstone/step76-2020/backend/src/test/java/com/google/sps/MatchDatastoreTest.java
+/home/grantjustice/capstone/step76-2020/backend/src/test/java/com/google/sps/ParticipantDatastoreTest.java
+/home/grantjustice/capstone/step76-2020/backend/src/test/java/com/google/sps/UserDatastoreTest.java
+/home/grantjustice/capstone/step76-2020/backend/src/test/java/com/google/sps/EventSenderTest.java
+/home/grantjustice/capstone/step76-2020/backend/src/test/java/com/google/sps/FindMatchQueryTest.java
+/home/grantjustice/capstone/step76-2020/backend/src/test/java/com/google/sps/EmailNotifierTest.java

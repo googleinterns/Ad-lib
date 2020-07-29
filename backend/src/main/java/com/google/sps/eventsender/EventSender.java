@@ -6,7 +6,6 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.*;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
@@ -159,7 +158,7 @@ public class EventSender {
   public void addEventToCalendar(Event event) throws IOException, GeneralSecurityException {
     service
         .events()
-        .insert(event.getAttendees().get(1).getEmail(), event)
+        .insert(event.getAttendees().get(0).getEmail(), event)
         .setConferenceDataVersion(1)
         .execute();
   }

@@ -31,7 +31,9 @@ public class EmailNotifierTest {
   private String testString;
   private String testName;
   private String testEmail;
+  private String mockTimezone;
   private EmailNotifier emailNotifier;
+
   @Mock private Gmail gmail;
   @Mock private Gmail.Users users;
   @Mock private Gmail.Users.Messages messages;
@@ -39,6 +41,7 @@ public class EmailNotifierTest {
 
   @Before
   public void setUp() throws IOException {
+
     testEmail = "grantjustice@google.com";
     testName = "grantjustice";
     testString = "Text Text";

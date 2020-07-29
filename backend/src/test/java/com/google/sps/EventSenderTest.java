@@ -1,22 +1,25 @@
 package test.java.com.google.sps;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
-import com.google.common.truth.Truth;
+import com.google.sps.data.Participant;
 import com.google.sps.eventsender.EventSender;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
-import static org.mockito.ArgumentMatchers.any;
 import org.mockito.Mock;
-import static org.mockito.Mockito.*;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @RunWith(JUnit4.class)
 public class EventSenderTest {
@@ -24,16 +27,22 @@ public class EventSenderTest {
   private int testConferenceVersion = 1;
   private String testName = "Test Name";
   private String testEmail = "Test Email";
+  private List<EventAttendee> testAtt = Collections.singletonList(createTestAttendee());
   private String testSummary = " Test Summary";
   private String testDescription = " Test Description";
+  private Event testEvent =
+      new Event().setSummary(testSummary).setDescription(testDescription).setAttendees(testAtt);
 
-  private List<EventAttendee> testAtt = Collections.singletonList(createTestAttendee());
   private com.google.sps.eventsender.EventSender eventSender;
-  private Event event;
-  @Mock private Event mockEvent;
+  @Mock private Event event;
   @Mock private Calendar calendar;
   @Mock private Calendar.Events events;
   @Mock private Calendar.Events.Insert insert;
+
+  @Mock private Participant mockParticipant1;
+  @Mock private Participant mockParticipant2;
+  @Mock private DateTime mockDateTime1;
+  @Mock private DateTime mockDateTime2;
 
   private EventAttendee createTestAttendee() {
     return new EventAttendee().setEmail(testEmail).setDisplayName(testName);
@@ -42,15 +51,20 @@ public class EventSenderTest {
   @Before
   public void setUp() throws IOException {
 
-    mockEvent = mock(Event.class);
-    when(mockEvent.setSummary(testSummary)).thenReturn(mockEvent);
-    when(mockEvent.getSummary()).thenReturn(testSummary);
+    mockDateTime1 = mock(DateTime.class);
+    mockDateTime2 = mock(DateTime.class);
+    mockParticipant1 = mock(Participant.class);
+    mockParticipant2 = mock(Participant.class);
 
-    when(mockEvent.setAttendees(testAtt)).thenReturn(mockEvent);
-    when(mockEvent.getAttendees()).thenReturn(testAtt);
+    event = mock(Event.class);
+    when(event.setSummary(testSummary)).thenReturn(event);
+    when(event.getSummary()).thenReturn(testSummary);
 
-    when(mockEvent.setDescription(testDescription)).thenReturn(mockEvent);
-    when(mockEvent.getDescription()).thenReturn(testDescription);
+    when(event.setAttendees(testAtt)).thenReturn(event);
+    when(event.getAttendees()).thenReturn(testAtt);
+
+    when(event.setDescription(testDescription)).thenReturn(event);
+    when(event.getDescription()).thenReturn(testDescription);
 
     calendar = mock(Calendar.class);
     // Mock to return list of users
@@ -69,15 +83,52 @@ public class EventSenderTest {
   }
 
   @Test
-  public void eventIsCreated() {
-    ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
+  public void SetIncorrectAndHasIncorrect() {
+    ArgumentCaptor<Event> argument = ArgumentCaptor.forClass(Event.class);
 
-    eventSender.createEvent(any(), any(), any(), any(), any());
+    eventSender.addEventToCalendar(testEvent);
+    verify(events).insert(eq(testEmail), argument.capture());
 
-    verify(mockEvent.setSummary(argument.capture()));
+    Event event = argument.getValue();
 
-    String summary = argument.getValue();
-    Truth.assertThat(summary).isEqualTo(testSummary);
+    assertThat(event.getSummary()).isNotEqualTo("testString");
+  }
 
+  @Test
+  public void setCorrectAndHasCorrect() {
+    ArgumentCaptor<Event> argument = ArgumentCaptor.forClass(Event.class);
+
+    eventSender.addEventToCalendar(testEvent);
+    verify(events).insert(eq(testEmail), argument.capture());
+
+    Event event = argument.getValue();
+
+    assertThat(event.getSummary()).isEqualTo("testString");
+  }
+
+  @Test
+  public void testCreateEvent() throws IOException, GeneralSecurityException {
+
+    ArgumentCaptor<Event> argument = ArgumentCaptor.forClass(Event.class);
+
+    eventSender.addEventToCalendar(testEvent);
+    verify(events).insert(eq(testEmail), argument.capture());
+
+    Event event = argument.getValue();
+
+    assertThat(event.getSummary()).isNotEqualTo("testString");
+  }
+
+  @Test
+  public void testConferenceVersion() throws IOException, GeneralSecurityException {
+
+    ArgumentCaptor<Integer> argument = ArgumentCaptor.forClass(Integer.class);
+
+    eventSender.addEventToCalendar(testEvent);
+    verify(insert).setConferenceDataVersion(argument.capture()).getConferenceDataVersion();
+
+    int conferenceVersion = argument.getValue();
+
+    assertThat(conferenceVersion).isEqualTo(testConferenceVersion);
   }
 }

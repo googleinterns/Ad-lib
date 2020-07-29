@@ -67,11 +67,10 @@ public class GmailFactory {
     GoogleClientSecrets clientSecrets =
         GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
-    // Build flow and trigger user authorization request.
     GoogleAuthorizationCodeFlow flow =
         new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
-            .setDataStoreFactory(new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH)))
-            .setAccessType(ACCESS_TYPE)
+            .setDataStoreFactory(new FileDataStoreFactory(new File(getCredentialsDirectory())))
+            .setAccessType("offline")
             .build();
     LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(PORT_NUM).build();
     return new AuthorizationCodeInstalledApp(flow, receiver).authorize(AUTH_USER);
@@ -82,5 +81,9 @@ public class GmailFactory {
     return new Gmail.Builder(httpTransport, JSON_FACTORY, getCredentials(httpTransport))
         .setApplicationName(APPLICATION_NAME)
         .build();
+  }
+
+  private static String getCredentialsDirectory() {
+    return System.getProperty("user.home") + "/" + TOKENS_DIRECTORY_PATH;
   }
 }

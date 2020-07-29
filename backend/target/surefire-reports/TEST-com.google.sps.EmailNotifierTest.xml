@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="6" failures="0" name="com.google.sps.EmailNotifierTest" time="2.133" errors="0" skipped="0">
+<testsuite tests="6" failures="0" name="com.google.sps.EmailNotifierTest" time="2.228" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
     <property name="java.vm.version" value="11.0.7+10-post-Debian-3deb10u1"/>
@@ -60,10 +60,10 @@
     <property name="sun.cpu.endian" value="little"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase classname="com.google.sps.EmailNotifierTest" name="testMessageShouldHaveIncorrectBodyText" time="2.053"/>
-  <testcase classname="com.google.sps.EmailNotifierTest" name="testMessageHasCorrectApplicationName" time="0.014"/>
-  <testcase classname="com.google.sps.EmailNotifierTest" name="testMessageHasMatchFoundSubject" time="0.018"/>
-  <testcase classname="com.google.sps.EmailNotifierTest" name="testMessageShouldHaveCorrectBodyText" time="0.017"/>
-  <testcase classname="com.google.sps.EmailNotifierTest" name="testMessageShouldHaveCorrectRecipients" time="0.025"/>
-  <testcase classname="com.google.sps.EmailNotifierTest" name="testMessageHasMatchExpiredSubject" time="0.006"/>
+  <testcase classname="com.google.sps.EmailNotifierTest" name="testMessageShouldHaveIncorrectBodyText" time="2.049"/>
+  <testcase classname="com.google.sps.EmailNotifierTest" name="testMessageHasCorrectApplicationName" time="0.067"/>
+  <testcase classname="com.google.sps.EmailNotifierTest" name="testMessageHasMatchFoundSubject" time="0.042"/>
+  <testcase classname="com.google.sps.EmailNotifierTest" name="testMessageShouldHaveCorrectBodyText" time="0.018"/>
+  <testcase classname="com.google.sps.EmailNotifierTest" name="testMessageShouldHaveCorrectRecipients" time="0.043"/>
+  <testcase classname="com.google.sps.EmailNotifierTest" name="testMessageHasMatchExpiredSubject" time="0.009"/>
 </testsuite>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+  <cron>
+    <url>/api/v1/tasks/remove-expired</url>
+    <target>beta</target>
+    <description>remove expired participants</description>
+    <schedule>every 1 hour</schedule>
+  </cron>
+</cronentries>

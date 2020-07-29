@@ -152,6 +152,22 @@ public final class ParticipantDatastore {
     return participants;
   }
 
+  /** Return list of all unmatched participants */
+  public List<Participant> getUnmatchedParticipants() throws DatastoreNeedIndexException {
+    Query query = new Query(KIND_PARTICIPANT);
+
+    // Create filter to get only unmatched participants
+    Filter unmatchedFilter =
+        new FilterPredicate(
+            PROPERTY_MATCH_STATUS, FilterOperator.EQUAL, MatchStatus.UNMATCHED.getValue());
+    query.setFilter(unmatchedFilter);
+
+    List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+    List<Participant> participants =
+        results.stream().map(p -> getParticipantFromEntity(p)).collect(Collectors.toList());
+    return participants;
+  }
+
   /** Remove Participant from datastore */
   public void removeParticipant(String username) {
     Key participantKey = KeyFactory.createKey(KIND_PARTICIPANT, username);

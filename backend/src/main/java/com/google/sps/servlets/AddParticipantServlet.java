@@ -31,10 +31,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /** Servlet that adds a participant to the queue and tries to find them a match immediately */
@@ -47,12 +50,19 @@ public class AddParticipantServlet extends HttpServlet {
   private static final String REQUEST_DURATION = "duration";
   private static final String REQUEST_ROLE = "role";
   private static final String REQUEST_PRODUCT_AREA = "productArea";
+  private static final String REQUEST_INTERESTS = "interests";
   private static final String REQUEST_SAVE_PREFERENCE = "savePreference";
   private static final String REQUEST_MATCH_PREFERENCE = "matchPreference";
 
+  // Get DatastoreService and instantiate Match and Participant Datastores
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private final MatchDatastore matchDatastore = new MatchDatastore(datastore);
+  private final ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
+  private final UserDatastore userDatastore = new UserDatastore(datastore);
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+    // Retrieve JSON object request
     JSONObject obj = retrieveRequestBody(request);
     if (obj == null) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not read request body");
@@ -63,6 +73,7 @@ public class AddParticipantServlet extends HttpServlet {
     long endTimeAvailable = formDetails.getLong(REQUEST_END_TIME_AVAILABLE);
     long startTimeAvailable = Instant.now().toEpochMilli();
 
+    // Get all participant inputs
     int duration = formDetails.getInt(REQUEST_DURATION);
     if (duration <= 0) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
@@ -70,22 +81,18 @@ public class AddParticipantServlet extends HttpServlet {
     }
     String role = formDetails.getString(REQUEST_ROLE);
     String productArea = formDetails.getString(REQUEST_PRODUCT_AREA);
+    JSONArray interestsJsonArray = formDetails.getJSONArray(REQUEST_INTERESTS);
+    int numInterests = interestsJsonArray.length();
+    List<String> interests = new ArrayList<String>();
+    for (int i = 0; i < numInterests; i++) {
+      interests.add(interestsJsonArray.getString(i));
+    }
     boolean savePreference = formDetails.getBoolean(REQUEST_SAVE_PREFERENCE);
-    String matchPreferenceString = formDetails.getString(REQUEST_MATCH_PREFERENCE);
-    MatchPreference matchPreference;
-    switch (matchPreferenceString) {
-      case "different":
-        matchPreference = MatchPreference.DIFFERENT;
-        break;
-      case "any":
-        matchPreference = MatchPreference.ANY;
-        break;
-      case "similar":
-        matchPreference = MatchPreference.SIMILAR;
-        break;
-      default:
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid match preference.");
-        return;
+    MatchPreference matchPreference =
+        getMatchPreference(formDetails.getString(REQUEST_MATCH_PREFERENCE));
+    if (matchPreference == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid match preference.");
+      return;
     }
     long timestamp = System.currentTimeMillis();
 
@@ -104,28 +111,15 @@ public class AddParticipantServlet extends HttpServlet {
             duration,
             role,
             productArea,
+            interests,
             matchPreference,
             /* matchId=*/ 0,
             MatchStatus.UNMATCHED,
             timestamp);
 
-    // Get DatastoreService and instiate Match and Participant Datastores
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    MatchDatastore matchDatastore = new MatchDatastore(datastore);
-    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
-    UserDatastore userDatastore = new UserDatastore(datastore);
-
-    // Check if new participant already in datastore (unmatched, in queue)
-    // TODO: FIX! What if matched but not returned yet
-    Participant existingParticipant = participantDatastore.getParticipantFromUsername(username);
-    if (existingParticipant != null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Already submitted form");
-      return;
-    }
-
     // Add User to datastore if opted to save preferences
     if (savePreference) {
-      User user = new User(username, duration, role, productArea, matchPreference);
+      User user = new User(username, duration, role, productArea, interests, matchPreference);
       userDatastore.addUser(user);
     }
 
@@ -138,9 +132,9 @@ public class AddParticipantServlet extends HttpServlet {
       long matchId = matchDatastore.addMatch(match);
 
       // Update current participant entity with new matchId and null availability
-      Participant currParticipant =
+      Participant secondParticipant =
           participantDatastore.getParticipantFromUsername(match.getSecondParticipantUsername());
-      participantDatastore.addParticipant(currParticipant.foundMatch(matchId));
+      participantDatastore.addParticipant(secondParticipant.foundMatch(matchId));
 
       // Add new participant to datastore with new matchId and null availability
       participantDatastore.addParticipant(newParticipant.foundMatch(matchId));
@@ -174,5 +168,19 @@ public class AddParticipantServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     return email != null ? email.split("@")[0] : null;
+  }
+
+  /** Parse match preference string to */
+  private static MatchPreference getMatchPreference(String matchPreferenceString) {
+    switch (matchPreferenceString) {
+      case "different":
+        return MatchPreference.DIFFERENT;
+      case "any":
+        return MatchPreference.ANY;
+      case "similar":
+        return MatchPreference.SIMILAR;
+      default:
+        return null;
+    }
   }
 }

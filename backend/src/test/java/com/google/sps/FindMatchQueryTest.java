@@ -28,6 +28,9 @@ import com.google.sps.datastore.ParticipantDatastore;
 import java.time.Clock;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,19 +44,28 @@ public final class FindMatchQueryTest {
   private static final String PERSON_A = "Person A";
   private static final String PERSON_B = "Person B";
   private static final String PERSON_C = "Person C";
-  private static final String PERSON_D = "Person D";
 
   // Default parameters unused in query
   private static final long MATCHID_DEFAULT = 0;
   private static final long TIMESTAMP_DEFAULT = 0;
 
   // Role constants
+  private static final String ROLE_BLANK = "";
   private static final String ROLE_SOFTWARE_ENGINEER = "Software engineer";
   private static final String ROLE_PRODUCT_MANAGER = "Product manager";
 
   // Product area constants
+  private static final String PRODUCT_AREA_BLANK = "";
   private static final String PRODUCT_AREA_ADS = "Ads";
   private static final String PRODUCT_AREA_CLOUD = "Cloud";
+
+  // Interests constants
+  private static final List<String> INTERESTS_BLANK = new ArrayList<String>();
+  private static final List<String> INTERESTS_BOOKS = Arrays.asList("Books");
+  private static final List<String> INTERESTS_BOOKS_SPORTS_TRAVEL =
+      Arrays.asList("Books", "Sports", "Travel");
+  private static final List<String> INTERESTS_BOOKS_TRAVEL = Arrays.asList("Books", "Travel");
+  private static final List<String> INTERESTS_GAMING_SPORTS = Arrays.asList("Gaming", "Sports");
 
   // Match preference constants
   private static final MatchPreference MATCH_PREFERENCE_DIFFERENT = MatchPreference.DIFFERENT;
@@ -128,6 +140,7 @@ public final class FindMatchQueryTest {
             DURATION_15_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -140,6 +153,7 @@ public final class FindMatchQueryTest {
             DURATION_15_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -157,7 +171,7 @@ public final class FindMatchQueryTest {
   }
 
   @Test
-  public void compatibleTime() {
+  public void compatibleTimeNotDuration() {
     // Two participants who are compatible in available time but NOT duration
     Participant participantA =
         new Participant(
@@ -167,6 +181,7 @@ public final class FindMatchQueryTest {
             DURATION_30_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -179,6 +194,7 @@ public final class FindMatchQueryTest {
             DURATION_60_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -194,7 +210,7 @@ public final class FindMatchQueryTest {
   }
 
   @Test
-  public void compatibleDuration() {
+  public void compatibleDurationNotTime() {
     // Two participants who are compatible in duration but NOT available time
     Participant participantA =
         new Participant(
@@ -204,6 +220,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -216,6 +233,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -241,6 +259,7 @@ public final class FindMatchQueryTest {
             DURATION_60_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -253,6 +272,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -265,6 +285,7 @@ public final class FindMatchQueryTest {
             DURATION_60_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -293,6 +314,7 @@ public final class FindMatchQueryTest {
             DURATION_30_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -305,6 +327,7 @@ public final class FindMatchQueryTest {
             DURATION_60_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -317,6 +340,7 @@ public final class FindMatchQueryTest {
             DURATION_60_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -345,6 +369,7 @@ public final class FindMatchQueryTest {
             DURATION_30_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -357,6 +382,7 @@ public final class FindMatchQueryTest {
             DURATION_30_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -369,6 +395,7 @@ public final class FindMatchQueryTest {
             DURATION_30_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -387,7 +414,7 @@ public final class FindMatchQueryTest {
   }
 
   @Test
-  public void barelyNotCompatible() {
+  public void barelyNotCompatibleAvailibility() {
     // Two participants barely NOT compatible availability (edge case, need >10 minutes padding)
     Participant participantA =
         new Participant(
@@ -397,6 +424,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -409,6 +437,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -424,7 +453,7 @@ public final class FindMatchQueryTest {
   }
 
   @Test
-  public void barelyCompatible() {
+  public void barelyCompatibleAvailability() {
     // Two participants barely compatible availability (edge case, need >10 minutes padding for
     // compatibility)
     Participant participantA =
@@ -435,6 +464,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -447,6 +477,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -464,8 +495,9 @@ public final class FindMatchQueryTest {
   }
 
   @Test
-  public void areDifferentPreferSimilar() {
-    // Two participants that are different but prefer to be matched with someone similar
+  public void areCompletelyDifferentPreferSimilar() {
+    // Two participants that are completely different (0/4) but prefer to be matched with someone
+    // similar
     Participant participantA =
         new Participant(
             PERSON_A,
@@ -474,6 +506,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -486,6 +519,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_PRODUCT_MANAGER,
             PRODUCT_AREA_CLOUD,
+            INTERESTS_GAMING_SPORTS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -502,7 +536,7 @@ public final class FindMatchQueryTest {
 
   @Test
   public void areSimilarPreferDifferent() {
-    // Two participants that are similar but prefer to be matched with someone different
+    // Two participants that are similar (3/3) but prefer to be matched with someone different
     Participant participantA =
         new Participant(
             PERSON_A,
@@ -511,6 +545,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_DIFFERENT,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -523,6 +558,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_DIFFERENT,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -539,7 +575,8 @@ public final class FindMatchQueryTest {
 
   @Test
   public void areDifferentPreferDifferent() {
-    // Two participants that are different and prefer to be matched with someone different
+    // Two participants that are different (1/3 match) and prefer to be matched with someone
+    // different
     Participant participantA =
         new Participant(
             PERSON_A,
@@ -548,6 +585,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_DIFFERENT,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -560,6 +598,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_PRODUCT_MANAGER,
             PRODUCT_AREA_CLOUD,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_DIFFERENT,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -577,9 +616,8 @@ public final class FindMatchQueryTest {
   }
 
   @Test
-  public void oneFieldMatches() {
-    // Two participants with one matching field prefer to be matched with someone similar
-    // TODO (#67): change num matching fields threshold when interests are added
+  public void oneFilledFiveOtherFilledThreeAllMatching() {
+    // Two participants, A with 5 filled fields, B with 3 filled fields. All 3 fields match
     Participant participantA =
         new Participant(
             PERSON_A,
@@ -588,6 +626,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS_SPORTS_TRAVEL,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -598,8 +637,9 @@ public final class FindMatchQueryTest {
             TIME_1400ET,
             TIME_1800ET,
             DURATION_45_MINUTES,
-            ROLE_PRODUCT_MANAGER,
+            ROLE_BLANK,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS_TRAVEL,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -627,6 +667,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_SIMILAR,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -639,6 +680,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_ANY,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -666,6 +708,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_DIFFERENT,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -678,6 +721,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_PRODUCT_MANAGER,
             PRODUCT_AREA_CLOUD,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_ANY,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -705,6 +749,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_GAMING_SPORTS,
             MATCH_PREFERENCE_ANY,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -717,6 +762,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_PRODUCT_MANAGER,
             PRODUCT_AREA_CLOUD,
+            INTERESTS_BOOKS_SPORTS_TRAVEL,
             MATCH_PREFERENCE_ANY,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -744,6 +790,7 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
             MATCH_PREFERENCE_ANY,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,
@@ -756,6 +803,48 @@ public final class FindMatchQueryTest {
             DURATION_45_MINUTES,
             ROLE_SOFTWARE_ENGINEER,
             PRODUCT_AREA_ADS,
+            INTERESTS_BOOKS,
+            MATCH_PREFERENCE_ANY,
+            MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
+            TIMESTAMP_DEFAULT);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
+    participantDatastore.addParticipant(participantA);
+
+    FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
+    Match match = query.findMatch(participantB);
+
+    assertThat(match.getFirstParticipantUsername()).isEqualTo(PERSON_B);
+    assertThat(match.getSecondParticipantUsername()).isEqualTo(PERSON_A);
+    assertThat(match.getDuration()).isEqualTo(DURATION_45_MINUTES);
+  }
+
+  @Test
+  public void areBlankBothAny() {
+    // Two participants that choose no preference and have blank preferences
+    Participant participantA =
+        new Participant(
+            PERSON_A,
+            TIME_1400ET,
+            TIME_1456ET,
+            DURATION_45_MINUTES,
+            ROLE_BLANK,
+            PRODUCT_AREA_BLANK,
+            INTERESTS_BLANK,
+            MATCH_PREFERENCE_ANY,
+            MATCHID_DEFAULT,
+            MATCHSTATUS_UNMATCHED,
+            TIMESTAMP_DEFAULT);
+    Participant participantB =
+        new Participant(
+            PERSON_B,
+            TIME_1400ET,
+            TIME_1800ET,
+            DURATION_45_MINUTES,
+            ROLE_BLANK,
+            PRODUCT_AREA_BLANK,
+            INTERESTS_BLANK,
             MATCH_PREFERENCE_ANY,
             MATCHID_DEFAULT,
             MATCHSTATUS_UNMATCHED,

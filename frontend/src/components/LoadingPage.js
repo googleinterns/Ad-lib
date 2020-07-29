@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import {makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -29,17 +30,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-/** Send remove participant POST request to servlet */
+// Add onExitQueueRequest to props validation
+LoadingPage.propTypes = {
+  onExitQueueRequest: PropTypes.func,
+};
+
+/** Send remove participant POST request to servlet
+ * @return {Promise} promise
+*/
 export function sendPostRequest() {
-  const removeParticipantRequest = "Remove Participant";
+  const removeParticipantRequest = 'Remove Participant';
   return axios.post('/api/v1/remove-participant', {removeParticipantRequest});
 }
 
 /**
  * Define LoadingPage component
+ * @param {Object} props
  * @return {LoadingPage} LoadingPage component
  */
-export default function LoadingPage() {
+export default function LoadingPage(props) {
   const classes = useStyles();
 
   /** Send POST request to backend to remove participant

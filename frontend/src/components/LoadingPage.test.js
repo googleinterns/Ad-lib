@@ -32,7 +32,7 @@ describe('Loading Page', () => {
 
   it('POST request using axios to servlet with form details', () => {
     const servletEndpoint = '/api/v1/remove-participant';
-    const removeParticipantRequest = "Remove Participant";
+    const removeParticipantRequest = 'Remove Participant';
 
     sendPostRequest();
 

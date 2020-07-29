@@ -165,7 +165,7 @@ export default function App() {
             <ExitQueuePage />
           </div>
         </div>
-      );  
+      );
     default:
       break;
   }

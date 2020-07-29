@@ -13,38 +13,32 @@
 // limitations under the License.
 
 import React from 'react';
-import App, {fetchMatch} from './App';
+import mockAxios from 'axios';
+import LoadingPage from './LoadingPage';
 import renderer from 'react-test-renderer';
-import axios from 'axios';
-
-beforeAll(() => {
-  const DATE_TO_USE = new Date('2020');
-  const mockedDate = Date;
-  global.Date = jest.fn(() => DATE_TO_USE);
-  global.Date.UTC = mockedDate.UTC;
-  global.Date.parse = mockedDate.parse;
-  global.Date.now = mockedDate.now;
-});
+import {sendPostRequest} from './LoadingPage';
 
 jest.mock('axios');
 
-describe('App', () => {
+describe('Loading Page', () => {
   it('should be defined', () => {
-    expect(App).toBeDefined();
+    expect(LoadingPage).toBeDefined();
   });
 
   it('should render correctly', () => {
-    const tree = renderer.create(<App />).toJSON();
+    const tree = renderer.create(<LoadingPage />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
-  it('should initiate GET request using axios() to servlet', () => {
-    const mockMatchStatus = {matchStatus: 'true'};
-    const mockData = {data: mockMatchStatus};
-    axios.get.mockResolvedValue(mockData);
+  it('POST request using axios to servlet with form details', () => {
+    const servletEndpoint = '/api/v1/remove-participant';
+    const removeParticipantRequest = 'Remove Participant';
 
-    return fetchMatch().then((response) => {
-      expect(response).toEqual(mockMatchStatus);
-    });
+    sendPostRequest();
+
+    expect(mockAxios.post).toHaveBeenCalledTimes(1);
+    expect(mockAxios.post).toHaveBeenCalledWith(
+        servletEndpoint, {removeParticipantRequest},
+    );
   });
 });

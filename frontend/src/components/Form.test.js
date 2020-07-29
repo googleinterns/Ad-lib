@@ -91,7 +91,7 @@ describe('Form Validation', () => {
     const endTimeAvailableMilliseconds = NaN;
     const duration = 15;
     const currentTimeMilliseconds = 1594846605000;
-    
+
     expect(validateFormInputs(duration, endTimeAvailableMilliseconds,
         currentTimeMilliseconds)).toBe(false);
   });

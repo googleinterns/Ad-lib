@@ -58,25 +58,27 @@ exports[`App should render correctly 1`] = `
   <div
     className="makeStyles-centerHorizontal-1"
   >
-    <div
-      className="MuiPaper-root MuiCard-root makeStyles-content-2 MuiPaper-elevation1 MuiPaper-rounded"
-    >
+    <div>
       <div
-        className="MuiCardContent-root"
+        className="MuiPaper-root MuiCard-root makeStyles-content-6 MuiPaper-elevation1 MuiPaper-rounded"
       >
-        <h3>
-          Meet fellow Googlers 
-          <em>
-            now
-          </em>
-          !
-        </h3>
-        <p>
-          Miss bumping into new faces at the office? Want an easy, fun, spontaneous way of meeting Googlers virtually? Now you can!
-        </p>
-        <p>
-          Ad-lib matches you with a fellow Googler in the queue, notifies you through email when you’ve been matched, and adds an event to your Calendar with a Meet link for you to join immediately! It also provides a starter question to get the conversation flowing!
-        </p>
+        <div
+          className="MuiCardContent-root"
+        >
+          <h3>
+            Meet fellow Googlers 
+            <em>
+              now
+            </em>
+            !
+          </h3>
+          <p>
+            Miss bumping into new faces at the office? Want an easy, fun, spontaneous way of meeting Googlers virtually? Now you can!
+          </p>
+          <p>
+            Ad-lib matches you with a fellow Googler in the queue, notifies you through email when you’ve been matched, and adds an event to your Calendar with a Meet link for you to join immediately! It also provides a starter question to get the conversation flowing!
+          </p>
+        </div>
       </div>
     </div>
     <div
@@ -84,17 +86,17 @@ exports[`App should render correctly 1`] = `
     >
       <div>
         <div
-          className="makeStyles-heading-9"
+          className="makeStyles-heading-10"
         >
           <h3>
             Choose your time preferences
           </h3>
         </div>
         <div
-          className="makeStyles-section-8"
+          className="makeStyles-section-9"
         >
           <div
-            className="makeStyles-flexStartDiv-6"
+            className="makeStyles-flexStartDiv-7"
           >
             <p>
               I am free until...
@@ -175,7 +177,7 @@ exports[`App should render correctly 1`] = `
             </div>
           </div>
           <div
-            className="makeStyles-flexStartDiv-6"
+            className="makeStyles-flexStartDiv-7"
           >
             <p>
               I want to talk for...
@@ -234,17 +236,17 @@ exports[`App should render correctly 1`] = `
           </div>
         </div>
         <div
-          className="makeStyles-heading-9"
+          className="makeStyles-heading-10"
         >
           <h3>
             Choose your match preferences
           </h3>
         </div>
         <div
-          className="makeStyles-section-8"
+          className="makeStyles-section-9"
         >
           <div
-            className="makeStyles-flexStartDiv-6"
+            className="makeStyles-flexStartDiv-7"
           >
             <div>
               <div
@@ -438,7 +440,7 @@ exports[`App should render correctly 1`] = `
             </div>
           </div>
           <div
-            className="makeStyles-padding-10"
+            className="makeStyles-padding-11"
           >
             <fieldset
               className="MuiFormControl-root"
@@ -454,7 +456,7 @@ exports[`App should render correctly 1`] = `
                 >
                   <span
                     aria-disabled={true}
-                    className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-14 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-16 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
+                    className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-15 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-17 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
                     onBlur={[Function]}
                     onDragLeave={[Function]}
                     onFocus={[Function]}
@@ -473,7 +475,7 @@ exports[`App should render correctly 1`] = `
                     >
                       <input
                         checked={false}
-                        className="PrivateSwitchBase-input-17"
+                        className="PrivateSwitchBase-input-18"
                         disabled={true}
                         name="matchPreference"
                         onChange={[Function]}
@@ -481,7 +483,7 @@ exports[`App should render correctly 1`] = `
                         value="similar"
                       />
                       <div
-                        className="PrivateRadioButtonIcon-root-18"
+                        className="PrivateRadioButtonIcon-root-19"
                       >
                         <svg
                           aria-hidden={true}
@@ -495,7 +497,7 @@ exports[`App should render correctly 1`] = `
                         </svg>
                         <svg
                           aria-hidden={true}
-                          className="MuiSvgIcon-root PrivateRadioButtonIcon-layer-19"
+                          className="MuiSvgIcon-root PrivateRadioButtonIcon-layer-20"
                           focusable="false"
                           viewBox="0 0 24 24"
                         >
@@ -517,7 +519,7 @@ exports[`App should render correctly 1`] = `
                 >
                   <span
                     aria-disabled={false}
-                    className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-14 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-checked-15 Mui-checked MuiIconButton-colorPrimary"
+                    className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-15 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-checked-16 Mui-checked MuiIconButton-colorPrimary"
                     onBlur={[Function]}
                     onDragLeave={[Function]}
                     onFocus={[Function]}
@@ -536,7 +538,7 @@ exports[`App should render correctly 1`] = `
                     >
                       <input
                         checked={true}
-                        className="PrivateSwitchBase-input-17"
+                        className="PrivateSwitchBase-input-18"
                         disabled={false}
                         name="matchPreference"
                         onChange={[Function]}
@@ -544,7 +546,7 @@ exports[`App should render correctly 1`] = `
                         value="any"
                       />
                       <div
-                        className="PrivateRadioButtonIcon-root-18 PrivateRadioButtonIcon-checked-20"
+                        className="PrivateRadioButtonIcon-root-19 PrivateRadioButtonIcon-checked-21"
                       >
                         <svg
                           aria-hidden={true}
@@ -558,7 +560,7 @@ exports[`App should render correctly 1`] = `
                         </svg>
                         <svg
                           aria-hidden={true}
-                          className="MuiSvgIcon-root PrivateRadioButtonIcon-layer-19"
+                          className="MuiSvgIcon-root PrivateRadioButtonIcon-layer-20"
                           focusable="false"
                           viewBox="0 0 24 24"
                         >
@@ -580,7 +582,7 @@ exports[`App should render correctly 1`] = `
                 >
                   <span
                     aria-disabled={true}
-                    className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-14 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-16 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
+                    className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-15 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-17 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
                     onBlur={[Function]}
                     onDragLeave={[Function]}
                     onFocus={[Function]}
@@ -599,7 +601,7 @@ exports[`App should render correctly 1`] = `
                     >
                       <input
                         checked={false}
-                        className="PrivateSwitchBase-input-17"
+                        className="PrivateSwitchBase-input-18"
                         disabled={true}
                         name="matchPreference"
                         onChange={[Function]}
@@ -607,7 +609,7 @@ exports[`App should render correctly 1`] = `
                         value="different"
                       />
                       <div
-                        className="PrivateRadioButtonIcon-root-18"
+                        className="PrivateRadioButtonIcon-root-19"
                       >
                         <svg
                           aria-hidden={true}
@@ -621,7 +623,7 @@ exports[`App should render correctly 1`] = `
                         </svg>
                         <svg
                           aria-hidden={true}
-                          className="MuiSvgIcon-root PrivateRadioButtonIcon-layer-19"
+                          className="MuiSvgIcon-root PrivateRadioButtonIcon-layer-20"
                           focusable="false"
                           viewBox="0 0 24 24"
                         >
@@ -648,14 +650,14 @@ exports[`App should render correctly 1`] = `
           </div>
         </div>
         <div
-          className="makeStyles-flexEndDiv-7"
+          className="makeStyles-flexEndDiv-8"
         >
           <label
             className="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementStart"
           >
             <span
               aria-disabled={false}
-              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-14 MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-checked-15 Mui-checked MuiIconButton-colorPrimary"
+              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-15 MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-checked-16 Mui-checked MuiIconButton-colorPrimary"
               onBlur={[Function]}
               onDragLeave={[Function]}
               onFocus={[Function]}
@@ -673,7 +675,7 @@ exports[`App should render correctly 1`] = `
                 className="MuiIconButton-label"
               >
                 <input
-                  className="PrivateSwitchBase-input-17"
+                  className="PrivateSwitchBase-input-18"
                   data-indeterminate={false}
                   defaultChecked={true}
                   name="checkbox"
@@ -699,7 +701,7 @@ exports[`App should render correctly 1`] = `
             </span>
           </label>
           <div
-            className="makeStyles-flexEndDiv-7"
+            className="makeStyles-flexEndDiv-8"
           >
             <button
               className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"

@@ -14,12 +14,12 @@
 
 package com.google.sps;
 
-import com.google.common.primitives.Booleans;
 import com.google.sps.data.Match;
 import com.google.sps.data.MatchPreference;
 import com.google.sps.data.Participant;
 import com.google.sps.datastore.ParticipantDatastore;
 import java.time.Clock;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
@@ -29,8 +29,6 @@ public final class FindMatchQuery {
 
   /** Extra padding time in minutes to ensure large enough meeting time block */
   private static final int PADDING_MINUTES = 10;
-  /** Minimum number of matching fields to be similar */
-  private static final int MIN_SAME_FIELDS = 1;
   /** Reference clock */
   private final Clock clock;
   /** Datastore of Participants */
@@ -48,45 +46,58 @@ public final class FindMatchQuery {
    */
   @Nullable
   public Match findMatch(Participant newParticipant) {
-    int duration = newParticipant.getDuration();
+    Participant firstParticipant = newParticipant;
+    int duration = firstParticipant.getDuration();
 
     // Get list of unmatched participants with same duration as and compatible time availaiblity
-    // with newParticipant
+    // with firstParticipant
     List<Participant> compatibleTimeAvailabilityParticipants =
-        participantDatastore.getParticipantsCompatibleTimeAvailibility(
-            duration, newParticipant.getEndTimeAvailable(), PADDING_MINUTES, clock);
+        participantDatastore.getParticipantsCompatibleTimeAvailibility(duration);
 
-    // Compare new participant preferences with other participants to find match
-    for (Participant currParticipant : compatibleTimeAvailabilityParticipants) {
+    // Compare first participant preferences with other participants to find match
+    for (Participant secondParticipant : compatibleTimeAvailabilityParticipants) {
+      // Make sure the first participant is not the same as the second
+      if (firstParticipant.getUsername().equals(secondParticipant.getUsername())) {
+        continue;
+      }
+
+      // Check endTimeAvailable compatbility
+      boolean compatibleTime =
+          secondParticipant.getEndTimeAvailable()
+              <= clock.millis() + TimeUnit.MINUTES.toMillis(duration + PADDING_MINUTES);
+      if (compatibleTime) {
+        continue;
+      }
+
       // Check match preference compatibility and get combined preference if compatible
       MatchPreference combinedMatchPreference =
           getCombinedMatchPreference(
-              newParticipant.getMatchPreference(), currParticipant.getMatchPreference());
+              firstParticipant.getMatchPreference(), secondParticipant.getMatchPreference());
       if (combinedMatchPreference == null) {
         // Not compatible match pref
         continue;
       }
 
-      // Check if combined match preference is satisfied depending on number of same fields
+      // Check if combined match preference is satisfied depending on number of same inputs
       if (!isCombinedMatchPreferenceSatisfied(
-          combinedMatchPreference, newParticipant, currParticipant)) {
+          combinedMatchPreference, firstParticipant, secondParticipant)) {
         continue;
       }
 
+      System.out.println(
+          "match found: "
+              + firstParticipant.getUsername()
+              + " and "
+              + secondParticipant.getUsername());
       // Found a match
       return new Match(
-          newParticipant.getUsername(), currParticipant.getUsername(), duration, clock.millis());
+          firstParticipant.getUsername(),
+          secondParticipant.getUsername(),
+          duration,
+          clock.millis());
     }
     // No inital match found
     return null;
-  }
-
-  /** Return true if compatible endTimeAvailable considering duration and padding */
-  private boolean isCompatibleTime(
-      int duration, long firstEndTimeAvailable, long secondEndTimeAvailable) {
-    long earliestEndTimeAvailable = Math.min(firstEndTimeAvailable, secondEndTimeAvailable);
-    return (clock.millis() + TimeUnit.MINUTES.toMillis(duration + PADDING_MINUTES))
-        < earliestEndTimeAvailable;
   }
 
   /**
@@ -110,33 +121,57 @@ public final class FindMatchQuery {
 
   /**
    * @return true if the participants are a match based on their combinedMatchPreference and the
-   *     number of fields that are the same, false if not a match
+   *     number of inputs that are the same, false if not a match
    */
   private boolean isCombinedMatchPreferenceSatisfied(
       MatchPreference combinedMatchPreference,
-      Participant newParticipant,
-      Participant currParticipant) {
+      Participant firstParticipant,
+      Participant secondParticipant) {
     if (combinedMatchPreference == MatchPreference.ANY) {
+      // both ANY, doesn't matter how many same inputs
       return true;
     }
 
-    // Count number of same fields between the two participants
-    boolean sameRole = newParticipant.getRole().equals(currParticipant.getRole());
-    boolean sameProductArea =
-        newParticipant.getProductArea().equals(currParticipant.getProductArea());
-    int numSameFields = Booleans.countTrue(sameRole, sameProductArea);
-    System.out.println("number of same fields: " + numSameFields);
+    // Get lists of combined role, product area, interests for first and second participant
+    List<String> firstFilledInputs = getAllFilledInputs(firstParticipant);
+    List<String> secondFilledInputs = getAllFilledInputs(secondParticipant);
+    System.out.println("First filled inputs: " + firstFilledInputs.toString());
+    System.out.println("Second filled inputs: " + secondFilledInputs.toString());
 
-    // If match preference = SIMILAR, numSameFields must be at least MIN_SAME_FIELDS to satisfy
-    // preference
-    if (combinedMatchPreference == MatchPreference.SIMILAR && numSameFields < MIN_SAME_FIELDS) {
+    // Count number of shared inputs by finding size of intersection
+    firstFilledInputs.retainAll(secondFilledInputs);
+    int numSameInputs = firstFilledInputs.size();
+    System.out.println("numSameInputs: " + numSameInputs);
+
+    // Check if match based on preference and number of same inputs
+    int maxNumFilledInputs = Math.max(firstFilledInputs.size(), secondFilledInputs.size());
+    int minSameInputs = (maxNumFilledInputs + 1) / 2;
+    System.out.println(minSameInputs);
+    if (combinedMatchPreference == MatchPreference.SIMILAR && numSameInputs < minSameInputs) {
       return false;
     }
-    // If match preference = DIFFERENT, numSameFields must be less than MIN_SAME_FIELDS to satisfy
-    // preference
-    if (combinedMatchPreference == MatchPreference.DIFFERENT && numSameFields >= MIN_SAME_FIELDS) {
+    if (combinedMatchPreference == MatchPreference.DIFFERENT && numSameInputs >= minSameInputs) {
       return false;
     }
+    System.out.println("combined match pref satisfied");
     return true;
+  }
+
+  /**
+   * @return all filled inputs of participant in one string delimited by a comma Assumes no role,
+   *     PA, or interests have the same options
+   */
+  private List<String> getAllFilledInputs(Participant participant) {
+    List<String> allFilledInputs = new ArrayList<String>();
+    String role = participant.getRole();
+    if (!role.equals("")) {
+      allFilledInputs.add(role);
+    }
+    String productArea = participant.getProductArea();
+    if (!productArea.equals("")) {
+      allFilledInputs.add(productArea);
+    }
+    allFilledInputs.addAll(participant.getInterests());
+    return allFilledInputs;
   }
 }

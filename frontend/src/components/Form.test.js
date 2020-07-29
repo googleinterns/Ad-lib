@@ -40,6 +40,22 @@ describe('Form', () => {
     expect(tree).toMatchSnapshot();
   });
 
+  it('should initiate GET request using axios() to load-user', () => {
+    const mockUserJSON = {
+      duration: 15,
+      role: 'Intern',
+      productArea: 'Google',
+      interests: ['Food', 'Travel'],
+      matchPreference: 'similar',
+    };
+    const mockData = {data: mockUserJSON};
+    axios.get.mockResolvedValue(mockData);
+
+    return ().then((response) => {
+      expect(response).toEqual(mockUserJSON);
+    });
+  });
+
   it('POST request using axios() to servlet with form details', () => {
     const mockedDate = new Date();
     const servletEndpoint = '/api/v1/add-participant';

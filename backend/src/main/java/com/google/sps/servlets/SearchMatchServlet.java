@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.sps.GmailFactory;
 import com.google.sps.data.Match;
 import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
@@ -33,7 +34,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import main.java.com.google.sps.GmailFactory;
 import org.json.simple.JSONObject;
 
 /** Servlet that searches for the participant's current match and removes participant if expired */

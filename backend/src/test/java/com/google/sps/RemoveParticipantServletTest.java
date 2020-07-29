@@ -15,22 +15,26 @@
 package com.google.sps;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.sps.data.MatchPreference;
+import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
 import com.google.sps.datastore.ParticipantDatastore;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.google.sps.servlets.RemoveParticipantServlet;
+import java.time.ZonedDateTime;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith(JUnit4.class)
+@RunWith(MockitoJUnitRunner.class)
 public final class RemoveParticipantServletTest {
-
-  private static final RemoveParticipantServlet removeParticipantServlet = mock(RemoveParticipantServlet.class);
 
   // Default values
   private static final long START_TIME_AVAILABLE_DEFAULT = 0;
@@ -47,7 +51,8 @@ public final class RemoveParticipantServletTest {
 
   // Get DatastoreService and instantiate Participant Datastore
   private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private static final ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
+  private static final ParticipantDatastore participantDatastore =
+      new ParticipantDatastore(datastore);
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -55,6 +60,16 @@ public final class RemoveParticipantServletTest {
   @Before
   public void setUp() {
     helper.setUp();
+  }
+
+  @After
+  public void tearDown() {
+    helper.tearDown();
+  }
+
+  @Test
+  public void testDoPost_shouldRemoveParticipant() {
+    RemoveParticipantServlet removeParticipantServlet = mock(RemoveParticipantServlet.class);
 
     // Add one participant to datastore
     Participant participant =
@@ -70,23 +85,12 @@ public final class RemoveParticipantServletTest {
             MATCH_STATUS_DEFAULT,
             TIMESTAMP_DEFAULT);
     participantDatastore.addParticipant(participant);
-  }
 
-  @After
-  public void tearDown() {
-    helper.tearDown();
-  }
-
-  @Begin
-  public void setUpTests() {
     when(removeParticipantServlet.getUsername()).thenReturn("User");
-  }
 
-  @Test
-  public void testDoPost_shouldRemoveParticipant() {
     participantDatastore.removeParticipant(removeParticipantServlet.getUsername());
 
-    Participant participantFromUsername = participantDatastore.getParticipantFromUsername(PERSON_A);
+    Participant participantFromUsername = participantDatastore.getParticipantFromUsername(USER);
     assertThat(participantFromUsername).isNull();
   }
 }

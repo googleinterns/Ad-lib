@@ -18,8 +18,8 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.sps.data.Participant;
 import com.google.sps.datastore.ParticipantDatastore;
+import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,15 +27,16 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that adds a participant to the queue and tries to find them a match immediately */
 @WebServlet("/api/v1/remove-participant")
-public class AddParticipantServlet extends HttpServlet {
+public class RemoveParticipantServlet extends HttpServlet {
 
   // Get DatastoreService and instantiate Participant Datastore
-  DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
+  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private static final ParticipantDatastore participantDatastore =
+      new ParticipantDatastore(datastore);
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
+
     // Get username of participant sending exit request
     String username = getUsername();
     if (username == null) {
@@ -52,7 +53,7 @@ public class AddParticipantServlet extends HttpServlet {
   }
 
   /** Retrieve user email address via Users API and parse for username */
-  private String getUsername() {
+  public String getUsername() {
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     return email != null ? email.split("@")[0] : null;

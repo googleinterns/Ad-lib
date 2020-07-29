@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="5" failures="0" name="com.google.sps.ParticipantDatastoreTest" time="0.596" errors="0" skipped="0">
+<testsuite tests="5" failures="0" name="com.google.sps.ParticipantDatastoreTest" time="0.731" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
     <property name="java.vm.version" value="11.0.7+10-post-Debian-3deb10u1"/>
@@ -60,9 +60,9 @@
     <property name="sun.cpu.endian" value="little"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="addOneParticipant" time="0.515"/>
-  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="addTwoParticipants" time="0.026"/>
-  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="removeParticipant" time="0.032"/>
-  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="addGetOneParticipant" time="0.018"/>
-  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="getNonexistentParticipant" time="0.005"/>
+  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="addOneParticipant" time="0.607"/>
+  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="addTwoParticipants" time="0.025"/>
+  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="removeParticipant" time="0.035"/>
+  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="addGetOneParticipant" time="0.032"/>
+  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="getNonexistentParticipant" time="0.032"/>
 </testsuite>

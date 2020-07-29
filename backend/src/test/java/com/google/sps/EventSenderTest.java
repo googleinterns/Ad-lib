@@ -77,13 +77,14 @@ public class EventSenderTest {
     when(events.insert(any(), any())).thenReturn(insert);
     //    Emulating sending messages, when sent will return send mock.
     when(insert.setConferenceDataVersion(testConferenceVersion)).thenReturn(insert);
+    when(insert.getConferenceDataVersion()).thenReturn(testConferenceVersion);
     when(insert.execute()).thenReturn(event);
 
     eventSender = new EventSender(calendar);
   }
 
   @Test
-  public void SetIncorrectAndHasIncorrect() {
+  public void SetIncorrectAndHasIncorrect() throws IOException, GeneralSecurityException {
     ArgumentCaptor<Event> argument = ArgumentCaptor.forClass(Event.class);
 
     eventSender.addEventToCalendar(testEvent);
@@ -95,7 +96,7 @@ public class EventSenderTest {
   }
 
   @Test
-  public void setCorrectAndHasCorrect() {
+  public void setCorrectAndHasCorrect() throws IOException, GeneralSecurityException {
     ArgumentCaptor<Event> argument = ArgumentCaptor.forClass(Event.class);
 
     eventSender.addEventToCalendar(testEvent);
@@ -103,20 +104,7 @@ public class EventSenderTest {
 
     Event event = argument.getValue();
 
-    assertThat(event.getSummary()).isEqualTo("testString");
-  }
-
-  @Test
-  public void testCreateEvent() throws IOException, GeneralSecurityException {
-
-    ArgumentCaptor<Event> argument = ArgumentCaptor.forClass(Event.class);
-
-    eventSender.addEventToCalendar(testEvent);
-    verify(events).insert(eq(testEmail), argument.capture());
-
-    Event event = argument.getValue();
-
-    assertThat(event.getSummary()).isNotEqualTo("testString");
+    assertThat(event.getSummary()).isEqualTo(testSummary);
   }
 
   @Test
@@ -125,10 +113,9 @@ public class EventSenderTest {
     ArgumentCaptor<Integer> argument = ArgumentCaptor.forClass(Integer.class);
 
     eventSender.addEventToCalendar(testEvent);
-    verify(insert).setConferenceDataVersion(argument.capture()).getConferenceDataVersion();
 
+    verify(insert).setConferenceDataVersion(argument.capture());
     int conferenceVersion = argument.getValue();
-
-    assertThat(conferenceVersion).isEqualTo(testConferenceVersion);
+    assertThat(conferenceVersion).isEqualTo(insert.getConferenceDataVersion());
   }
 }

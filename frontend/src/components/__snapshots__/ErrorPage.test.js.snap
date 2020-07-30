@@ -17,4 +17,17 @@ exports[`Error Page should render correctly 1`] = `
     </div>
   </div>
 </div>
+------------HTML PREVIEW---------------
+<div>
+  <div class="MuiPaper-root MuiCard-root makeStyles-content-1 MuiPaper-elevation1 MuiPaper-rounded">
+    <div class="MuiCardContent-root">
+      <h3>
+        Oops, something went wrong!
+      </h3>
+      <p>
+        We apologize for the inconvenience. Please try again later!
+      </p>
+    </div>
+  </div>
+</div>
 `;

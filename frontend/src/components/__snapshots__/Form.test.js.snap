@@ -647,4 +647,373 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
     </div>
   </div>
 </div>
+------------HTML PREVIEW---------------
+<div>
+  <div class="makeStyles-heading-4">
+    <h3>
+      Choose your time preferences
+    </h3>
+  </div>
+  <div class="makeStyles-section-3">
+    <div class="makeStyles-flexStartDiv-1">
+      <p>
+        I am free until...
+      </p>
+      <div style="width:180px;">
+        <div class="MuiFormControl-root MuiTextField-root">
+          <div class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl MuiInputBase-adornedEnd">
+            <input
+              class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd"
+              id="time-field"
+              type="text"
+              value="12:00 AM"
+            >
+            <div class="MuiInputAdornment-root MuiInputAdornment-positionEnd">
+              <button
+                aria-label="time-field"
+                class="MuiButtonBase-root MuiIconButton-root"
+                type="button"
+              >
+                <span class="MuiIconButton-label">
+                  <svg
+                    aria-hidden
+                    class="MuiSvgIcon-root"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"></path>
+                    <path
+                      d="M0 0h24v24H0z"
+                      fill="none"
+                    >
+                    </path>
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="makeStyles-flexStartDiv-1">
+      <p>
+        I want to talk for...
+      </p>
+      <div>
+        <div
+          class="MuiFormControl-root"
+          style="width:180px;"
+        >
+          <div class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl">
+            <div
+              aria-haspopup="listbox"
+              aria-label="duration"
+              aria-labelledby="duration-input"
+              class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+              id="duration-input"
+              role="button"
+            >
+              15 minutes
+            </div>
+            <input
+              aria-hidden
+              class="MuiSelect-nativeInput"
+              name="duration"
+            >
+            <svg
+              aria-hidden
+              class="MuiSvgIcon-root MuiSelect-icon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path d="M7 10l5 5 5-5z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="makeStyles-heading-4">
+    <h3>
+      Choose your match preferences
+    </h3>
+  </div>
+  <div class="makeStyles-section-3">
+    <div class="makeStyles-flexStartDiv-1">
+      <div>
+        <div
+          class="MuiFormControl-root"
+          style="width:180px;"
+        >
+          <label
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
+            id="role"
+          >
+            Role
+          </label>
+          <div class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl">
+            <div
+              aria-haspopup="listbox"
+              aria-label="role"
+              aria-labelledby="role-input"
+              class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+              id="role-input"
+              role="button"
+            >
+              <span></span>
+            </div>
+            <input
+              aria-hidden
+              class="MuiSelect-nativeInput"
+              name="role"
+            >
+            <svg
+              aria-hidden
+              class="MuiSvgIcon-root MuiSelect-icon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path d="M7 10l5 5 5-5z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div
+          class="MuiFormControl-root"
+          style="width:180px;"
+        >
+          <label
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
+            id="productArea"
+          >
+            Product Area
+          </label>
+          <div class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl">
+            <div
+              aria-haspopup="listbox"
+              aria-label="productArea"
+              aria-labelledby="productArea-input"
+              class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+              id="productArea-input"
+              role="button"
+            >
+              <span></span>
+            </div>
+            <input
+              aria-hidden
+              class="MuiSelect-nativeInput"
+              name="productArea"
+            >
+            <svg
+              aria-hidden
+              class="MuiSvgIcon-root MuiSelect-icon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path d="M7 10l5 5 5-5z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div
+          class="MuiFormControl-root"
+          style="width:180px;"
+        >
+          <label
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
+            id="interests"
+          >
+            Interests
+          </label>
+          <div class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl">
+            <div
+              aria-haspopup="listbox"
+              aria-label="interests"
+              aria-labelledby="interests"
+              class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+              id="interests"
+              role="button"
+            >
+              <span></span>
+            </div>
+            <input
+              aria-hidden
+              class="MuiSelect-nativeInput"
+              name="interests"
+              value=""
+            >
+            <svg
+              aria-hidden
+              class="MuiSvgIcon-root MuiSelect-icon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path d="M7 10l5 5 5-5z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="makeStyles-padding-5">
+      <fieldset class="MuiFormControl-root">
+        <div
+          aria-label="matchPreference"
+          class="MuiFormGroup-root MuiFormGroup-row"
+          defaultValue="any"
+          role="radiogroup"
+        >
+          <label class="MuiFormControlLabel-root Mui-disabled">
+            <span
+              aria-disabled
+              class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-11 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
+            >
+              <span class="MuiIconButton-label">
+                <input
+                  class="PrivateSwitchBase-input-12"
+                  disabled
+                  name="matchPreference"
+                  type="radio"
+                  value="similar"
+                >
+                <div class="PrivateRadioButtonIcon-root-13">
+                  <svg
+                    aria-hidden
+                    class="MuiSvgIcon-root"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"></path>
+                  </svg>
+                  <svg
+                    aria-hidden
+                    class="MuiSvgIcon-root PrivateRadioButtonIcon-layer-14"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"></path>
+                  </svg>
+                </div>
+              </span>
+            </span>
+            <span class="MuiTypography-root MuiFormControlLabel-label Mui-disabled MuiTypography-body1">
+              Similar Googler
+            </span>
+          </label>
+          <label class="MuiFormControlLabel-root">
+            <span class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-checked-10 Mui-checked MuiIconButton-colorPrimary">
+              <span class="MuiIconButton-label">
+                <input
+                  checked
+                  class="PrivateSwitchBase-input-12"
+                  name="matchPreference"
+                  type="radio"
+                  value="any"
+                >
+                <div class="PrivateRadioButtonIcon-root-13 PrivateRadioButtonIcon-checked-15">
+                  <svg
+                    aria-hidden
+                    class="MuiSvgIcon-root"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"></path>
+                  </svg>
+                  <svg
+                    aria-hidden
+                    class="MuiSvgIcon-root PrivateRadioButtonIcon-layer-14"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"></path>
+                  </svg>
+                </div>
+              </span>
+            </span>
+            <span class="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1">
+              Any Googler
+            </span>
+          </label>
+          <label class="MuiFormControlLabel-root Mui-disabled">
+            <span
+              aria-disabled
+              class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-11 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
+            >
+              <span class="MuiIconButton-label">
+                <input
+                  class="PrivateSwitchBase-input-12"
+                  disabled
+                  name="matchPreference"
+                  type="radio"
+                  value="different"
+                >
+                <div class="PrivateRadioButtonIcon-root-13">
+                  <svg
+                    aria-hidden
+                    class="MuiSvgIcon-root"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"></path>
+                  </svg>
+                  <svg
+                    aria-hidden
+                    class="MuiSvgIcon-root PrivateRadioButtonIcon-layer-14"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"></path>
+                  </svg>
+                </div>
+              </span>
+            </span>
+            <span class="MuiTypography-root MuiFormControlLabel-label Mui-disabled MuiTypography-body1">
+              Different Googler
+            </span>
+          </label>
+        </div>
+        <p class="MuiFormHelperText-root">
+          You must select at least one personal preference field to select a match preference 
+        </p>
+      </fieldset>
+    </div>
+  </div>
+  <div class="makeStyles-flexEndDiv-2">
+    <label class="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementStart">
+      <span class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-checked-10 Mui-checked MuiIconButton-colorPrimary">
+        <span class="MuiIconButton-label">
+          <input
+            class="PrivateSwitchBase-input-12"
+            defaultChecked
+            name="checkbox"
+            type="checkbox"
+          >
+          <svg
+            aria-hidden
+            class="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+          </svg>
+        </span>
+      </span>
+      <span class="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1">
+        Save my preferences for later
+      </span>
+    </label>
+    <div class="makeStyles-flexEndDiv-2">
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
+        type="button"
+      >
+        <span class="MuiButton-label">
+          Match me!
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
 `;

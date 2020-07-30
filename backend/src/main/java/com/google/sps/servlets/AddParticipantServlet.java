@@ -88,8 +88,9 @@ public class AddParticipantServlet extends HttpServlet {
       interests.add(interestsJsonArray.getString(i));
     }
     boolean savePreference = formDetails.getBoolean(REQUEST_SAVE_PREFERENCE);
+    MatchPreference matchPreference;
     try {
-      MatchPreference matchPreference =
+      matchPreference =
           MatchPreference.forStringValue(formDetails.getString(REQUEST_MATCH_PREFERENCE));
     } catch (IllegalStateException e) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid match preference.");

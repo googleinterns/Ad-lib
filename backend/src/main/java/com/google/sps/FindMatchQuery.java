@@ -77,7 +77,6 @@ public final class FindMatchQuery {
         // Not compatible match pref
         continue;
       }
-
       // Check if combined match preference is satisfied depending on number of same inputs
       if (!isCombinedMatchPreferenceSatisfied(
           combinedMatchPreference, firstParticipant, secondParticipant)) {

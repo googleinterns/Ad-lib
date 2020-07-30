@@ -79,6 +79,7 @@ public class AddParticipant {
     JSONObject obj = retrieveRequestBody(request);
     if (obj == null) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not read request body");
+      return;
     }
     JSONObject formDetails = obj.getJSONObject(REQUEST_FORM_DETAILS);
 
@@ -95,7 +96,7 @@ public class AddParticipant {
     }
 
     // Find immediate match if possible
-    FindMatchQuery query = new FindMatchQuery(Clock.systemUTC(), participantDatastore);
+    FindMatchQuery query = new FindMatchQuery(clock, participantDatastore);
     Match match = query.findMatch(newParticipant);
 
     if (match != null) {
@@ -109,14 +110,16 @@ public class AddParticipant {
 
       // Add new participant to datastore with new matchId and null availability
       participantDatastore.addParticipant(newParticipant.foundMatch(matchId));
+      System.out.println("found match");
     } else {
       // Match not found, add participant to datastore
       participantDatastore.addParticipant(newParticipant);
+      System.out.println("match not found");
     }
 
     // Confirm received form input
     response.setContentType("text/plain;charset=UTF-8");
-    response.getWriter().println("Received form input details!");
+    response.getWriter().println("Received form input details and queried!");
   }
 
   /** Retrieve JSON body payload and convert to a JSONObject for parsing purposes */
@@ -158,17 +161,9 @@ public class AddParticipant {
     String role = formDetails.getString(REQUEST_ROLE);
     String productArea = formDetails.getString(REQUEST_PRODUCT_AREA);
     JSONArray interestsJsonArray = formDetails.getJSONArray(REQUEST_INTERESTS);
-    int numInterests = interestsJsonArray.length();
-    List<String> interests = new ArrayList<String>();
-    for (int i = 0; i < numInterests; i++) {
-      interests.add(interestsJsonArray.getString(i));
-    }
+    List<String> interests = getListFromJsonArray(interestsJsonArray);
     MatchPreference matchPreference =
-        getMatchPreference(formDetails.getString(REQUEST_MATCH_PREFERENCE));
-    if (matchPreference == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid match preference.");
-      return null;
-    }
+        MatchPreference.forStringValue(formDetails.getString(REQUEST_MATCH_PREFERENCE));
 
     long timestamp = System.currentTimeMillis();
 
@@ -194,18 +189,14 @@ public class AddParticipant {
     return email != null ? email.split("@")[0] : null;
   }
 
-  /** Parse match preference string to */
-  private static MatchPreference getMatchPreference(String matchPreferenceString) {
-    switch (matchPreferenceString) {
-      case "different":
-        return MatchPreference.DIFFERENT;
-      case "any":
-        return MatchPreference.ANY;
-      case "similar":
-        return MatchPreference.SIMILAR;
-      default:
-        return null;
+  /** Get list of Strings from JSONArray */
+  public static List<String> getListFromJsonArray(JSONArray array) {
+    int length = array.length();
+    List<String> list = new ArrayList<String>();
+    for (int i = 0; i < length; i++) {
+      list.add(array.getString(i));
     }
+    return list;
   }
 
   /** Extract and return user fields from participant */

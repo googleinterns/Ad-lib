@@ -20,9 +20,10 @@ import com.google.appengine.api.users.UserServiceFactory;
 /** Class that returns a username */
 public class UsernameService {
 
+  private final UserService userService = UserServiceFactory.getUserService();
+
   /** Retrieve user email address via Users API and parse for username */
   public String getUsername() {
-    UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     return email != null ? email.split("@")[0] : null;
   }

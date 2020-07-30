@@ -37,7 +37,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /** Separates datastore method calls involving Participant type from caller */
-public final class ParticipantDatastore {
+public class ParticipantDatastore {
 
   // Datastore Key/Property constants
   private static final String KIND_PARTICIPANT = "Participant";

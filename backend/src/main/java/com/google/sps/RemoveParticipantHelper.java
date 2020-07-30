@@ -20,20 +20,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Helper class to execute doPost for RemoveParticipantServlet */
-public final class RemoveParticipantServletHelper {
+public final class RemoveParticipantHelper {
 
   private final ParticipantDatastore participantDatastore;
+  private final UsernameService usernameService;
   private static final String RESPONSE = "Received remove request.";
 
-  public RemoveParticipantServletHelper(ParticipantDatastore participantDatastore) {
+  public RemoveParticipantHelper(
+      ParticipantDatastore participantDatastore, UsernameService usernameService) {
     this.participantDatastore = participantDatastore;
+    this.usernameService = usernameService;
   }
 
-  public void doPostHelper(HttpServletRequest request, HttpServletResponse response)
-      throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     // Get username of participant sending exit request
-    UsernameService usernameService = new UsernameService();
     String username = usernameService.getUsername();
     if (username == null) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not retrieve email.");

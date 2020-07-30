@@ -124,7 +124,6 @@ public class SearchMatchServlet extends HttpServlet {
     expired.put(JSON_MATCH_STATUS, "expired");
     expired.put(JSON_END_TIME_AVAILABLE, participant.getEndTimeAvailable());
     expired.put(JSON_DURATION, participant.getDuration());
-    sendExpiredEmail();
     // Send the JSON back as the response
     response.setContentType("application/json");
     response.getWriter().println(expired.toString());
@@ -151,7 +150,6 @@ public class SearchMatchServlet extends HttpServlet {
     matchExists.put(JSON_THIS_USERNAME, thisUsername);
     matchExists.put(JSON_MATCH_USERNAME, matchUsername);
     matchExists.put(JSON_DURATION, match.getDuration());
-    sendMatchEmail();
     // Send the JSON back as the response
     response.setContentType("application/json");
     response.getWriter().println(matchExists.toString());

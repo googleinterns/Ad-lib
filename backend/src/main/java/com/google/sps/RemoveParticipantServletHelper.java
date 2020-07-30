@@ -14,8 +14,6 @@
 
 package com.google.sps;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.datastore.ParticipantDatastore;
@@ -23,29 +21,39 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Helper class */
+/** Helper class to execute doPost for RemoveParticipantServlet */
 public final class RemoveParticipantServletHelper {
 
-  // Get DatastoreService and instantiate Participant Datastore
-  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private static final ParticipantDatastore participantDatastore =
-      new ParticipantDatastore(datastore);
+  // HttpServlet request and response
+  private final HttpServletRequest request;
+  private final HttpServletResponse response;
 
-  public void doPostHelper(HttpServletRequest request, HttpServletResponse response)
-      throws IOException {
+  // ParticipantDatastore
+  private final ParticipantDatastore participantDatastore;
+
+  public RemoveParticipantServletHelper(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      ParticipantDatastore participantDatastore) {
+    this.request = request;
+    this.response = response;
+    this.participantDatastore = participantDatastore;
+  }
+
+  public void doPostHelper() throws IOException {
     // Get username of participant sending exit request
-    /*String username = getUsername();
+    String username = getUsername();
     if (username == null) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not retrieve email.");
       return;
-    }*/
+    }
 
     // Remove participant from datastore by username
-    // participantDatastore.removeParticipant(username);
+    participantDatastore.removeParticipant(username);
 
     // Confirm participant exit queue request
-    // response.setContentType("text/plain;charset=UTF-8");
-    // response.getWriter().println("Received remove request.");
+    response.setContentType("text/plain;charset=UTF-8");
+    response.getWriter().println("Received remove request.");
   }
 
   /** Retrieve user email address via Users API and parse for username */

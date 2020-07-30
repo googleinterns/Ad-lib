@@ -14,23 +14,43 @@
 
 package com.google.sps;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 import com.google.sps.datastore.ParticipantDatastore;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.runners.JUnit4;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(JUnit4.class)
 public final class RemoveParticipantServletTest {
 
-  @Test
-  public void testDoPost_shouldRemoveParticipant() {
-    ParticipantDatastore participantDatastore = mock(ParticipantDatastore.class);
+  private RemoveParticipantServletHelper removeParticipantServletHelper;
 
-    participantDatastore.removeParticipant("user");
+  @Test
+  public void testDoPost_shouldRemoveParticipant() throws IOException {
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    ParticipantDatastore participantDatastore = mock(ParticipantDatastore.class);
+    removeParticipantServletHelper =
+        new RemoveParticipantServletHelper(request, response, participantDatastore);
+
+    when(removeParticipantServletHelper.getUsername()).thenReturn("user");
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+    when(response.getWriter()).thenReturn(writer);
+
+    removeParticipantServletHelper.doPostHelper();
 
     verify(participantDatastore, times(1)).removeParticipant("user");
-    verify(participantDatastore, times(1)).removeParticipant(anyString());
+    // verify(participantDatastore, times(1)).removeParticipant(anyString());
+    writer.flush();
+    assertTrue(stringWriter.toString().contains("Received remove request."));
   }
 }

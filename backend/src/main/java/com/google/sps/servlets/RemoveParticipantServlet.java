@@ -14,21 +14,27 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.sps.RemoveParticipantServletHelper;
+import com.google.sps.datastore.ParticipantDatastore;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that adds a participant to the queue and tries to find them a match immediately */
+/** Servlet that removes a participany from the queue */
 @WebServlet("/api/v1/remove-participant")
 public class RemoveParticipantServlet extends HttpServlet {
+
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private final ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     RemoveParticipantServletHelper removeParticipantServletHelper =
-        new RemoveParticipantServletHelper();
-    removeParticipantServletHelper.doPostHelper(request, response);
+        new RemoveParticipantServletHelper(request, response, participantDatastore);
+    removeParticipantServletHelper.doPostHelper();
   }
 }

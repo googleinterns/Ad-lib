@@ -16,7 +16,6 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
 import com.google.sps.datastore.ParticipantDatastore;
 import java.io.IOException;
@@ -46,7 +45,7 @@ public class RemoveExpiredParticipantsServlet extends HttpServlet {
 
     // Check if match exists and not returned yet
     for (Participant participant : unmatchedParticipants) {
-      if (participant.getMatchStatus() == MatchStatus.UNMATCHED && isExpired(participant)) {
+      if (isExpired(participant)) {
         participantDatastore.removeParticipant(participant.getUsername());
         return;
       }

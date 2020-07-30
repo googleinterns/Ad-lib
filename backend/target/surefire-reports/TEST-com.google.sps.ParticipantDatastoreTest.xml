@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="5" failures="0" name="com.google.sps.ParticipantDatastoreTest" time="0.648" errors="0" skipped="0">
+<testsuite tests="5" failures="0" name="com.google.sps.ParticipantDatastoreTest" time="1.486" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
-    <property name="java.vm.version" value="11.0.7+10-post-Debian-3deb10u1"/>
+    <property name="java.vm.version" value="11.0.8+10-post-Debian-1deb10u1"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/java-11-openjdk-amd64/lib"/>
     <property name="maven.multiModuleProjectDirectory" value="/home/grantjustice/capstone/step76-2020/backend"/>
     <property name="java.vm.vendor" value="Debian"/>
@@ -16,7 +16,7 @@
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
     <property name="user.dir" value="/home/grantjustice/capstone/step76-2020/backend"/>
     <property name="java.vm.compressedOopsMode" value="32-bit"/>
-    <property name="java.runtime.version" value="11.0.7+10-post-Debian-3deb10u1"/>
+    <property name="java.runtime.version" value="11.0.8+10-post-Debian-1deb10u1"/>
     <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment"/>
     <property name="os.arch" value="amd64"/>
     <property name="java.io.tmpdir" value="/tmp"/>
@@ -49,20 +49,20 @@
     <property name="java.specification.vendor" value="Oracle Corporation"/>
     <property name="awt.toolkit" value="sun.awt.X11.XToolkit"/>
     <property name="java.vm.info" value="mixed mode, sharing"/>
-    <property name="java.version" value="11.0.7"/>
+    <property name="java.version" value="11.0.8"/>
     <property name="securerandom.source" value="file:/dev/./urandom"/>
     <property name="java.vendor" value="Debian"/>
     <property name="maven.home" value="/opt/maven"/>
     <property name="file.separator" value="/"/>
-    <property name="java.version.date" value="2020-04-14"/>
+    <property name="java.version.date" value="2020-07-14"/>
     <property name="java.vendor.url.bug" value="https://bugs.debian.org/openjdk-11"/>
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="sun.cpu.endian" value="little"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="addOneParticipant" time="0.547"/>
-  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="addTwoParticipants" time="0.031"/>
-  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="removeParticipant" time="0.029"/>
-  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="addGetOneParticipant" time="0.029"/>
-  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="getNonexistentParticipant" time="0.012"/>
+  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="addOneParticipant" time="1.372"/>
+  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="addTwoParticipants" time="0.057"/>
+  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="removeParticipant" time="0.032"/>
+  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="addGetOneParticipant" time="0.019"/>
+  <testcase classname="com.google.sps.ParticipantDatastoreTest" name="getNonexistentParticipant" time="0.006"/>
 </testsuite>

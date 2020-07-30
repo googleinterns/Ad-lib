@@ -67,7 +67,8 @@ public class GmailFactory {
 
     GoogleAuthorizationCodeFlow flow =
         new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
-            .setAccessType("offline")
+            .setDataStoreFactory(new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH)))
+            .setAccessType(ACCESS_TYPE)
             .build();
     LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(PORT_NUM).build();
     return new AuthorizationCodeInstalledApp(flow, receiver).authorize(AUTH_USER);

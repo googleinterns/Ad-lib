@@ -14,8 +14,6 @@
 
 package com.google.sps;
 
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.datastore.ParticipantDatastore;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,8 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 /** Helper class to execute doPost for RemoveParticipantServlet */
 public final class RemoveParticipantServletHelper {
 
-  // Participant Datastore
   private final ParticipantDatastore participantDatastore;
+  private static final String RESPONSE = "Received remove request.";
 
   public RemoveParticipantServletHelper(ParticipantDatastore participantDatastore) {
     this.participantDatastore = participantDatastore;
@@ -33,8 +31,10 @@ public final class RemoveParticipantServletHelper {
 
   public void doPostHelper(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
+
     // Get username of participant sending exit request
-    String username = getUsername();
+    UsernameService usernameService = new UsernameService();
+    String username = usernameService.getUsername();
     if (username == null) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not retrieve email.");
       return;
@@ -45,13 +45,6 @@ public final class RemoveParticipantServletHelper {
 
     // Confirm participant exit queue request
     response.setContentType("text/plain;charset=UTF-8");
-    response.getWriter().println("Received remove request.");
-  }
-
-  /** Retrieve user email address via Users API and parse for username */
-  public String getUsername() {
-    UserService userService = UserServiceFactory.getUserService();
-    String email = userService.getCurrentUser().getEmail();
-    return email != null ? email.split("@")[0] : null;
+    response.getWriter().println(RESPONSE);
   }
 }

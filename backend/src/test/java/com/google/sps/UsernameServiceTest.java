@@ -27,14 +27,18 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public final class UserServiceFactoryTest {
+public final class UsernameServiceTest {
+
+  private static final String EMAIL = "user@google.com";
+  private static final String AUTH_DOMAIN = "google.com";
+  private static final String USER = "user";
 
   private final LocalServiceTestHelper userServiceHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig())
           .setEnvIsAdmin(true)
           .setEnvIsLoggedIn(true)
-          .setEnvAuthDomain("google.com")
-          .setEnvEmail("user@google.com");
+          .setEnvAuthDomain(AUTH_DOMAIN)
+          .setEnvEmail(EMAIL);
 
   @Before
   public void setUp() {
@@ -53,7 +57,7 @@ public final class UserServiceFactoryTest {
     String email = userService.getCurrentUser().getEmail();
     String username = email.split("@")[0];
 
-    assertEquals(email, "user@google.com");
-    assertEquals(username, "user");
+    assertEquals(email, EMAIL);
+    assertEquals(username, USER);
   }
 }

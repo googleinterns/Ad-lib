@@ -15,31 +15,54 @@
 package com.google.sps;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.sps.datastore.ParticipantDatastore;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mock;
 
 @RunWith(JUnit4.class)
 public final class RemoveParticipantServletTest {
 
+  @Mock UsernameService usernameService;
+
+  @Mock HttpServletRequest request;
+
+  @Mock HttpServletResponse response;
+
   private RemoveParticipantServletHelper helper;
+
+  private static final String USER = "user";
+  private static final String EXPECTED_RESPONSE = "Received remove request.";
+
+  @Before
+  public void setUp() throws IOException {
+    request = mock(HttpServletRequest.class);
+    response = mock(HttpServletResponse.class);
+    usernameService = mock(UsernameService.class);
+  }
 
   @Test
   public void testDoPost_shouldRemoveParticipant() throws IOException {
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    ParticipantDatastore participantDatastore = mock(ParticipantDatastore.class);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
+
     helper = new RemoveParticipantServletHelper(participantDatastore);
 
-    // when(removeParticipantServletHelper.getUsername()).thenReturn("user");
+    when(usernameService.getUsername()).thenReturn(USER);
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
@@ -47,9 +70,9 @@ public final class RemoveParticipantServletTest {
 
     helper.doPostHelper(request, response);
 
-    verify(participantDatastore, times(1)).removeParticipant("user");
+    verify(participantDatastore, times(1)).removeParticipant(USER);
     // verify(participantDatastore, times(1)).removeParticipant(anyString());
     writer.flush();
-    assertTrue(stringWriter.toString().contains("Received remove request."));
+    assertTrue(stringWriter.toString().contains(EXPECTED_RESPONSE));
   }
 }

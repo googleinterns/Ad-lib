@@ -23,11 +23,9 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.common.collect.ImmutableList;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,7 +45,7 @@ public class GmailFactory {
   private static final String APPLICATION_NAME = "Ad-lib";
   private static final String AUTH_USER = "user";
   private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
-  private static final String TOKENS_DIRECTORY_PATH = "tokens";
+  private static final String TOKENS_DIRECTORY_PATH = "/tokens";
   private static final String ACCESS_TYPE = "offline";
   private static final int PORT_NUM = 8000;
 
@@ -69,7 +67,6 @@ public class GmailFactory {
 
     GoogleAuthorizationCodeFlow flow =
         new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
-            .setDataStoreFactory(new FileDataStoreFactory(new File(getCredentialsDirectory())))
             .setAccessType("offline")
             .build();
     LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(PORT_NUM).build();
@@ -81,9 +78,5 @@ public class GmailFactory {
     return new Gmail.Builder(httpTransport, JSON_FACTORY, getCredentials(httpTransport))
         .setApplicationName(APPLICATION_NAME)
         .build();
-  }
-
-  private static String getCredentialsDirectory() {
-    return System.getProperty("user.home") + "/" + TOKENS_DIRECTORY_PATH;
   }
 }

@@ -30,11 +30,11 @@ public class RemoveParticipantServlet extends HttpServlet {
 
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private final ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
+  private final RemoveParticipantServletHelper helper =
+      new RemoveParticipantServletHelper(participantDatastore);
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    RemoveParticipantServletHelper removeParticipantServletHelper =
-        new RemoveParticipantServletHelper(request, response, participantDatastore);
-    removeParticipantServletHelper.doPostHelper();
+    helper.doPostHelper(request, response);
   }
 }

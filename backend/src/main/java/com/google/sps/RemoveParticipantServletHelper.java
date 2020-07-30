@@ -24,23 +24,15 @@ import javax.servlet.http.HttpServletResponse;
 /** Helper class to execute doPost for RemoveParticipantServlet */
 public final class RemoveParticipantServletHelper {
 
-  // HttpServlet request and response
-  private final HttpServletRequest request;
-  private final HttpServletResponse response;
-
-  // ParticipantDatastore
+  // Participant Datastore
   private final ParticipantDatastore participantDatastore;
 
-  public RemoveParticipantServletHelper(
-      HttpServletRequest request,
-      HttpServletResponse response,
-      ParticipantDatastore participantDatastore) {
-    this.request = request;
-    this.response = response;
+  public RemoveParticipantServletHelper(ParticipantDatastore participantDatastore) {
     this.participantDatastore = participantDatastore;
   }
 
-  public void doPostHelper() throws IOException {
+  public void doPostHelper(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
     // Get username of participant sending exit request
     String username = getUsername();
     if (username == null) {

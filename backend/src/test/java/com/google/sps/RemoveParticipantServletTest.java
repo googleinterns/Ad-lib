@@ -30,23 +30,22 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public final class RemoveParticipantServletTest {
 
-  private RemoveParticipantServletHelper removeParticipantServletHelper;
+  private RemoveParticipantServletHelper helper;
 
   @Test
   public void testDoPost_shouldRemoveParticipant() throws IOException {
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpServletResponse response = mock(HttpServletResponse.class);
     ParticipantDatastore participantDatastore = mock(ParticipantDatastore.class);
-    removeParticipantServletHelper =
-        new RemoveParticipantServletHelper(request, response, participantDatastore);
+    helper = new RemoveParticipantServletHelper(participantDatastore);
 
-    when(removeParticipantServletHelper.getUsername()).thenReturn("user");
+    // when(removeParticipantServletHelper.getUsername()).thenReturn("user");
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
 
-    removeParticipantServletHelper.doPostHelper();
+    helper.doPostHelper(request, response);
 
     verify(participantDatastore, times(1)).removeParticipant("user");
     // verify(participantDatastore, times(1)).removeParticipant(anyString());

@@ -14,8 +14,6 @@
 
 package com.google.sps;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.Match;
@@ -29,7 +27,6 @@ import com.google.sps.datastore.UserDatastore;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.Clock;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -49,14 +46,35 @@ public class AddParticipant {
   private static final String REQUEST_SAVE_PREFERENCE = "savePreference";
   private static final String REQUEST_MATCH_PREFERENCE = "matchPreference";
 
-  // Get DatastoreService and instantiate Match and Participant Datastores
-  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private final MatchDatastore matchDatastore = new MatchDatastore(datastore);
-  private final ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
-  private final UserDatastore userDatastore = new UserDatastore(datastore);
+  // HttpServlet request and response
+  private final HttpServletRequest request;
+  private final HttpServletResponse response;
+  /** Reference clock */
+  private final Clock clock;
 
-  public void doPostHelper(HttpServletRequest request, HttpServletResponse response)
-      throws IOException {
+  // Match, Participant, and User Datastores
+  private final MatchDatastore matchDatastore;
+  private final ParticipantDatastore participantDatastore;
+  private final UserDatastore userDatastore;
+
+  /** Constructor */
+  public AddParticipant(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      Clock clock,
+      MatchDatastore matchDatastore,
+      ParticipantDatastore participantDatastore,
+      UserDatastore userDatastore) {
+    this.request = request;
+    this.response = response;
+    this.clock = clock;
+    this.matchDatastore = matchDatastore;
+    this.participantDatastore = participantDatastore;
+    this.userDatastore = userDatastore;
+  }
+
+  /** Add participant do datastore and try to find match immediately */
+  public void doPostHelper() throws IOException {
     // Retrieve JSON object request
     JSONObject obj = retrieveRequestBody(request);
     if (obj == null) {
@@ -64,58 +82,16 @@ public class AddParticipant {
     }
     JSONObject formDetails = obj.getJSONObject(REQUEST_FORM_DETAILS);
 
-    // Get endTimeAvailable and startTimeAvailable in milliseconds
-    long endTimeAvailable = formDetails.getLong(REQUEST_END_TIME_AVAILABLE);
-    long startTimeAvailable = Instant.now().toEpochMilli();
-
-    // Get all participant inputs
-    int duration = formDetails.getInt(REQUEST_DURATION);
-    if (duration <= 0) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
+    // Get new Participant from input parameters
+    Participant newParticipant = getParticipantFromInputs(formDetails);
+    if (newParticipant == null) {
       return;
     }
-    String role = formDetails.getString(REQUEST_ROLE);
-    String productArea = formDetails.getString(REQUEST_PRODUCT_AREA);
-    JSONArray interestsJsonArray = formDetails.getJSONArray(REQUEST_INTERESTS);
-    int numInterests = interestsJsonArray.length();
-    List<String> interests = new ArrayList<String>();
-    for (int i = 0; i < numInterests; i++) {
-      interests.add(interestsJsonArray.getString(i));
-    }
-    boolean savePreference = formDetails.getBoolean(REQUEST_SAVE_PREFERENCE);
-    MatchPreference matchPreference =
-        MatchPreference.forStringValue(formDetails.getString(REQUEST_MATCH_PREFERENCE));
-    if (matchPreference == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid match preference.");
-      return;
-    }
-    long timestamp = System.currentTimeMillis();
-
-    String username = getUsername();
-    if (username == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not retrieve email.");
-      return;
-    }
-
-    // Create new Participant from input parameters
-    Participant newParticipant =
-        new Participant(
-            username,
-            startTimeAvailable,
-            endTimeAvailable,
-            duration,
-            role,
-            productArea,
-            interests,
-            matchPreference,
-            /* matchId=*/ 0,
-            MatchStatus.UNMATCHED,
-            timestamp);
 
     // Add User to datastore if opted to save preferences
+    boolean savePreference = formDetails.getBoolean(REQUEST_SAVE_PREFERENCE);
     if (savePreference) {
-      User user = new User(username, duration, role, productArea, interests, matchPreference);
-      userDatastore.addUser(user);
+      userDatastore.addUser(getUserFromParticipant(newParticipant));
     }
 
     // Find immediate match if possible
@@ -158,10 +134,88 @@ public class AddParticipant {
     return new JSONObject(requestBuffer.toString());
   }
 
+  /** Get a Participant from form inputs */
+  private Participant getParticipantFromInputs(JSONObject formDetails) throws IOException {
+    // Get username from email
+    String username = getUsername();
+    if (username == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not retrieve email.");
+      return null;
+    }
+
+    // Get endTimeAvailable and startTimeAvailable in milliseconds
+    long endTimeAvailable = formDetails.getLong(REQUEST_END_TIME_AVAILABLE);
+    long startTimeAvailable = clock.millis();
+
+    // Get desired meeting duration
+    int duration = formDetails.getInt(REQUEST_DURATION);
+    if (duration <= 0) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
+      return null;
+    }
+
+    // Get personal preference fields
+    String role = formDetails.getString(REQUEST_ROLE);
+    String productArea = formDetails.getString(REQUEST_PRODUCT_AREA);
+    JSONArray interestsJsonArray = formDetails.getJSONArray(REQUEST_INTERESTS);
+    int numInterests = interestsJsonArray.length();
+    List<String> interests = new ArrayList<String>();
+    for (int i = 0; i < numInterests; i++) {
+      interests.add(interestsJsonArray.getString(i));
+    }
+    MatchPreference matchPreference =
+        getMatchPreference(formDetails.getString(REQUEST_MATCH_PREFERENCE));
+    if (matchPreference == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid match preference.");
+      return null;
+    }
+
+    long timestamp = System.currentTimeMillis();
+
+    // Create and return new Participant from input parameters
+    return new Participant(
+        username,
+        startTimeAvailable,
+        endTimeAvailable,
+        duration,
+        role,
+        productArea,
+        interests,
+        matchPreference,
+        /* matchId=*/ 0,
+        MatchStatus.UNMATCHED,
+        timestamp);
+  }
+
   /** Retrieve user email address via Users API and parse for username */
-  private String getUsername() {
+  public static String getUsername() {
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     return email != null ? email.split("@")[0] : null;
+  }
+
+  /** Parse match preference string to */
+  private static MatchPreference getMatchPreference(String matchPreferenceString) {
+    switch (matchPreferenceString) {
+      case "different":
+        return MatchPreference.DIFFERENT;
+      case "any":
+        return MatchPreference.ANY;
+      case "similar":
+        return MatchPreference.SIMILAR;
+      default:
+        return null;
+    }
+  }
+
+  /** Extract and return user fields from participant */
+  private User getUserFromParticipant(Participant participant) {
+    return new User(
+        participant.getUsername(),
+        participant.getDuration(),
+        participant.getRole(),
+        participant.getProductArea(),
+        participant.getInterests(),
+        participant.getMatchPreference());
   }
 }

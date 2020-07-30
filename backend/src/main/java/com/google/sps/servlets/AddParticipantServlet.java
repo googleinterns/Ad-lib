@@ -14,8 +14,14 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.sps.AddParticipant;
+import com.google.sps.datastore.MatchDatastore;
+import com.google.sps.datastore.ParticipantDatastore;
+import com.google.sps.datastore.UserDatastore;
 import java.io.IOException;
+import java.time.Clock;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,9 +31,21 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/api/v1/add-participant")
 public class AddParticipantServlet extends HttpServlet {
 
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private final MatchDatastore matchDatastore = new MatchDatastore(datastore);
+  private final ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
+  private final UserDatastore userDatastore = new UserDatastore(datastore);
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    AddParticipant addParticipant = new AddParticipant();
-    addParticipant.doPostHelper(request, response);
+    AddParticipant addParticipant =
+        new AddParticipant(
+            request,
+            response,
+            Clock.systemUTC(),
+            matchDatastore,
+            participantDatastore,
+            userDatastore);
+    addParticipant.doPostHelper();
   }
 }

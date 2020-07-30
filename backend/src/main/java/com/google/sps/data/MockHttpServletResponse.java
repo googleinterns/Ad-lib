@@ -12,22 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.servlets;
+package com.google.sps;
 
-import com.google.sps.AddParticipant;
-import java.io.IOException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
+import java.io.PrintWriter;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that adds a participant to the queue and tries to find them a match immediately */
-@WebServlet("/api/v1/add-participant")
-public class AddParticipantServlet extends HttpServlet {
+public class MockHttpServletResponse implements HttpServletResponse {
+  public void sendError(int sc, String message) {
+    System.out.println("HttpServletResponse error " + sc + ": " + message);
+  }
 
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    AddParticipant addParticipant = new AddParticipant();
-    addParticipant.doPostHelper(request, response);
+  public void sendStatus(int sc) {
+    System.out.println("HttpServletResponse status " + sc);
+  }
+
+  public void setContentType(String contentType) {
+    System.out.println("HttpServletResponse content type: " + contentType);
+  }
+
+  public PrintWriter getWriter() {
+    return new PrintWriter(System.out);
   }
 }

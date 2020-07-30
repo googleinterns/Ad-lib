@@ -26,13 +26,15 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /** Servlet that returns a JSON object of the user's preferences */
 @WebServlet("/api/v1/load-user")
 public class LoadUserPreferencesServlet extends HttpServlet {
 
   // JSON key constants
+  private static final String JSON_EXISTING = "existing";
   private static final String JSON_USERNAME = "username";
   private static final String JSON_DURATION = "duration";
   private static final String JSON_ROLE = "role";
@@ -51,31 +53,35 @@ public class LoadUserPreferencesServlet extends HttpServlet {
 
     System.out.println("Request received");
 
+    response.setContentType("application/json");
+    JSONObject userJson = new JSONObject();
+
     // Find participant's match, if exists and not returned yet
-    User user = userDatastore.getUserFromUsername(getUsername());
-    if (user == null) {
-      response.sendError(
-          HttpServletResponse.SC_BAD_REQUEST,
-          "User with username " + getUsername() + "does not exist in datastore.");
+    String username = getUsername();
+    if (username == null) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not retrieve email");
       return;
     }
-    JSONObject userJson = new JSONObject();
-    userJson.put(JSON_USERNAME, user.getUsername());
-    userJson.put(JSON_DURATION, user.getDuration());
-    userJson.put(JSON_ROLE, user.getRole());
-    userJson.put(JSON_PRODUCT_AREA, user.getProductArea());
-    userJson.put(JSON_INTERESTS, UserDatastore.convertListToString(user.getInterests()));
-    userJson.put(JSON_MATCH_PREFERENCE, user.getMatchPreference().getValue());
+
+    User user = userDatastore.getUserFromUsername(username);
+    if (user == null) {
+      userJson.put(JSON_EXISTING, "false");
+      response.getWriter().println(userJson.toString());
+      return;
+    } else {
+      userJson.put(JSON_EXISTING, "true");
+      userJson.put(JSON_DURATION, user.getDuration());
+      userJson.put(JSON_ROLE, user.getRole());
+      userJson.put(JSON_PRODUCT_AREA, user.getProductArea());
+      userJson.put(JSON_INTERESTS, new JSONArray(user.getInterests()));
+      userJson.put(JSON_MATCH_PREFERENCE, user.getMatchPreference().getValue());
+    }
 
     // Send the JSON back as the response
-    response.setContentType("application/json");
     response.getWriter().println(userJson.toString());
   }
 
-  /**
-   * Retrieve user email address via Users API and parse for username. Email can be null when the
-   * current user does not exist.
-   */
+  /** Retrieve user email address via Users API and parse for username */
   @Nullable
   private String getUsername() {
     String email = userService.getCurrentUser().getEmail();

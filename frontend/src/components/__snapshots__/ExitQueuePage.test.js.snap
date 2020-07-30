@@ -17,4 +17,17 @@ exports[`Exit Queue Page should render correctly 1`] = `
     </div>
   </div>
 </div>
+------------HTML PREVIEW---------------
+<div>
+  <div class="MuiPaper-root MuiCard-root makeStyles-content-1 MuiPaper-elevation1 MuiPaper-rounded">
+    <div class="MuiCardContent-root">
+      <h3>
+        We have removed you from the matching queue.
+      </h3>
+      <p>
+        Thank you for using Ad-lib, we hope you try again later at your convenience!
+      </p>
+    </div>
+  </div>
+</div>
 `;

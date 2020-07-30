@@ -16,7 +16,8 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.sps.AddParticipant;
+import com.google.sps.AddParticipantHelper;
+import com.google.sps.UsernameService;
 import com.google.sps.datastore.MatchDatastore;
 import com.google.sps.datastore.ParticipantDatastore;
 import com.google.sps.datastore.UserDatastore;
@@ -36,16 +37,19 @@ public class AddParticipantServlet extends HttpServlet {
   private final ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
   private final UserDatastore userDatastore = new UserDatastore(datastore);
 
+  private final UsernameService usernameService = new UsernameService();
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    AddParticipant addParticipant =
-        new AddParticipant(
+    AddParticipantHelper addParticipantHelper =
+        new AddParticipantHelper(
             request,
             response,
             Clock.systemUTC(),
             matchDatastore,
             participantDatastore,
-            userDatastore);
-    addParticipant.doPostHelper();
+            userDatastore,
+            usernameService);
+    addParticipantHelper.doPost();
   }
 }

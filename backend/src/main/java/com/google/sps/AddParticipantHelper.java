@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class AddParticipant {
+public class AddParticipantHelper {
 
   // HTTP Request JSON key constants
   private static final String REQUEST_FORM_DETAILS = "formDetails";
@@ -57,24 +57,28 @@ public class AddParticipant {
   private final ParticipantDatastore participantDatastore;
   private final UserDatastore userDatastore;
 
+  private final UsernameService usernameService;
+
   /** Constructor */
-  public AddParticipant(
+  public AddParticipantHelper(
       HttpServletRequest request,
       HttpServletResponse response,
       Clock clock,
       MatchDatastore matchDatastore,
       ParticipantDatastore participantDatastore,
-      UserDatastore userDatastore) {
+      UserDatastore userDatastore,
+      UsernameService usernameService) {
     this.request = request;
     this.response = response;
     this.clock = clock;
     this.matchDatastore = matchDatastore;
     this.participantDatastore = participantDatastore;
     this.userDatastore = userDatastore;
+    this.usernameService = usernameService;
   }
 
   /** Add participant do datastore and try to find match immediately */
-  public void doPostHelper() throws IOException {
+  public void doPost() throws IOException {
     // Retrieve JSON object request
     JSONObject obj = retrieveRequestBody(request);
     if (obj == null) {
@@ -140,7 +144,7 @@ public class AddParticipant {
   /** Get a Participant from form inputs */
   private Participant getParticipantFromInputs(JSONObject formDetails) throws IOException {
     // Get username from email
-    String username = getUsername();
+    String username = usernameService.getUsername();
     if (username == null) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not retrieve email.");
       return null;

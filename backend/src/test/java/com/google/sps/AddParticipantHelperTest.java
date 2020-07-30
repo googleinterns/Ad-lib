@@ -1,6 +1,7 @@
 package com.google.sps;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,7 +38,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 
 @RunWith(JUnit4.class)
-public class AddParticipantTest {
+public class AddParticipantHelperTest {
   // Reference date time of 1/1/20 2pm ET
   private static final ZonedDateTime currentDateTimeET =
       ZonedDateTime.of(
@@ -81,7 +82,11 @@ public class AddParticipantTest {
 
   @Mock private HttpServletRequest request;
   @Mock private HttpServletResponse response;
-  private AddParticipant addParticipant;
+  @Mock private MatchDatastore matchDatastore;
+  @Mock private ParticipantDatastore participantDatastore;
+  @Mock private UserDatastore userDatastore;
+  @Mock private UsernameService usernameService;
+  private AddParticipantHelper addParticipantHelper;
   private Clock clock;
 
   private final LocalServiceTestHelper helper =
@@ -91,6 +96,10 @@ public class AddParticipantTest {
   public void setUp() throws IOException {
     request = mock(HttpServletRequest.class);
     response = mock(HttpServletResponse.class);
+    matchDatastore = mock(MatchDatastore.class);
+    participantDatastore = mock(ParticipantDatastore.class);
+    userDatastore = mock(UserDatastore.class);
+    usernameService = mock(UsernameService.class);
 
     helper.setUp();
 
@@ -105,38 +114,27 @@ public class AddParticipantTest {
 
   @Test
   public void invalidJsonObject() throws IOException {
-    helper
-        .setEnvIsAdmin(true)
-        .setEnvIsLoggedIn(true)
-        .setEnvAuthDomain("google.com")
-        .setEnvEmail(USERNAME_PERSON_A + "@google.com");
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    MatchDatastore matchDatastore = new MatchDatastore(datastore);
-    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
-    UserDatastore userDatastore = new UserDatastore(datastore);
     JSONObject obj = null;
     when(request.getReader()).thenThrow(IOException.class);
     when(response.getWriter()).thenReturn(getWriter());
+    when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
 
-    addParticipant =
-        new AddParticipant(
-            request, response, clock, matchDatastore, participantDatastore, userDatastore);
-    addParticipant.doPostHelper();
+    addParticipantHelper =
+        new AddParticipantHelper(
+            request,
+            response,
+            clock,
+            matchDatastore,
+            participantDatastore,
+            userDatastore,
+            usernameService);
+    addParticipantHelper.doPost();
 
     verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not read request body");
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void invalidEmail() throws IOException {
-    helper
-        .setEnvIsAdmin(true)
-        .setEnvIsLoggedIn(true)
-        .setEnvAuthDomain("google.com")
-        .setEnvEmail(null); // invalid email
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    MatchDatastore matchDatastore = new MatchDatastore(datastore);
-    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
-    UserDatastore userDatastore = new UserDatastore(datastore);
     JSONObject obj = new JSONObject();
     JSONObject formDetails = new JSONObject();
     formDetails.put(REQUEST_END_TIME_AVAILABLE, END_TIME_AVAILABLE_DEFAULT);
@@ -149,22 +147,24 @@ public class AddParticipantTest {
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
     when(response.getWriter()).thenReturn(getWriter());
+    when(usernameService.getUsername()).thenReturn(null);
 
-    addParticipant =
-        new AddParticipant(
-            request, response, clock, matchDatastore, participantDatastore, userDatastore);
-    addParticipant.doPostHelper();
+    addParticipantHelper =
+        new AddParticipantHelper(
+            request,
+            response,
+            clock,
+            matchDatastore,
+            participantDatastore,
+            userDatastore,
+            usernameService);
+    addParticipantHelper.doPost();
 
     verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not retrieve email.");
   }
 
   @Test
   public void invalidDuration() throws IOException {
-    helper
-        .setEnvIsAdmin(true)
-        .setEnvIsLoggedIn(true)
-        .setEnvAuthDomain("google.com")
-        .setEnvEmail(USERNAME_PERSON_A + "@google.com");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     MatchDatastore matchDatastore = new MatchDatastore(datastore);
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -181,26 +181,24 @@ public class AddParticipantTest {
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
     when(response.getWriter()).thenReturn(getWriter());
+    when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
 
-    addParticipant =
-        new AddParticipant(
-            request, response, clock, matchDatastore, participantDatastore, userDatastore);
-    addParticipant.doPostHelper();
+    addParticipantHelper =
+        new AddParticipantHelper(
+            request,
+            response,
+            clock,
+            matchDatastore,
+            participantDatastore,
+            userDatastore,
+            usernameService);
+    addParticipantHelper.doPost();
 
     verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
   }
 
   @Test(expected = IllegalStateException.class)
   public void invalidMatchPreference() throws IOException {
-    helper
-        .setEnvIsAdmin(true)
-        .setEnvIsLoggedIn(true)
-        .setEnvAuthDomain("google.com")
-        .setEnvEmail(USERNAME_PERSON_A + "@google.com");
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    MatchDatastore matchDatastore = new MatchDatastore(datastore);
-    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
-    UserDatastore userDatastore = new UserDatastore(datastore);
     JSONObject obj = new JSONObject();
     JSONObject formDetails = new JSONObject();
     formDetails.put(REQUEST_END_TIME_AVAILABLE, END_TIME_AVAILABLE_DEFAULT);
@@ -213,24 +211,22 @@ public class AddParticipantTest {
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
     when(response.getWriter()).thenReturn(getWriter());
+    when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
 
-    addParticipant =
-        new AddParticipant(
-            request, response, clock, matchDatastore, participantDatastore, userDatastore);
-    addParticipant.doPostHelper();
+    addParticipantHelper =
+        new AddParticipantHelper(
+            request,
+            response,
+            clock,
+            matchDatastore,
+            participantDatastore,
+            userDatastore,
+            usernameService);
+    addParticipantHelper.doPost();
   }
 
   @Test
   public void savePreferences() throws IOException {
-    helper
-        .setEnvIsAdmin(true)
-        .setEnvIsLoggedIn(true)
-        .setEnvAuthDomain("google.com")
-        .setEnvEmail(USERNAME_PERSON_A + "@google.com");
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    MatchDatastore matchDatastore = new MatchDatastore(datastore);
-    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
-    UserDatastore userDatastore = new UserDatastore(datastore);
     JSONObject obj = new JSONObject();
     JSONObject formDetails = new JSONObject();
     formDetails.put(REQUEST_END_TIME_AVAILABLE, END_TIME_AVAILABLE_DEFAULT);
@@ -243,29 +239,25 @@ public class AddParticipantTest {
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
     when(response.getWriter()).thenReturn(getWriter());
+    when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
 
-    addParticipant =
-        new AddParticipant(
-            request, response, clock, matchDatastore, participantDatastore, userDatastore);
-    addParticipant.doPostHelper();
-    Participant participant = participantDatastore.getParticipantFromUsername(USERNAME_PERSON_A);
-    User user = userDatastore.getUserFromUsername(USERNAME_PERSON_A);
+    addParticipantHelper =
+        new AddParticipantHelper(
+            request,
+            response,
+            clock,
+            matchDatastore,
+            participantDatastore,
+            userDatastore,
+            usernameService);
+    addParticipantHelper.doPost();
 
-    assertThat(participant).isNotNull();
-    assertThat(user).isNotNull();
+    verify(participantDatastore).addParticipant(any());
+    verify(userDatastore).addUser(any());
   }
 
   @Test
   public void dontSavePreferences() throws IOException {
-    helper
-        .setEnvIsAdmin(true)
-        .setEnvIsLoggedIn(true)
-        .setEnvAuthDomain("google.com")
-        .setEnvEmail(USERNAME_PERSON_A + "@google.com");
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    MatchDatastore matchDatastore = new MatchDatastore(datastore);
-    ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
-    UserDatastore userDatastore = new UserDatastore(datastore);
     JSONObject obj = new JSONObject();
     JSONObject formDetails = new JSONObject();
     formDetails.put(REQUEST_END_TIME_AVAILABLE, END_TIME_AVAILABLE_DEFAULT);
@@ -278,25 +270,24 @@ public class AddParticipantTest {
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
     when(response.getWriter()).thenReturn(getWriter());
+    when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
 
-    addParticipant =
-        new AddParticipant(
-            request, response, clock, matchDatastore, participantDatastore, userDatastore);
-    addParticipant.doPostHelper();
-    Participant participant = participantDatastore.getParticipantFromUsername(USERNAME_PERSON_A);
-    User user = userDatastore.getUserFromUsername(USERNAME_PERSON_A);
+    addParticipantHelper =
+        new AddParticipantHelper(
+            request,
+            response,
+            clock,
+            matchDatastore,
+            participantDatastore,
+            userDatastore,
+            usernameService);
+    addParticipantHelper.doPost();
 
-    assertThat(participant).isNotNull();
-    assertThat(user).isNull();
+    verify(participantDatastore).addParticipant(any());
   }
 
   @Test
   public void twoParticipantsMatch() throws IOException {
-    helper
-        .setEnvIsAdmin(true)
-        .setEnvIsLoggedIn(true)
-        .setEnvAuthDomain("google.com")
-        .setEnvEmail(USERNAME_PERSON_B + "@google.com");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     MatchDatastore matchDatastore = new MatchDatastore(datastore);
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -309,7 +300,7 @@ public class AddParticipantTest {
             DURATION_DEFAULT,
             ROLE_DEFAULT,
             PRODUCT_AREA_DEFAULT,
-            AddParticipant.getListFromJsonArray(INTERESTS_DEFAULT),
+            AddParticipantHelper.getListFromJsonArray(INTERESTS_DEFAULT),
             MatchPreference.forStringValue(MATCH_PREFERENCE_ANY),
             MATCH_ID_DEFAULT,
             MATCH_STATUS_DEFAULT,
@@ -327,11 +318,18 @@ public class AddParticipantTest {
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
     when(response.getWriter()).thenReturn(getWriter());
+    when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_B);
 
-    addParticipant =
-        new AddParticipant(
-            request, response, clock, matchDatastore, participantDatastore, userDatastore);
-    addParticipant.doPostHelper();
+    addParticipantHelper =
+        new AddParticipantHelper(
+            request,
+            response,
+            clock,
+            matchDatastore,
+            participantDatastore,
+            userDatastore,
+            usernameService);
+    addParticipantHelper.doPost();
     Participant participantB = participantDatastore.getParticipantFromUsername(USERNAME_PERSON_B);
     User userB = userDatastore.getUserFromUsername(USERNAME_PERSON_B);
     Match match = matchDatastore.getMatchFromId(participantB.getMatchId());
@@ -343,11 +341,6 @@ public class AddParticipantTest {
 
   @Test
   public void twoParticipantsNoMatch() throws IOException {
-    helper
-        .setEnvIsAdmin(true)
-        .setEnvIsLoggedIn(true)
-        .setEnvAuthDomain("google.com")
-        .setEnvEmail(USERNAME_PERSON_B + "@google.com");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     MatchDatastore matchDatastore = new MatchDatastore(datastore);
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
@@ -360,7 +353,7 @@ public class AddParticipantTest {
             DURATION_DEFAULT,
             ROLE_DEFAULT,
             PRODUCT_AREA_DEFAULT,
-            AddParticipant.getListFromJsonArray(INTERESTS_DEFAULT),
+            AddParticipantHelper.getListFromJsonArray(INTERESTS_DEFAULT),
             MatchPreference.forStringValue(MATCH_PREFERENCE_ANY),
             MATCH_ID_DEFAULT,
             MATCH_STATUS_DEFAULT,
@@ -378,11 +371,18 @@ public class AddParticipantTest {
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
     when(response.getWriter()).thenReturn(getWriter());
+    when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_B);
 
-    addParticipant =
-        new AddParticipant(
-            request, response, clock, matchDatastore, participantDatastore, userDatastore);
-    addParticipant.doPostHelper();
+    addParticipantHelper =
+        new AddParticipantHelper(
+            request,
+            response,
+            clock,
+            matchDatastore,
+            participantDatastore,
+            userDatastore,
+            usernameService);
+    addParticipantHelper.doPost();
     Participant participantB = participantDatastore.getParticipantFromUsername(USERNAME_PERSON_B);
     User userB = userDatastore.getUserFromUsername(USERNAME_PERSON_B);
 

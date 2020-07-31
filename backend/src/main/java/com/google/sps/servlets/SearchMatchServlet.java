@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.sps.GmailFactory;
 import com.google.sps.data.Match;
 import com.google.sps.data.MatchStatus;
 import com.google.sps.data.Participant;
@@ -33,7 +34,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import main.java.com.google.sps.GmailFactory;
 import org.json.simple.JSONObject;
 
 /** Servlet that searches for the participant's current match and removes participant if expired */
@@ -124,7 +124,6 @@ public class SearchMatchServlet extends HttpServlet {
     expired.put(JSON_MATCH_STATUS, "expired");
     expired.put(JSON_END_TIME_AVAILABLE, participant.getEndTimeAvailable());
     expired.put(JSON_DURATION, participant.getDuration());
-    sendExpiredEmail();
     // Send the JSON back as the response
     response.setContentType("application/json");
     response.getWriter().println(expired.toString());
@@ -151,7 +150,6 @@ public class SearchMatchServlet extends HttpServlet {
     matchExists.put(JSON_THIS_USERNAME, thisUsername);
     matchExists.put(JSON_MATCH_USERNAME, matchUsername);
     matchExists.put(JSON_DURATION, match.getDuration());
-    sendMatchEmail();
     // Send the JSON back as the response
     response.setContentType("application/json");
     response.getWriter().println(matchExists.toString());

@@ -35,7 +35,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mock;
 
 @RunWith(JUnit4.class)
 public class AddParticipantHelperTest {
@@ -80,12 +79,12 @@ public class AddParticipantHelperTest {
   private static final MatchStatus MATCH_STATUS_DEFAULT = MatchStatus.UNMATCHED;
   private static final long TIMESTAMP_DEFAULT = 0;
 
-  @Mock private HttpServletRequest request;
-  @Mock private HttpServletResponse response;
-  @Mock private MatchDatastore matchDatastore;
-  @Mock private ParticipantDatastore participantDatastore;
-  @Mock private UserDatastore userDatastore;
-  @Mock private UsernameService usernameService;
+  private HttpServletRequest request;
+  private HttpServletResponse response;
+  private MatchDatastore matchDatastore;
+  private ParticipantDatastore participantDatastore;
+  private UserDatastore userDatastore;
+  private UsernameService usernameService;
   private AddParticipantHelper addParticipantHelper;
   private Clock clock;
 
@@ -100,6 +99,8 @@ public class AddParticipantHelperTest {
     participantDatastore = mock(ParticipantDatastore.class);
     userDatastore = mock(UserDatastore.class);
     usernameService = mock(UsernameService.class);
+
+    when(response.getWriter()).thenReturn(getWriter());
 
     helper.setUp();
 
@@ -116,19 +117,12 @@ public class AddParticipantHelperTest {
   public void invalidJsonObject() throws IOException {
     JSONObject obj = null;
     when(request.getReader()).thenThrow(IOException.class);
-    when(response.getWriter()).thenReturn(getWriter());
     when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
 
     addParticipantHelper =
         new AddParticipantHelper(
-            request,
-            response,
-            clock,
-            matchDatastore,
-            participantDatastore,
-            userDatastore,
-            usernameService);
-    addParticipantHelper.doPost();
+            clock, matchDatastore, participantDatastore, userDatastore, usernameService);
+    addParticipantHelper.doPost(request, response);
 
     verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not read request body");
   }
@@ -146,19 +140,12 @@ public class AddParticipantHelperTest {
     formDetails.put(REQUEST_MATCH_PREFERENCE, MATCH_PREFERENCE_ANY);
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
-    when(response.getWriter()).thenReturn(getWriter());
     when(usernameService.getUsername()).thenReturn(null);
 
     addParticipantHelper =
         new AddParticipantHelper(
-            request,
-            response,
-            clock,
-            matchDatastore,
-            participantDatastore,
-            userDatastore,
-            usernameService);
-    addParticipantHelper.doPost();
+            clock, matchDatastore, participantDatastore, userDatastore, usernameService);
+    addParticipantHelper.doPost(request, response);
 
     verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not retrieve email.");
   }
@@ -180,19 +167,12 @@ public class AddParticipantHelperTest {
     formDetails.put(REQUEST_MATCH_PREFERENCE, MATCH_PREFERENCE_ANY);
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
-    when(response.getWriter()).thenReturn(getWriter());
     when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
 
     addParticipantHelper =
         new AddParticipantHelper(
-            request,
-            response,
-            clock,
-            matchDatastore,
-            participantDatastore,
-            userDatastore,
-            usernameService);
-    addParticipantHelper.doPost();
+            clock, matchDatastore, participantDatastore, userDatastore, usernameService);
+    addParticipantHelper.doPost(request, response);
 
     verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid duration.");
   }
@@ -210,19 +190,12 @@ public class AddParticipantHelperTest {
     formDetails.put(REQUEST_MATCH_PREFERENCE, "none"); // invalid match preference
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
-    when(response.getWriter()).thenReturn(getWriter());
     when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
 
     addParticipantHelper =
         new AddParticipantHelper(
-            request,
-            response,
-            clock,
-            matchDatastore,
-            participantDatastore,
-            userDatastore,
-            usernameService);
-    addParticipantHelper.doPost();
+            clock, matchDatastore, participantDatastore, userDatastore, usernameService);
+    addParticipantHelper.doPost(request, response);
   }
 
   @Test
@@ -238,19 +211,12 @@ public class AddParticipantHelperTest {
     formDetails.put(REQUEST_MATCH_PREFERENCE, MATCH_PREFERENCE_ANY);
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
-    when(response.getWriter()).thenReturn(getWriter());
     when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
 
     addParticipantHelper =
         new AddParticipantHelper(
-            request,
-            response,
-            clock,
-            matchDatastore,
-            participantDatastore,
-            userDatastore,
-            usernameService);
-    addParticipantHelper.doPost();
+            clock, matchDatastore, participantDatastore, userDatastore, usernameService);
+    addParticipantHelper.doPost(request, response);
 
     verify(participantDatastore).addParticipant(any());
     verify(userDatastore).addUser(any());
@@ -269,19 +235,12 @@ public class AddParticipantHelperTest {
     formDetails.put(REQUEST_MATCH_PREFERENCE, MATCH_PREFERENCE_ANY);
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
-    when(response.getWriter()).thenReturn(getWriter());
     when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
 
     addParticipantHelper =
         new AddParticipantHelper(
-            request,
-            response,
-            clock,
-            matchDatastore,
-            participantDatastore,
-            userDatastore,
-            usernameService);
-    addParticipantHelper.doPost();
+            clock, matchDatastore, participantDatastore, userDatastore, usernameService);
+    addParticipantHelper.doPost(request, response);
 
     verify(participantDatastore).addParticipant(any());
   }
@@ -317,19 +276,12 @@ public class AddParticipantHelperTest {
     formDetails.put(REQUEST_MATCH_PREFERENCE, MATCH_PREFERENCE_ANY);
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
-    when(response.getWriter()).thenReturn(getWriter());
     when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_B);
 
     addParticipantHelper =
         new AddParticipantHelper(
-            request,
-            response,
-            clock,
-            matchDatastore,
-            participantDatastore,
-            userDatastore,
-            usernameService);
-    addParticipantHelper.doPost();
+            clock, matchDatastore, participantDatastore, userDatastore, usernameService);
+    addParticipantHelper.doPost(request, response);
     Participant participantB = participantDatastore.getParticipantFromUsername(USERNAME_PERSON_B);
     User userB = userDatastore.getUserFromUsername(USERNAME_PERSON_B);
     Match match = matchDatastore.getMatchFromId(participantB.getMatchId());
@@ -370,19 +322,12 @@ public class AddParticipantHelperTest {
     formDetails.put(REQUEST_MATCH_PREFERENCE, MATCH_PREFERENCE_DIFFERENT);
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
-    when(response.getWriter()).thenReturn(getWriter());
     when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_B);
 
     addParticipantHelper =
         new AddParticipantHelper(
-            request,
-            response,
-            clock,
-            matchDatastore,
-            participantDatastore,
-            userDatastore,
-            usernameService);
-    addParticipantHelper.doPost();
+            clock, matchDatastore, participantDatastore, userDatastore, usernameService);
+    addParticipantHelper.doPost(request, response);
     Participant participantB = participantDatastore.getParticipantFromUsername(USERNAME_PERSON_B);
     User userB = userDatastore.getUserFromUsername(USERNAME_PERSON_B);
 

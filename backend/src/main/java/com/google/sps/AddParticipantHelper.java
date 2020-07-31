@@ -46,9 +46,6 @@ public class AddParticipantHelper {
   private static final String REQUEST_SAVE_PREFERENCE = "savePreference";
   private static final String REQUEST_MATCH_PREFERENCE = "matchPreference";
 
-  // HttpServlet request and response
-  private final HttpServletRequest request;
-  private final HttpServletResponse response;
   /** Reference clock */
   private final Clock clock;
 
@@ -61,15 +58,11 @@ public class AddParticipantHelper {
 
   /** Constructor */
   public AddParticipantHelper(
-      HttpServletRequest request,
-      HttpServletResponse response,
       Clock clock,
       MatchDatastore matchDatastore,
       ParticipantDatastore participantDatastore,
       UserDatastore userDatastore,
       UsernameService usernameService) {
-    this.request = request;
-    this.response = response;
     this.clock = clock;
     this.matchDatastore = matchDatastore;
     this.participantDatastore = participantDatastore;
@@ -78,7 +71,7 @@ public class AddParticipantHelper {
   }
 
   /** Add participant do datastore and try to find match immediately */
-  public void doPost() throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Retrieve JSON object request
     JSONObject obj = retrieveRequestBody(request);
     if (obj == null) {
@@ -88,7 +81,7 @@ public class AddParticipantHelper {
     JSONObject formDetails = obj.getJSONObject(REQUEST_FORM_DETAILS);
 
     // Get new Participant from input parameters
-    Participant newParticipant = getParticipantFromInputs(formDetails);
+    Participant newParticipant = getParticipantFromInputs(response, formDetails);
     if (newParticipant == null) {
       return;
     }
@@ -142,7 +135,8 @@ public class AddParticipantHelper {
   }
 
   /** Get a Participant from form inputs */
-  private Participant getParticipantFromInputs(JSONObject formDetails) throws IOException {
+  private Participant getParticipantFromInputs(HttpServletResponse response, JSONObject formDetails)
+      throws IOException {
     // Get username from email
     String username = usernameService.getUsername();
     if (username == null) {

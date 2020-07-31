@@ -37,10 +37,6 @@ public class SearchMatchHelper {
   private static final String JSON_END_TIME_AVAILABLE = "endTimeAvailable";
   private static final String JSON_DURATION = "duration";
 
-  // HttpServlet request and response
-  private final HttpServletRequest request;
-  private final HttpServletResponse response;
-
   // Match and Participant Datastores
   private final MatchDatastore matchDatastore;
   private final ParticipantDatastore participantDatastore;
@@ -49,20 +45,16 @@ public class SearchMatchHelper {
 
   /** Constructor */
   public SearchMatchHelper(
-      HttpServletRequest request,
-      HttpServletResponse response,
       MatchDatastore matchDatastore,
       ParticipantDatastore participantDatastore,
       UsernameService usernameService) {
-    this.request = request;
-    this.response = response;
     this.matchDatastore = matchDatastore;
     this.participantDatastore = participantDatastore;
     this.usernameService = usernameService;
   }
 
   /** Search for the participant's current match and removes participant if expired */
-  public void doGet() throws IOException {
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     System.out.println("Request received");
 
     // Find participant's match, if exists and not returned yet

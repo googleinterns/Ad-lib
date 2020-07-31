@@ -26,7 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mock;
 
 @RunWith(JUnit4.class)
 public class SearchMatchHelperTest {
@@ -49,11 +48,11 @@ public class SearchMatchHelperTest {
   private static final MatchStatus MATCH_STATUS_UNMATCHED = MatchStatus.UNMATCHED;
   private static final long TIMESTAMP_DEFAULT = 0;
 
-  @Mock private HttpServletRequest request;
-  @Mock private HttpServletResponse response;
-  @Mock private MatchDatastore matchDatastore;
-  @Mock private ParticipantDatastore participantDatastore;
-  @Mock private UsernameService usernameService;
+  private HttpServletRequest request;
+  private HttpServletResponse response;
+  private MatchDatastore matchDatastore;
+  private ParticipantDatastore participantDatastore;
+  private UsernameService usernameService;
   private SearchMatchHelper searchMatchHelper;
 
   private final LocalServiceTestHelper helper =
@@ -67,6 +66,9 @@ public class SearchMatchHelperTest {
     participantDatastore = mock(ParticipantDatastore.class);
     usernameService = mock(UsernameService.class);
 
+    when(response.getWriter()).thenReturn(getWriter());
+    when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
+
     helper.setUp();
   }
 
@@ -77,13 +79,9 @@ public class SearchMatchHelperTest {
 
   @Test
   public void noParticipantInDatastore() throws IOException {
-    when(response.getWriter()).thenReturn(getWriter());
-    when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
-
     searchMatchHelper =
-        new SearchMatchHelper(
-            request, response, matchDatastore, participantDatastore, usernameService);
-    searchMatchHelper.doGet();
+        new SearchMatchHelper(matchDatastore, participantDatastore, usernameService);
+    searchMatchHelper.doGet(request, response);
 
     verify(participantDatastore).getParticipantFromUsername(USERNAME_PERSON_A);
     verify(response)
@@ -96,8 +94,6 @@ public class SearchMatchHelperTest {
   public void invalidMatchId() throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
-    when(response.getWriter()).thenReturn(getWriter());
-    when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
     Participant participantA =
         new Participant(
             USERNAME_PERSON_A,
@@ -114,9 +110,8 @@ public class SearchMatchHelperTest {
     participantDatastore.addParticipant(participantA);
 
     searchMatchHelper =
-        new SearchMatchHelper(
-            request, response, matchDatastore, participantDatastore, usernameService);
-    searchMatchHelper.doGet();
+        new SearchMatchHelper(matchDatastore, participantDatastore, usernameService);
+    searchMatchHelper.doGet(request, response);
 
     verify(response)
         .sendError(
@@ -128,8 +123,6 @@ public class SearchMatchHelperTest {
   public void expiredParticipant() throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
-    when(response.getWriter()).thenReturn(getWriter());
-    when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
     Participant participantA =
         new Participant(
             USERNAME_PERSON_A,
@@ -146,9 +139,8 @@ public class SearchMatchHelperTest {
     participantDatastore.addParticipant(participantA);
 
     searchMatchHelper =
-        new SearchMatchHelper(
-            request, response, matchDatastore, participantDatastore, usernameService);
-    searchMatchHelper.doGet();
+        new SearchMatchHelper(matchDatastore, participantDatastore, usernameService);
+    searchMatchHelper.doGet(request, response);
 
     verify(response).setStatus(HttpServletResponse.SC_OK, "Participant is expired");
   }
@@ -157,8 +149,6 @@ public class SearchMatchHelperTest {
   public void noMatchYet() throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
-    when(response.getWriter()).thenReturn(getWriter());
-    when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
     Participant participantA =
         new Participant(
             USERNAME_PERSON_A,
@@ -175,9 +165,8 @@ public class SearchMatchHelperTest {
     participantDatastore.addParticipant(participantA);
 
     searchMatchHelper =
-        new SearchMatchHelper(
-            request, response, matchDatastore, participantDatastore, usernameService);
-    searchMatchHelper.doGet();
+        new SearchMatchHelper(matchDatastore, participantDatastore, usernameService);
+    searchMatchHelper.doGet(request, response);
 
     verify(response).setStatus(HttpServletResponse.SC_OK, "Participant has no match yet");
   }
@@ -187,8 +176,6 @@ public class SearchMatchHelperTest {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     MatchDatastore matchDatastore = new MatchDatastore(datastore);
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
-    when(response.getWriter()).thenReturn(getWriter());
-    when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
     Match match =
         new Match(USERNAME_PERSON_A, USERNAME_PERSON_B, DURATION_DEFAULT, TIMESTAMP_DEFAULT);
     long matchId = matchDatastore.addMatch(match);
@@ -208,9 +195,8 @@ public class SearchMatchHelperTest {
     participantDatastore.addParticipant(participantA);
 
     searchMatchHelper =
-        new SearchMatchHelper(
-            request, response, matchDatastore, participantDatastore, usernameService);
-    searchMatchHelper.doGet();
+        new SearchMatchHelper(matchDatastore, participantDatastore, usernameService);
+    searchMatchHelper.doGet(request, response);
 
     verify(response).setStatus(HttpServletResponse.SC_OK, "Participant has a match!");
   }

@@ -43,13 +43,11 @@ public class AddParticipantServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     AddParticipantHelper addParticipantHelper =
         new AddParticipantHelper(
-            request,
-            response,
             Clock.systemUTC(),
             matchDatastore,
             participantDatastore,
             userDatastore,
             usernameService);
-    addParticipantHelper.doPost();
+    addParticipantHelper.doPost(request, response);
   }
 }

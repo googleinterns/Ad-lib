@@ -40,8 +40,7 @@ public class SearchMatchServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     SearchMatchHelper searchMatchHelper =
-        new SearchMatchHelper(
-            request, response, matchDatastore, participantDatastore, usernameService);
-    searchMatchHelper.doGet();
+        new SearchMatchHelper(matchDatastore, participantDatastore, usernameService);
+    searchMatchHelper.doGet(request, response);
   }
 }

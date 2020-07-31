@@ -61,9 +61,9 @@ public class AddParticipantHelperTest {
   private static final String REQUEST_SAVE_PREFERENCE = "savePreference";
   private static final String REQUEST_MATCH_PREFERENCE = "matchPreference";
 
-  // Default inputs
+  // Input constants
   private static final String USERNAME_PERSON_A = "persona";
-  private static final String USERNAME_PERSON_B = "personab";
+  private static final String USERNAME_PERSON_B = "personb";
   private static final int DURATION_DEFAULT = 30;
   private static final long START_TIME_AVAILABLE_DEFAULT =
       currentDateTimeET.toInstant().toEpochMilli(); // not used

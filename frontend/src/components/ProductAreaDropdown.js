@@ -57,9 +57,10 @@ const productAreas = [
   'Youtube',
 ];
 
-// Add onChange to props validation
+// Add onChange and value to props validation
 ProductAreaDropdown.propTypes = {
   onChange: PropTypes.func,
+  value: PropTypes.string,
 };
 
 /**
@@ -77,6 +78,7 @@ export default function ProductAreaDropdown(props) {
         <Select
           id="productArea-input"
           name="productArea"
+          value={props && props.value ? props.value : ''}
           onChange={(event) => props.onChange(event.target.value)}
           inputProps={{'aria-label': 'productArea'}}
         >

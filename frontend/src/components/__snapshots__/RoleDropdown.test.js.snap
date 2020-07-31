@@ -50,6 +50,7 @@ exports[`Role Dropdown should render correctly 1`] = `
         onChange={[Function]}
         required={false}
         tabIndex={-1}
+        value=""
       />
       <svg
         aria-hidden={true}
@@ -91,6 +92,7 @@ exports[`Role Dropdown should render correctly 1`] = `
         aria-hidden
         class="MuiSelect-nativeInput"
         name="role"
+        value=""
       >
       <svg
         aria-hidden

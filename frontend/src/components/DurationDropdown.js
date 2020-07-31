@@ -36,6 +36,7 @@ const durations = [
 // Add onChange to props validation
 DurationDropdown.propTypes = {
   onChange: PropTypes.func,
+  value: PropTypes.string,
 };
 
 /**
@@ -52,7 +53,7 @@ export default function DurationDropdown(props) {
         <Select
           id="duration-input"
           name="duration"
-          defaultValue={15}
+          value={props && props.value ? props.value : 15}
           onChange={(event) => props.onChange(event.target.value)}
           inputProps={{'aria-label': 'duration'}}
         >

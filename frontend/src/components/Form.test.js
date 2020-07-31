@@ -17,7 +17,7 @@ import Form from './Form';
 import renderer from 'react-test-renderer';
 import axios from 'axios';
 import mockAxios from 'axios';
-import {validateFormInputs} from './Form';
+import {validateFormInputs, fetchUserData} from './Form';
 
 beforeAll(() => {
   const DATE_TO_USE = new Date('2020');
@@ -42,17 +42,18 @@ describe('Form', () => {
 
   it('should initiate GET request using axios() to load-user', () => {
     const mockUserJSON = {
+      existing: true,
       duration: 15,
       role: 'Intern',
       productArea: 'Google',
       interests: ['Food', 'Travel'],
       matchPreference: 'similar',
     };
-    const mockData = {data: mockUserJSON};
+    const mockData = {data: JSON.stringify(mockUserJSON)};
     axios.get.mockResolvedValue(mockData);
 
-    return ().then((response) => {
-      expect(response).toEqual(mockUserJSON);
+    return fetchUserData().then((response) => {
+      expect(JSON.parse(response)).toEqual(mockUserJSON);
     });
   });
 

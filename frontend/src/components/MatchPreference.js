@@ -24,6 +24,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 MatchPreference.propTypes = {
   onChange: PropTypes.func,
   shouldDisableMatchPreferenceFields: PropTypes.bool,
+  value: PropTypes.string,
 };
 
 /**
@@ -38,7 +39,7 @@ export default function MatchPreference(props) {
         row
         aria-label="matchPreference"
         name="matchPreference"
-        defaultValue="any"
+        value={props && props.value ? props.value : 'any'}
         onChange={(event) => props.onChange(event.target.value)}
       >
         <FormControlLabel

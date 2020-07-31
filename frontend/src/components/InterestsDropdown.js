@@ -47,6 +47,7 @@ const interestsList = [
 // Add onChange to props validation
 InterestsDropdown.propTypes = {
   onChange: PropTypes.func,
+  value: PropTypes.string,
 };
 
 /**
@@ -71,7 +72,7 @@ export default function InterestsDropdown(props) {
           id="interests"
           name="interests"
           multiple
-          value={interests}
+          value={props && props.value ? props.value : []}
           onChange={handleChange}
           input={<Input />}
           renderValue={(selected) => selected.join(', ')}

@@ -78,9 +78,10 @@ const roles = [
   'Workplace services',
 ];
 
-// Add onChange to props validation
+// Add onChange and value to props validation
 RoleDropdown.propTypes = {
   onChange: PropTypes.func,
+  value: PropTypes.string,
 };
 
 /**
@@ -98,6 +99,7 @@ export default function RoleDropdown(props) {
         <Select
           id="role-input"
           name="role"
+          value={props && props.value ? props.value : ''}
           onChange={(event) => props.onChange(event.target.value)}
           inputProps={{'aria-label': 'role'}}
         >

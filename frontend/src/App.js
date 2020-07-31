@@ -74,9 +74,9 @@ export default function App() {
   }, [pageViewKey, currentPage]);
 
   /** Parse servlet response and update page view */
-  function parseServletResponseAndUpdateUI() {
+  async function parseServletResponseAndUpdateUI() {
     setCurrentPage('loading');
-    fetchMatch().then((response) => {
+    await fetchMatch().then((response) => {
       console.log(response);
       if (response === null) {
         setCurrentPage('error');
@@ -95,7 +95,7 @@ export default function App() {
     });
     const timeoutInterval = setTimeout(parseServletResponseAndUpdateUI,
         matchDataRefreshRateMilliseconds);
-  }
+  };
 
   switch (currentPage) {
     case 'form':

@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /** Separates datastore method calls involving User type from caller */
-public final class UserDatastore {
+public class UserDatastore {
 
   // Datastore Key/Property constants
   private static final String KIND_USER = "User";

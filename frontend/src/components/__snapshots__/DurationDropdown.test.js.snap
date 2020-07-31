@@ -52,4 +52,37 @@ exports[`Duration Dropdown should render correctly 1`] = `
     </div>
   </div>
 </div>
+------------HTML PREVIEW---------------
+<div>
+  <div
+    class="MuiFormControl-root"
+    style="width:180px;"
+  >
+    <div class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl">
+      <div
+        aria-haspopup="listbox"
+        aria-label="duration"
+        aria-labelledby="duration-input"
+        class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+        id="duration-input"
+        role="button"
+      >
+        15 minutes
+      </div>
+      <input
+        aria-hidden
+        class="MuiSelect-nativeInput"
+        name="duration"
+      >
+      <svg
+        aria-hidden
+        class="MuiSvgIcon-root MuiSelect-icon"
+        focusable="false"
+        viewBox="0 0 24 24"
+      >
+        <path d="M7 10l5 5 5-5z"></path>
+      </svg>
+    </div>
+  </div>
+</div>
 `;

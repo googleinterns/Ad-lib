@@ -30,7 +30,8 @@
     "local": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "jest-html": "jest-html"
   },
   "engines": {
     "node": "10.x.x"
@@ -52,6 +53,10 @@
   },
   "devDependencies": {
     "eslint-config-google": "^0.14.0",
-    "eslint-plugin-react": "^7.20.3"
+    "eslint-plugin-react": "^7.20.3",
+    "jest-html": "^1.5.0"
+  },
+  "jest": {
+    "snapshotSerializers": ["jest-html"]
   }
 }

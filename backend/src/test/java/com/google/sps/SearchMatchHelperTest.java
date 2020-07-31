@@ -66,7 +66,7 @@ public class SearchMatchHelperTest {
     participantDatastore = mock(ParticipantDatastore.class);
     usernameService = mock(UsernameService.class);
 
-    when(response.getWriter()).thenReturn(getWriter());
+    when(response.getWriter()).thenReturn(new PrintWriter(System.out));
     when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
 
     helper.setUp();
@@ -199,10 +199,5 @@ public class SearchMatchHelperTest {
     searchMatchHelper.doGet(request, response);
 
     verify(response).setStatus(HttpServletResponse.SC_OK, "Participant has a match!");
-  }
-
-  /** Mock HttpServletResponse method */
-  private PrintWriter getWriter() {
-    return new PrintWriter(System.out);
   }
 }

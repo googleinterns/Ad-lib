@@ -44,7 +44,8 @@ public enum MatchPreference {
 
   /** Parse match preference string to MatchPreference */
   public static MatchPreference forStringValue(String value) {
-    switch (value.toLowerCase()) {
+    String lowerCasePreference = value.toLowerCase();
+    switch (lowerCasePreference) {
       case "different":
         return MatchPreference.DIFFERENT;
       case "any":

@@ -100,7 +100,7 @@ public class AddParticipantHelperTest {
     userDatastore = mock(UserDatastore.class);
     usernameService = mock(UsernameService.class);
 
-    when(response.getWriter()).thenReturn(getWriter());
+    when(response.getWriter()).thenReturn(new PrintWriter(System.out));
 
     helper.setUp();
 
@@ -111,6 +111,19 @@ public class AddParticipantHelperTest {
   @After
   public void tearDown() {
     helper.tearDown();
+  }
+
+  /** Return JSON object for default form details */
+  private JSONObject getDefaultFormDetails() {
+    JSONObject formDetails = new JSONObject();
+    formDetails.put(REQUEST_END_TIME_AVAILABLE, END_TIME_AVAILABLE_DEFAULT);
+    formDetails.put(REQUEST_DURATION, DURATION_DEFAULT);
+    formDetails.put(REQUEST_ROLE, ROLE_DEFAULT);
+    formDetails.put(REQUEST_PRODUCT_AREA, PRODUCT_AREA_DEFAULT);
+    formDetails.put(REQUEST_INTERESTS, INTERESTS_DEFAULT);
+    formDetails.put(REQUEST_SAVE_PREFERENCE, SAVE_PREFERENCE_TRUE);
+    formDetails.put(REQUEST_MATCH_PREFERENCE, MATCH_PREFERENCE_ANY);
+    return formDetails;
   }
 
   @Test
@@ -130,14 +143,7 @@ public class AddParticipantHelperTest {
   @Test
   public void invalidEmail() throws IOException {
     JSONObject obj = new JSONObject();
-    JSONObject formDetails = new JSONObject();
-    formDetails.put(REQUEST_END_TIME_AVAILABLE, END_TIME_AVAILABLE_DEFAULT);
-    formDetails.put(REQUEST_DURATION, DURATION_DEFAULT);
-    formDetails.put(REQUEST_ROLE, ROLE_DEFAULT);
-    formDetails.put(REQUEST_PRODUCT_AREA, PRODUCT_AREA_DEFAULT);
-    formDetails.put(REQUEST_INTERESTS, INTERESTS_DEFAULT);
-    formDetails.put(REQUEST_SAVE_PREFERENCE, SAVE_PREFERENCE_FALSE);
-    formDetails.put(REQUEST_MATCH_PREFERENCE, MATCH_PREFERENCE_ANY);
+    JSONObject formDetails = getDefaultFormDetails();
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
     when(usernameService.getUsername()).thenReturn(null);
@@ -157,14 +163,8 @@ public class AddParticipantHelperTest {
     ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
     UserDatastore userDatastore = new UserDatastore(datastore);
     JSONObject obj = new JSONObject();
-    JSONObject formDetails = new JSONObject();
-    formDetails.put(REQUEST_END_TIME_AVAILABLE, END_TIME_AVAILABLE_DEFAULT);
+    JSONObject formDetails = getDefaultFormDetails();
     formDetails.put(REQUEST_DURATION, -10);
-    formDetails.put(REQUEST_ROLE, ROLE_DEFAULT);
-    formDetails.put(REQUEST_PRODUCT_AREA, PRODUCT_AREA_DEFAULT);
-    formDetails.put(REQUEST_INTERESTS, INTERESTS_DEFAULT);
-    formDetails.put(REQUEST_SAVE_PREFERENCE, SAVE_PREFERENCE_FALSE);
-    formDetails.put(REQUEST_MATCH_PREFERENCE, MATCH_PREFERENCE_ANY);
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
     when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
@@ -180,13 +180,7 @@ public class AddParticipantHelperTest {
   @Test(expected = IllegalStateException.class)
   public void invalidMatchPreference() throws IOException {
     JSONObject obj = new JSONObject();
-    JSONObject formDetails = new JSONObject();
-    formDetails.put(REQUEST_END_TIME_AVAILABLE, END_TIME_AVAILABLE_DEFAULT);
-    formDetails.put(REQUEST_DURATION, DURATION_DEFAULT);
-    formDetails.put(REQUEST_ROLE, ROLE_DEFAULT);
-    formDetails.put(REQUEST_PRODUCT_AREA, PRODUCT_AREA_DEFAULT);
-    formDetails.put(REQUEST_INTERESTS, INTERESTS_DEFAULT);
-    formDetails.put(REQUEST_SAVE_PREFERENCE, SAVE_PREFERENCE_FALSE);
+    JSONObject formDetails = getDefaultFormDetails();
     formDetails.put(REQUEST_MATCH_PREFERENCE, "none"); // invalid match preference
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
@@ -201,14 +195,8 @@ public class AddParticipantHelperTest {
   @Test
   public void savePreferences() throws IOException {
     JSONObject obj = new JSONObject();
-    JSONObject formDetails = new JSONObject();
-    formDetails.put(REQUEST_END_TIME_AVAILABLE, END_TIME_AVAILABLE_DEFAULT);
-    formDetails.put(REQUEST_DURATION, DURATION_DEFAULT);
-    formDetails.put(REQUEST_ROLE, ROLE_DEFAULT);
-    formDetails.put(REQUEST_PRODUCT_AREA, PRODUCT_AREA_DEFAULT);
-    formDetails.put(REQUEST_INTERESTS, INTERESTS_DEFAULT);
+    JSONObject formDetails = getDefaultFormDetails();
     formDetails.put(REQUEST_SAVE_PREFERENCE, SAVE_PREFERENCE_TRUE);
-    formDetails.put(REQUEST_MATCH_PREFERENCE, MATCH_PREFERENCE_ANY);
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
     when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
@@ -225,14 +213,8 @@ public class AddParticipantHelperTest {
   @Test
   public void dontSavePreferences() throws IOException {
     JSONObject obj = new JSONObject();
-    JSONObject formDetails = new JSONObject();
-    formDetails.put(REQUEST_END_TIME_AVAILABLE, END_TIME_AVAILABLE_DEFAULT);
-    formDetails.put(REQUEST_DURATION, DURATION_DEFAULT);
-    formDetails.put(REQUEST_ROLE, ROLE_DEFAULT);
-    formDetails.put(REQUEST_PRODUCT_AREA, PRODUCT_AREA_DEFAULT);
-    formDetails.put(REQUEST_INTERESTS, INTERESTS_DEFAULT);
+    JSONObject formDetails = getDefaultFormDetails();
     formDetails.put(REQUEST_SAVE_PREFERENCE, SAVE_PREFERENCE_FALSE);
-    formDetails.put(REQUEST_MATCH_PREFERENCE, MATCH_PREFERENCE_ANY);
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
     when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
@@ -266,14 +248,7 @@ public class AddParticipantHelperTest {
             TIMESTAMP_DEFAULT);
     participantDatastore.addParticipant(participantA);
     JSONObject obj = new JSONObject();
-    JSONObject formDetails = new JSONObject();
-    formDetails.put(REQUEST_END_TIME_AVAILABLE, END_TIME_AVAILABLE_DEFAULT);
-    formDetails.put(REQUEST_DURATION, DURATION_DEFAULT);
-    formDetails.put(REQUEST_ROLE, ROLE_DEFAULT);
-    formDetails.put(REQUEST_PRODUCT_AREA, PRODUCT_AREA_DEFAULT);
-    formDetails.put(REQUEST_INTERESTS, INTERESTS_DEFAULT);
-    formDetails.put(REQUEST_SAVE_PREFERENCE, SAVE_PREFERENCE_TRUE);
-    formDetails.put(REQUEST_MATCH_PREFERENCE, MATCH_PREFERENCE_ANY);
+    JSONObject formDetails = getDefaultFormDetails();
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
     when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_B);
@@ -312,13 +287,7 @@ public class AddParticipantHelperTest {
             TIMESTAMP_DEFAULT);
     participantDatastore.addParticipant(participantA);
     JSONObject obj = new JSONObject();
-    JSONObject formDetails = new JSONObject();
-    formDetails.put(REQUEST_END_TIME_AVAILABLE, END_TIME_AVAILABLE_DEFAULT);
-    formDetails.put(REQUEST_DURATION, DURATION_DEFAULT);
-    formDetails.put(REQUEST_ROLE, ROLE_DEFAULT);
-    formDetails.put(REQUEST_PRODUCT_AREA, PRODUCT_AREA_DEFAULT);
-    formDetails.put(REQUEST_INTERESTS, INTERESTS_DEFAULT);
-    formDetails.put(REQUEST_SAVE_PREFERENCE, SAVE_PREFERENCE_TRUE);
+    JSONObject formDetails = getDefaultFormDetails();
     formDetails.put(REQUEST_MATCH_PREFERENCE, MATCH_PREFERENCE_DIFFERENT);
     obj.put(REQUEST_FORM_DETAILS, formDetails);
     when(request.getReader()).thenReturn(getReader(obj));
@@ -339,10 +308,5 @@ public class AddParticipantHelperTest {
   /** Mock HttpServletRequest method */
   private BufferedReader getReader(JSONObject jsonObject) {
     return new BufferedReader(new StringReader(jsonObject.toString()));
-  }
-
-  /** Mock HttpServletResponse method */
-  private PrintWriter getWriter() {
-    return new PrintWriter(System.out);
   }
 }

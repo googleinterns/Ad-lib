@@ -37,10 +37,11 @@ public class SearchMatchServlet extends HttpServlet {
 
   private final UsernameService usernameService = new UsernameService();
 
+  private final SearchMatchHelper searchMatchHelper =
+      new SearchMatchHelper(matchDatastore, participantDatastore, usernameService);
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    SearchMatchHelper searchMatchHelper =
-        new SearchMatchHelper(matchDatastore, participantDatastore, usernameService);
     searchMatchHelper.doGet(request, response);
   }
 }

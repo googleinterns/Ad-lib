@@ -39,15 +39,12 @@ public class AddParticipantServlet extends HttpServlet {
 
   private final UsernameService usernameService = new UsernameService();
 
+  private final AddParticipantHelper addParticipantHelper =
+      new AddParticipantHelper(
+          Clock.systemUTC(), matchDatastore, participantDatastore, userDatastore, usernameService);
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    AddParticipantHelper addParticipantHelper =
-        new AddParticipantHelper(
-            Clock.systemUTC(),
-            matchDatastore,
-            participantDatastore,
-            userDatastore,
-            usernameService);
     addParticipantHelper.doPost(request, response);
   }
 }

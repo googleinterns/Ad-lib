@@ -22,7 +22,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mock;
 
 @RunWith(JUnit4.class)
 public class LoadUserPreferencesHelperTest {
@@ -34,10 +33,10 @@ public class LoadUserPreferencesHelperTest {
   private static final List<String> INTERESTS_DEFAULT = Arrays.asList("Books");
   private static final MatchPreference MATCH_PREFERENCE_DEFAULT = MatchPreference.ANY;
 
-  @Mock private HttpServletRequest request;
-  @Mock private HttpServletResponse response;
-  @Mock private UserDatastore userDatastore;
-  @Mock private UsernameService usernameService;
+  private HttpServletRequest request;
+  private HttpServletResponse response;
+  private UserDatastore userDatastore;
+  private UsernameService usernameService;
   private LoadUserPreferencesHelper loadUserPreferencesHelper;
 
   private final LocalServiceTestHelper helper =
@@ -50,6 +49,9 @@ public class LoadUserPreferencesHelperTest {
     userDatastore = mock(UserDatastore.class);
     usernameService = mock(UsernameService.class);
 
+    when(response.getWriter()).thenReturn(getWriter());
+    when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
+
     helper.setUp();
   }
 
@@ -60,12 +62,8 @@ public class LoadUserPreferencesHelperTest {
 
   @Test
   public void noUserWithUsernameInDatastore() throws IOException {
-    when(response.getWriter()).thenReturn(getWriter());
-    when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
-
-    loadUserPreferencesHelper =
-        new LoadUserPreferencesHelper(request, response, userDatastore, usernameService);
-    loadUserPreferencesHelper.doGet();
+    loadUserPreferencesHelper = new LoadUserPreferencesHelper(userDatastore, usernameService);
+    loadUserPreferencesHelper.doGet(request, response);
 
     verify(response)
         .setStatus(
@@ -77,8 +75,6 @@ public class LoadUserPreferencesHelperTest {
   public void userWithUsernameExistsInDatastore() throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserDatastore userDatastore = new UserDatastore(datastore);
-    when(response.getWriter()).thenReturn(getWriter());
-    when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
     User userA =
         new User(
             USERNAME_PERSON_A,
@@ -89,9 +85,8 @@ public class LoadUserPreferencesHelperTest {
             MATCH_PREFERENCE_DEFAULT);
     userDatastore.addUser(userA);
 
-    loadUserPreferencesHelper =
-        new LoadUserPreferencesHelper(request, response, userDatastore, usernameService);
-    loadUserPreferencesHelper.doGet();
+    loadUserPreferencesHelper = new LoadUserPreferencesHelper(userDatastore, usernameService);
+    loadUserPreferencesHelper.doGet(request, response);
 
     verify(response)
         .setStatus(

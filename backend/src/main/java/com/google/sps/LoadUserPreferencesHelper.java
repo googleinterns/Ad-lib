@@ -34,32 +34,18 @@ public class LoadUserPreferencesHelper {
   private static final String JSON_INTERESTS = "interests";
   private static final String JSON_MATCH_PREFERENCE = "matchPreference";
 
-  // HttpServlet request and response
-  private final HttpServletRequest request;
-  private final HttpServletResponse response;
-  // User Datastore
   private final UserDatastore userDatastore;
-
   private final UsernameService usernameService;
 
   /** Constructor */
-  public LoadUserPreferencesHelper(
-      HttpServletRequest request,
-      HttpServletResponse response,
-      UserDatastore userDatastore,
-      UsernameService usernameService) {
-    this.request = request;
-    this.response = response;
+  public LoadUserPreferencesHelper(UserDatastore userDatastore, UsernameService usernameService) {
     this.userDatastore = userDatastore;
     this.usernameService = usernameService;
   }
 
   /** Returns a JSON object of the user's preferences */
-  public void doGet() throws IOException {
-
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     System.out.println("Request received");
-
-    JSONObject userJson = new JSONObject();
 
     // Find participant's match, if exists and not returned yet
     String username = usernameService.getUsername();
@@ -67,6 +53,8 @@ public class LoadUserPreferencesHelper {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not retrieve email");
       return;
     }
+
+    JSONObject userJson = new JSONObject();
 
     User user = userDatastore.getUserFromUsername(username);
     if (user == null) {

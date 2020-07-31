@@ -38,7 +38,7 @@ public class LoadUserPreferencesServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     LoadUserPreferencesHelper loadUserPreferencesHelper =
-        new LoadUserPreferencesHelper(request, response, userDatastore, usernameService);
-    loadUserPreferencesHelper.doGet();
+        new LoadUserPreferencesHelper(userDatastore, usernameService);
+    loadUserPreferencesHelper.doGet(request, response);
   }
 }

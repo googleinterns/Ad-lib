@@ -56,7 +56,7 @@ InterestsDropdown.propTypes = {
  * @return {InterestsDropdown} InterestsDropdown component
  */
 export default function InterestsDropdown(props) {
-  const [interests, interestsSelected] = React.useState([]);
+  const interestsSelected = React.useState([])[1];
 
   const handleChange = (event) => {
     const interest = event.target.value;

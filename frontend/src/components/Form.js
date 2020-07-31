@@ -118,13 +118,14 @@ export default function Form(props) {
 
   // Declare state variables for each input field and set default states
   const [endTimeAvailable, setEndTimeAvailable] =
-    React.useState(defaultEndTimeAvailable);
+    useState(defaultEndTimeAvailable);
   const [duration, setDuration] = useState(defaultDuration);
   const [productArea, setProductArea] = useState(defaultProductArea);
   const [role, setRole] = useState(defaultRole);
   const [interests, setInterests] = useState(defaultInterests);
   const [savePreference, setSavePreference] = useState(defaultSavePreference);
-  const [matchPreference, setMatchPreference] = useState(defaultMatchPreference);
+  const [matchPreference, setMatchPreference] =
+    useState(defaultMatchPreference);
 
   useEffect(async () => {
     // Query load-user servlet and update default states
@@ -212,7 +213,9 @@ export default function Form(props) {
         </div>
         <div className={classes.flexStartDiv}>
           <p>I want to talk for...</p>
-          <DurationDropdown onChange={(value) => setDuration(value)} value={duration}/>
+          <DurationDropdown
+            onChange={(value) => setDuration(value)}
+            value={duration}/>
         </div>
       </div>
       <div className={classes.heading}>
@@ -221,8 +224,12 @@ export default function Form(props) {
       <div className={classes.section}>
         <div className={classes.flexStartDiv}>
           <RoleDropdown onChange={(value) => setRole(value)} value={role} />
-          <ProductAreaDropdown onChange={(value) => setProductArea(value)} value={productArea}/>
-          <InterestsDropdown onChange={(value) => setInterests(value)} value={interests}/>
+          <ProductAreaDropdown
+            onChange={(value) => setProductArea(value)}
+            value={productArea}/>
+          <InterestsDropdown
+            onChange={(value) => setInterests(value)}
+            value={interests}/>
         </div>
         <div className={classes.padding}>
           <MatchPreference

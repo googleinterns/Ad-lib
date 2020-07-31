@@ -68,14 +68,14 @@ public class LoadUserPreferencesServlet extends HttpServlet {
       userJson.put(JSON_EXISTING, "false");
       response.getWriter().println(userJson.toString());
       return;
-    } else {
-      userJson.put(JSON_EXISTING, "true");
-      userJson.put(JSON_DURATION, user.getDuration());
-      userJson.put(JSON_ROLE, user.getRole());
-      userJson.put(JSON_PRODUCT_AREA, user.getProductArea());
-      userJson.put(JSON_INTERESTS, new JSONArray(user.getInterests()));
-      userJson.put(JSON_MATCH_PREFERENCE, user.getMatchPreference().getValue());
     }
+
+    userJson.put(JSON_EXISTING, "true");
+    userJson.put(JSON_DURATION, user.getDuration());
+    userJson.put(JSON_ROLE, user.getRole());
+    userJson.put(JSON_PRODUCT_AREA, user.getProductArea());
+    userJson.put(JSON_INTERESTS, new JSONArray(user.getInterests()));
+    userJson.put(JSON_MATCH_PREFERENCE, user.getMatchPreference().getValue());
 
     // Send the JSON back as the response
     response.getWriter().println(userJson.toString());

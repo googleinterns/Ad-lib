@@ -113,7 +113,6 @@ export default function Form(props) {
    * will be disabled and false means that the options will be enabled.
    */
   function shouldDisableMatchPreferenceFields() {
-    // TO-DO(#65): Add interests to this validation
     return role === '' && productArea === '' && interests === [];
   }
 

@@ -369,11 +369,11 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
           role="radiogroup"
         >
           <label
-            className="MuiFormControlLabel-root Mui-disabled"
+            className="MuiFormControlLabel-root"
           >
             <span
-              aria-disabled={true}
-              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-11 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
+              aria-disabled={false}
+              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiRadio-root MuiRadio-colorPrimary MuiIconButton-colorPrimary"
               onBlur={[Function]}
               onDragLeave={[Function]}
               onFocus={[Function]}
@@ -385,7 +385,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
               onTouchEnd={[Function]}
               onTouchMove={[Function]}
               onTouchStart={[Function]}
-              tabIndex={-1}
+              tabIndex={null}
             >
               <span
                 className="MuiIconButton-label"
@@ -393,7 +393,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
                 <input
                   checked={false}
                   className="PrivateSwitchBase-input-12"
-                  disabled={true}
+                  disabled={false}
                   name="matchPreference"
                   onChange={[Function]}
                   type="radio"
@@ -426,7 +426,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
               </span>
             </span>
             <span
-              className="MuiTypography-root MuiFormControlLabel-label Mui-disabled MuiTypography-body1"
+              className="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
             >
               Similar Googler
             </span>
@@ -495,11 +495,11 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
             </span>
           </label>
           <label
-            className="MuiFormControlLabel-root Mui-disabled"
+            className="MuiFormControlLabel-root"
           >
             <span
-              aria-disabled={true}
-              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-11 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
+              aria-disabled={false}
+              className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiRadio-root MuiRadio-colorPrimary MuiIconButton-colorPrimary"
               onBlur={[Function]}
               onDragLeave={[Function]}
               onFocus={[Function]}
@@ -511,7 +511,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
               onTouchEnd={[Function]}
               onTouchMove={[Function]}
               onTouchStart={[Function]}
-              tabIndex={-1}
+              tabIndex={null}
             >
               <span
                 className="MuiIconButton-label"
@@ -519,7 +519,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
                 <input
                   checked={false}
                   className="PrivateSwitchBase-input-12"
-                  disabled={true}
+                  disabled={false}
                   name="matchPreference"
                   onChange={[Function]}
                   type="radio"
@@ -552,7 +552,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
               </span>
             </span>
             <span
-              className="MuiTypography-root MuiFormControlLabel-label Mui-disabled MuiTypography-body1"
+              className="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
             >
               Different Googler
             </span>
@@ -865,15 +865,11 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
           defaultValue="any"
           role="radiogroup"
         >
-          <label class="MuiFormControlLabel-root Mui-disabled">
-            <span
-              aria-disabled
-              class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-11 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
-            >
+          <label class="MuiFormControlLabel-root">
+            <span class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiRadio-root MuiRadio-colorPrimary MuiIconButton-colorPrimary">
               <span class="MuiIconButton-label">
                 <input
                   class="PrivateSwitchBase-input-12"
-                  disabled
                   name="matchPreference"
                   type="radio"
                   value="similar"
@@ -898,7 +894,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
                 </div>
               </span>
             </span>
-            <span class="MuiTypography-root MuiFormControlLabel-label Mui-disabled MuiTypography-body1">
+            <span class="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1">
               Similar Googler
             </span>
           </label>
@@ -936,15 +932,11 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
               Any Googler
             </span>
           </label>
-          <label class="MuiFormControlLabel-root Mui-disabled">
-            <span
-              aria-disabled
-              class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-11 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
-            >
+          <label class="MuiFormControlLabel-root">
+            <span class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-9 MuiRadio-root MuiRadio-colorPrimary MuiIconButton-colorPrimary">
               <span class="MuiIconButton-label">
                 <input
                   class="PrivateSwitchBase-input-12"
-                  disabled
                   name="matchPreference"
                   type="radio"
                   value="different"
@@ -969,7 +961,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
                 </div>
               </span>
             </span>
-            <span class="MuiTypography-root MuiFormControlLabel-label Mui-disabled MuiTypography-body1">
+            <span class="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1">
               Different Googler
             </span>
           </label>

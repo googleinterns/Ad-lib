@@ -452,11 +452,11 @@ exports[`App should render correctly 1`] = `
                 role="radiogroup"
               >
                 <label
-                  className="MuiFormControlLabel-root Mui-disabled"
+                  className="MuiFormControlLabel-root"
                 >
                   <span
-                    aria-disabled={true}
-                    className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-15 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-17 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
+                    aria-disabled={false}
+                    className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-15 MuiRadio-root MuiRadio-colorPrimary MuiIconButton-colorPrimary"
                     onBlur={[Function]}
                     onDragLeave={[Function]}
                     onFocus={[Function]}
@@ -468,7 +468,7 @@ exports[`App should render correctly 1`] = `
                     onTouchEnd={[Function]}
                     onTouchMove={[Function]}
                     onTouchStart={[Function]}
-                    tabIndex={-1}
+                    tabIndex={null}
                   >
                     <span
                       className="MuiIconButton-label"
@@ -476,7 +476,7 @@ exports[`App should render correctly 1`] = `
                       <input
                         checked={false}
                         className="PrivateSwitchBase-input-18"
-                        disabled={true}
+                        disabled={false}
                         name="matchPreference"
                         onChange={[Function]}
                         type="radio"
@@ -509,7 +509,7 @@ exports[`App should render correctly 1`] = `
                     </span>
                   </span>
                   <span
-                    className="MuiTypography-root MuiFormControlLabel-label Mui-disabled MuiTypography-body1"
+                    className="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
                   >
                     Similar Googler
                   </span>
@@ -578,11 +578,11 @@ exports[`App should render correctly 1`] = `
                   </span>
                 </label>
                 <label
-                  className="MuiFormControlLabel-root Mui-disabled"
+                  className="MuiFormControlLabel-root"
                 >
                   <span
-                    aria-disabled={true}
-                    className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-15 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-17 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
+                    aria-disabled={false}
+                    className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-15 MuiRadio-root MuiRadio-colorPrimary MuiIconButton-colorPrimary"
                     onBlur={[Function]}
                     onDragLeave={[Function]}
                     onFocus={[Function]}
@@ -594,7 +594,7 @@ exports[`App should render correctly 1`] = `
                     onTouchEnd={[Function]}
                     onTouchMove={[Function]}
                     onTouchStart={[Function]}
-                    tabIndex={-1}
+                    tabIndex={null}
                   >
                     <span
                       className="MuiIconButton-label"
@@ -602,7 +602,7 @@ exports[`App should render correctly 1`] = `
                       <input
                         checked={false}
                         className="PrivateSwitchBase-input-18"
-                        disabled={true}
+                        disabled={false}
                         name="matchPreference"
                         onChange={[Function]}
                         type="radio"
@@ -635,7 +635,7 @@ exports[`App should render correctly 1`] = `
                     </span>
                   </span>
                   <span
-                    className="MuiTypography-root MuiFormControlLabel-label Mui-disabled MuiTypography-body1"
+                    className="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
                   >
                     Different Googler
                   </span>
@@ -1001,15 +1001,11 @@ exports[`App should render correctly 1`] = `
                 defaultValue="any"
                 role="radiogroup"
               >
-                <label class="MuiFormControlLabel-root Mui-disabled">
-                  <span
-                    aria-disabled
-                    class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-15 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-17 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
-                  >
+                <label class="MuiFormControlLabel-root">
+                  <span class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-15 MuiRadio-root MuiRadio-colorPrimary MuiIconButton-colorPrimary">
                     <span class="MuiIconButton-label">
                       <input
                         class="PrivateSwitchBase-input-18"
-                        disabled
                         name="matchPreference"
                         type="radio"
                         value="similar"
@@ -1034,7 +1030,7 @@ exports[`App should render correctly 1`] = `
                       </div>
                     </span>
                   </span>
-                  <span class="MuiTypography-root MuiFormControlLabel-label Mui-disabled MuiTypography-body1">
+                  <span class="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1">
                     Similar Googler
                   </span>
                 </label>
@@ -1072,15 +1068,11 @@ exports[`App should render correctly 1`] = `
                     Any Googler
                   </span>
                 </label>
-                <label class="MuiFormControlLabel-root Mui-disabled">
-                  <span
-                    aria-disabled
-                    class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-15 MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-disabled-17 Mui-disabled MuiIconButton-colorPrimary Mui-disabled Mui-disabled"
-                  >
+                <label class="MuiFormControlLabel-root">
+                  <span class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-15 MuiRadio-root MuiRadio-colorPrimary MuiIconButton-colorPrimary">
                     <span class="MuiIconButton-label">
                       <input
                         class="PrivateSwitchBase-input-18"
-                        disabled
                         name="matchPreference"
                         type="radio"
                         value="different"
@@ -1105,7 +1097,7 @@ exports[`App should render correctly 1`] = `
                       </div>
                     </span>
                   </span>
-                  <span class="MuiTypography-root MuiFormControlLabel-label Mui-disabled MuiTypography-body1">
+                  <span class="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1">
                     Different Googler
                   </span>
                 </label>

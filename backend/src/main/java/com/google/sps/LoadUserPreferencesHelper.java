@@ -61,7 +61,7 @@ public class LoadUserPreferencesHelper {
       response.setStatus(
           HttpServletResponse.SC_OK,
           "No saved preferences for user with username " + username + ".");
-      userJson.put(JSON_EXISTING, "false");
+      userJson.put(JSON_EXISTING, false);
       response.setContentType("application/json");
       response.getWriter().println(userJson.toString());
       return;
@@ -71,7 +71,7 @@ public class LoadUserPreferencesHelper {
         HttpServletResponse.SC_OK,
         "Loading saved preferences for user with username " + username + ".");
 
-    userJson.put(JSON_EXISTING, "true");
+    userJson.put(JSON_EXISTING, true);
     userJson.put(JSON_DURATION, user.getDuration());
     userJson.put(JSON_ROLE, user.getRole());
     userJson.put(JSON_PRODUCT_AREA, user.getProductArea());

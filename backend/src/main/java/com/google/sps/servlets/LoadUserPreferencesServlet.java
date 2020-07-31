@@ -32,13 +32,12 @@ public class LoadUserPreferencesServlet extends HttpServlet {
   // Get DatastoreService and instantiate User Datastore
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private final UserDatastore userDatastore = new UserDatastore(datastore);
-
   private final UsernameService usernameService = new UsernameService();
+  private final LoadUserPreferencesHelper loadUserPreferencesHelper =
+      new LoadUserPreferencesHelper(userDatastore, usernameService);
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    LoadUserPreferencesHelper loadUserPreferencesHelper =
-        new LoadUserPreferencesHelper(userDatastore, usernameService);
     loadUserPreferencesHelper.doGet(request, response);
   }
 }

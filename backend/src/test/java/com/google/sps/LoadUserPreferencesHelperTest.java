@@ -49,7 +49,7 @@ public class LoadUserPreferencesHelperTest {
     userDatastore = mock(UserDatastore.class);
     usernameService = mock(UsernameService.class);
 
-    when(response.getWriter()).thenReturn(getWriter());
+    when(response.getWriter()).thenReturn(new PrintWriter(System.out));
     when(usernameService.getUsername()).thenReturn(USERNAME_PERSON_A);
 
     helper.setUp();
@@ -92,10 +92,5 @@ public class LoadUserPreferencesHelperTest {
         .setStatus(
             HttpServletResponse.SC_OK,
             "Loading saved preferences for user with username " + USERNAME_PERSON_A + ".");
-  }
-
-  /** Mock HttpServletResponse method */
-  private PrintWriter getWriter() {
-    return new PrintWriter(System.out);
   }
 }

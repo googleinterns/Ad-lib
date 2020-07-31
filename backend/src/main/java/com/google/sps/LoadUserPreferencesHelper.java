@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.sps.data.MatchPreference;
 import com.google.sps.data.User;
 import com.google.sps.datastore.UserDatastore;
 import java.io.IOException;
@@ -27,7 +28,6 @@ public class LoadUserPreferencesHelper {
 
   // JSON key constants
   private static final String JSON_EXISTING = "existing";
-  private static final String JSON_USERNAME = "username";
   private static final String JSON_DURATION = "duration";
   private static final String JSON_ROLE = "role";
   private static final String JSON_PRODUCT_AREA = "productArea";
@@ -76,7 +76,7 @@ public class LoadUserPreferencesHelper {
     userJson.put(JSON_ROLE, user.getRole());
     userJson.put(JSON_PRODUCT_AREA, user.getProductArea());
     userJson.put(JSON_INTERESTS, new JSONArray(user.getInterests()));
-    userJson.put(JSON_MATCH_PREFERENCE, user.getMatchPreference().getValue());
+    userJson.put(JSON_MATCH_PREFERENCE, MatchPreference.getStringValue(user.getMatchPreference()));
 
     // Send the JSON back as the response
     response.setContentType("application/json");

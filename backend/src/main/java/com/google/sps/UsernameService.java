@@ -15,12 +15,15 @@
 package com.google.sps;
 
 import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 
 /** Class that returns a username */
 public class UsernameService {
 
-  private final UserService userService = UserServiceFactory.getUserService();
+  private final UserService userService;
+
+  public UsernameService(UserService userService) {
+    this.userService = userService;
+  }
 
   /** Retrieve user email address via Users API and parse for username */
   public String getUsername() {

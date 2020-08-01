@@ -29,6 +29,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public final class UsernameServiceTest {
 
+  private final UserService userService = UserServiceFactory.getUserService();
   private static final String EMAIL = "user@google.com";
   private static final String AUTH_DOMAIN = "google.com";
   private static final String USER = "user";
@@ -52,12 +53,8 @@ public final class UsernameServiceTest {
 
   @Test
   public void testGetUsername() {
-    UserService userService = UserServiceFactory.getUserService();
+    UsernameService usernameService = new UsernameService(userService);
 
-    String email = userService.getCurrentUser().getEmail();
-    String username = email.split("@")[0];
-
-    assertEquals(email, EMAIL);
-    assertEquals(username, USER);
+    assertEquals(usernameService.getUsername(), USER);
   }
 }

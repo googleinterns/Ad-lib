@@ -15,6 +15,7 @@
 package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.RemoveParticipantHelper;
 import com.google.sps.UsernameService;
 import com.google.sps.datastore.ParticipantDatastore;
@@ -31,7 +32,7 @@ public class RemoveParticipantServlet extends HttpServlet {
   private final RemoveParticipantHelper helper =
       new RemoveParticipantHelper(
           new ParticipantDatastore(DatastoreServiceFactory.getDatastoreService()),
-          new UsernameService());
+          new UsernameService(UserServiceFactory.getUserService()));
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {

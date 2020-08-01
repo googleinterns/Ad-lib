@@ -29,15 +29,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mock;
 
 @RunWith(JUnit4.class)
 public final class RemoveParticipantHelperTest {
 
-  @Mock UsernameService usernameService = mock(UsernameService.class);
-  @Mock HttpServletRequest request = mock(HttpServletRequest.class);
-  @Mock HttpServletResponse response = mock(HttpServletResponse.class);
-  @Mock ParticipantDatastore participantDatastore = mock(ParticipantDatastore.class);
+  UsernameService usernameService = mock(UsernameService.class);
+  HttpServletRequest request = mock(HttpServletRequest.class);
+  HttpServletResponse response = mock(HttpServletResponse.class);
+  ParticipantDatastore participantDatastore = mock(ParticipantDatastore.class);
 
   private RemoveParticipantHelper helper =
       new RemoveParticipantHelper(participantDatastore, usernameService);
@@ -54,7 +53,6 @@ public final class RemoveParticipantHelperTest {
 
     helper.doPost(request, response);
 
-    writer.flush();
     verify(participantDatastore, times(1)).removeParticipant(USER);
     assertTrue(stringWriter.toString().contains(EXPECTED_RESPONSE));
   }

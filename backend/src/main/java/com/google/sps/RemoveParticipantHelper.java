@@ -24,7 +24,6 @@ public final class RemoveParticipantHelper {
 
   private final ParticipantDatastore participantDatastore;
   private final UsernameService usernameService;
-  private static final String RESPONSE = "Received remove request.";
 
   public RemoveParticipantHelper(
       ParticipantDatastore participantDatastore, UsernameService usernameService) {
@@ -46,6 +45,6 @@ public final class RemoveParticipantHelper {
 
     // Confirm participant exit queue request
     response.setContentType("text/plain;charset=UTF-8");
-    response.getWriter().println(RESPONSE);
+    response.getWriter().println("Received remove request.");
   }
 }

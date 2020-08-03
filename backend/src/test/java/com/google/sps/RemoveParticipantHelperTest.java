@@ -33,10 +33,10 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public final class RemoveParticipantHelperTest {
 
-  UsernameService usernameService = mock(UsernameService.class);
-  HttpServletRequest request = mock(HttpServletRequest.class);
-  HttpServletResponse response = mock(HttpServletResponse.class);
-  ParticipantDatastore participantDatastore = mock(ParticipantDatastore.class);
+  private final UsernameService usernameService = mock(UsernameService.class);
+  private final HttpServletRequest request = mock(HttpServletRequest.class);
+  private final HttpServletResponse response = mock(HttpServletResponse.class);
+  private final ParticipantDatastore participantDatastore = mock(ParticipantDatastore.class);
 
   private RemoveParticipantHelper helper =
       new RemoveParticipantHelper(participantDatastore, usernameService);
@@ -44,6 +44,7 @@ public final class RemoveParticipantHelperTest {
 
   private static final String USER = "user";
   private static final String EXPECTED_RESPONSE = "Received remove request.";
+  private static final String ERROR_RESPONSE = "Could not retrieve email.";
 
   @Test
   public void testDoPost_shouldRemoveParticipant() throws IOException {
@@ -55,5 +56,14 @@ public final class RemoveParticipantHelperTest {
 
     verify(participantDatastore, times(1)).removeParticipant(USER);
     assertTrue(stringWriter.toString().contains(EXPECTED_RESPONSE));
+  }
+
+  @Test
+  public void testDoPost_whenUsernameNotFound_shouldSendError() throws IOException {
+    when(usernameService.getUsername()).thenReturn(null);
+
+    helper.doPost(request, response);
+
+    verify(response, times(1)).sendError(HttpServletResponse.SC_BAD_REQUEST, ERROR_RESPONSE);
   }
 }

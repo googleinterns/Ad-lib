@@ -83,7 +83,8 @@ public class AddParticipantHelper {
     // Get new Participant from input parameters
     Participant newParticipant = getParticipantFromInputs(response, formDetails);
     if (newParticipant == null) {
-      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not get participant from inputs.");
+      response.sendError(
+          HttpServletResponse.SC_BAD_REQUEST, "Could not get participant from inputs.");
       return;
     }
 

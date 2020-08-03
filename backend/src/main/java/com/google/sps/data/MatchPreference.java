@@ -39,7 +39,7 @@ public enum MatchPreference {
         return preference;
       }
     }
-    throw new IllegalStateException("Unknown enum int value.");
+    throw new IllegalStateException("Unknown enum int value: " + value);
   }
 
   /** Parse match preference string to MatchPreference */
@@ -53,7 +53,7 @@ public enum MatchPreference {
       case "similar":
         return MatchPreference.SIMILAR;
       default:
-        throw new IllegalStateException("Unknown enum value.");
+        throw new IllegalStateException("Unknown enum String value: " + value);
     }
   }
 }

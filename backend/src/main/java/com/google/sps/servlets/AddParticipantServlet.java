@@ -88,9 +88,11 @@ public class AddParticipantServlet extends HttpServlet {
       interests.add(interestsJsonArray.getString(i));
     }
     boolean savePreference = formDetails.getBoolean(REQUEST_SAVE_PREFERENCE);
-    MatchPreference matchPreference =
-        getMatchPreference(formDetails.getString(REQUEST_MATCH_PREFERENCE));
-    if (matchPreference == null) {
+    MatchPreference matchPreference;
+    try {
+      matchPreference =
+          MatchPreference.forStringValue(formDetails.getString(REQUEST_MATCH_PREFERENCE));
+    } catch (IllegalStateException e) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid match preference.");
       return;
     }
@@ -168,19 +170,5 @@ public class AddParticipantServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     String email = userService.getCurrentUser().getEmail();
     return email != null ? email.split("@")[0] : null;
-  }
-
-  /** Parse match preference string to */
-  private static MatchPreference getMatchPreference(String matchPreferenceString) {
-    switch (matchPreferenceString) {
-      case "different":
-        return MatchPreference.DIFFERENT;
-      case "any":
-        return MatchPreference.ANY;
-      case "similar":
-        return MatchPreference.SIMILAR;
-      default:
-        return null;
-    }
   }
 }

@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /** Separates datastore method calls involving Match type from caller */
-public final class MatchDatastore {
+public class MatchDatastore {
 
   // Datastore Key/Property constants
   private static final String KIND_MATCH = "Match";

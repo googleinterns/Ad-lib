@@ -15,7 +15,6 @@
 package com.google.sps;
 
 import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 
 /** Class that returns a username */
 public class UsernameService {

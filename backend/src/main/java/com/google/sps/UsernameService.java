@@ -20,9 +20,9 @@ import com.google.appengine.api.users.UserService;
 public class UsernameService {
 
   private final UserService userService;
-  
-  public UsernameService(UserService userService) {	
-    this.userService = userService;	
+
+  public UsernameService(UserService userService) {
+    this.userService = userService;
   }
 
   /** Retrieve user email address via Users API and parse for username */

@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.AddParticipantHelper;
 import com.google.sps.UsernameService;
 import com.google.sps.datastore.MatchDatastore;
@@ -37,7 +38,8 @@ public class AddParticipantServlet extends HttpServlet {
   private final ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
   private final UserDatastore userDatastore = new UserDatastore(datastore);
 
-  private final UsernameService usernameService = new UsernameService();
+  private final UsernameService usernameService =
+      new UsernameService(UserServiceFactory.getUserService());
 
   private final AddParticipantHelper addParticipantHelper =
       new AddParticipantHelper(

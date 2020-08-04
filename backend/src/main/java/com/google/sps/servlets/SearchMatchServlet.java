@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.SearchMatchHelper;
 import com.google.sps.UsernameService;
 import com.google.sps.datastore.MatchDatastore;
@@ -35,7 +36,8 @@ public class SearchMatchServlet extends HttpServlet {
   private final MatchDatastore matchDatastore = new MatchDatastore(datastore);
   private final ParticipantDatastore participantDatastore = new ParticipantDatastore(datastore);
 
-  private final UsernameService usernameService = new UsernameService();
+  private final UsernameService usernameService =
+      new UsernameService(UserServiceFactory.getUserService());
 
   private final SearchMatchHelper searchMatchHelper =
       new SearchMatchHelper(matchDatastore, participantDatastore, usernameService);

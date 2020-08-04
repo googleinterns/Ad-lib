@@ -14,8 +14,6 @@
 
 package com.google.sps;
 
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.Match;
 import com.google.sps.data.MatchPreference;
 import com.google.sps.data.MatchStatus;
@@ -121,8 +119,12 @@ public class AddParticipantHelper {
     response.getWriter().println("Received form input details and queried!");
   }
 
-  /** Retrieve JSON body payload and convert to a JSONObject for parsing purposes */
-  private JSONObject retrieveRequestBody(HttpServletRequest request) throws IOException {
+  /**
+   * Retrieve JSON body payload and convert to a JSONObject for parsing purposes
+   *
+   * @return null if IOException
+   */
+  private JSONObject retrieveRequestBody(HttpServletRequest request) {
     StringBuilder requestBuffer = new StringBuilder();
     try {
       BufferedReader reader = request.getReader();
@@ -136,7 +138,11 @@ public class AddParticipantHelper {
     return new JSONObject(requestBuffer.toString());
   }
 
-  /** Get a Participant from form inputs */
+  /**
+   * Get a Participant from form inputs
+   *
+   * @return null if invalid email
+   */
   private Participant getParticipantFromInputs(HttpServletResponse response, JSONObject formDetails)
       throws IOException {
     // Get username from email
@@ -180,13 +186,6 @@ public class AddParticipantHelper {
         /* matchId= */ 0,
         MatchStatus.UNMATCHED,
         timestamp);
-  }
-
-  /** Retrieve user email address via Users API and parse for username */
-  public static String getUsername() {
-    UserService userService = UserServiceFactory.getUserService();
-    String email = userService.getCurrentUser().getEmail();
-    return email != null ? email.split("@")[0] : null;
   }
 
   /** Get list of Strings from JSONArray */

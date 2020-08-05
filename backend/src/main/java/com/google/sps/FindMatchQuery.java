@@ -61,11 +61,11 @@ public final class FindMatchQuery {
         continue;
       }
 
-      // Check endTimeAvailable compatbility
+      // Check endTimeAvailable compatibility
       boolean compatibleTime =
           secondParticipant.getEndTimeAvailable()
-              <= clock.millis() + TimeUnit.MINUTES.toMillis(duration + PADDING_MINUTES);
-      if (compatibleTime) {
+              > clock.millis() + TimeUnit.MINUTES.toMillis(duration + PADDING_MINUTES);
+      if (!compatibleTime) {
         continue;
       }
 

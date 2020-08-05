@@ -52,7 +52,7 @@ public final class FindMatchQuery {
     // Get list of unmatched participants with same duration as and compatible time availaiblity
     // with firstParticipant
     List<Participant> compatibleTimeAvailabilityParticipants =
-        participantDatastore.getParticipantsCompatibleTimeAvailibility(duration);
+        participantDatastore.getUnmatchedParticipantsWithDuration(duration);
 
     // Compare first participant preferences with other participants to find match
     for (Participant secondParticipant : compatibleTimeAvailabilityParticipants) {

@@ -129,7 +129,7 @@ public class ParticipantDatastore {
   }
 
   /** Return list of all unmatched participants with duration */
-  public List<Participant> getParticipantsCompatibleTimeAvailibility(int duration)
+  public List<Participant> getUnmatchedParticipantsWithDuration(int duration)
       throws DatastoreNeedIndexException {
     Query query = new Query(KIND_PARTICIPANT);
 
@@ -166,7 +166,7 @@ public class ParticipantDatastore {
   }
 
   /** Convert list of strings to a string with each element delimited by a comma */
-  public static String convertListToString(List<String> list) {
+  private static String convertListToString(List<String> list) {
     return String.join(",", list);
   }
 

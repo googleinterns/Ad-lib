@@ -68,7 +68,7 @@ public class AddParticipantHelper {
     this.usernameService = usernameService;
   }
 
-  /** Add participant do datastore and try to find match immediately */
+  /** Add participant to datastore and try to find match immediately */
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Retrieve JSON object request
     JSONObject obj = retrieveRequestBody(request);

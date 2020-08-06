@@ -101,7 +101,7 @@ public class UserDatastore {
   }
 
   /** Convert list of strings to a string with each element delimited by a comma */
-  public static String convertListToString(List<String> list) {
+  private static String convertListToString(List<String> list) {
     return String.join(",", list);
   }
 

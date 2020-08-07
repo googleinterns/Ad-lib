@@ -56,4 +56,17 @@ public enum MatchPreference {
         throw new IllegalStateException("Unknown enum String value: " + value);
     }
   }
+
+  public static String getStringValue(MatchPreference preference) {
+    switch (preference) {
+      case DIFFERENT:
+        return "different";
+      case ANY:
+        return "any";
+      case SIMILAR:
+        return "similar";
+      default:
+        throw new IllegalStateException("Unknown enum String value.");
+    }
+  }
 }

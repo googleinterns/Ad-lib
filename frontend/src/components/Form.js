@@ -113,8 +113,7 @@ export default function Form(props) {
    * will be disabled and false means that the options will be enabled.
    */
   function shouldDisableMatchPreferenceFields() {
-    // TO-DO(#65): Add interests to this validation
-    return role === '' && productArea === '';
+    return role === '' && productArea === '' && interests === [];
   }
 
   /** Gather user inputs from form and send POST request to backend
@@ -148,8 +147,6 @@ export default function Form(props) {
     axios.post('/api/v1/add-participant', {formDetails})
         .then((response) => {
           if (response.data != null) {
-            // TODO(#33): change alert to a redirection to loading page view
-            alert('Successful');
             props.onSubmit();
           }
         });

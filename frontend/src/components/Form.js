@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import 'date-fns';
@@ -62,6 +62,17 @@ Form.propTypes = {
   onSubmit: PropTypes.func,
 };
 
+/** Initiate GET request to load-user servlet */
+export async function fetchUserData() {
+  try {
+    const response = await axios.get('/api/v1/load-user');
+    return response.data;
+  } catch (error) {
+    console.log('Error', error);
+    return null;
+  }
+}
+
 /**
  * Validates from inputs on submission and alerts user on error
  * @param {Number} duration in minutes
@@ -96,15 +107,41 @@ export function validateFormInputs(
 export default function Form(props) {
   const classes = useStyles();
 
+  // Set default states of form onload
+  const defaultEndTimeAvailable = new Date();
+  const defaultDuration = 15;
+  const defaultProductArea = '';
+  const defaultRole = '';
+  const defaultInterests = [];
+  const defaultSavePreference = true;
+  const defaultMatchPreference = 'any';
+
   // Declare state variables for each input field and set default states
   const [endTimeAvailable, setEndTimeAvailable] =
-    React.useState(new Date());
-  const [duration, setDuration] = React.useState(15);
-  const [productArea, setProductArea] = React.useState('');
-  const [role, setRole] = React.useState('');
-  const [interests, setInterests] = React.useState([]);
-  const [savePreference, setSavePreference] = React.useState(true);
-  const [matchPreference, setMatchPreference] = React.useState('any');
+    useState(defaultEndTimeAvailable);
+  const [duration, setDuration] = useState(defaultDuration);
+  const [productArea, setProductArea] = useState(defaultProductArea);
+  const [role, setRole] = useState(defaultRole);
+  const [interests, setInterests] = useState(defaultInterests);
+  const [savePreference, setSavePreference] = useState(defaultSavePreference);
+  const [matchPreference, setMatchPreference] =
+    useState(defaultMatchPreference);
+
+  useEffect(async () => {
+    // Query load-user servlet and update default states
+    await fetchUserData().then((user) => {
+      console.log(user);
+      if (user !== null) {
+        if (user.existing) {
+          setDuration(user.duration);
+          setProductArea(user.productArea);
+          setRole(user.role);
+          setInterests(user.interests);
+          setMatchPreference(user.matchPreference);
+        }
+      }
+    });
+  }, []);
 
   /**
    * Method that controls the disabled attribute of MatchPreference radio group
@@ -176,7 +213,9 @@ export default function Form(props) {
         </div>
         <div className={classes.flexStartDiv}>
           <p>I want to talk for...</p>
-          <DurationDropdown onChange={(value) => setDuration(value)} />
+          <DurationDropdown
+            onChange={(value) => setDuration(value)}
+            value={duration}/>
         </div>
       </div>
       <div className={classes.heading}>
@@ -184,13 +223,18 @@ export default function Form(props) {
       </div>
       <div className={classes.section}>
         <div className={classes.flexStartDiv}>
-          <RoleDropdown onChange={(value) => setRole(value)} />
-          <ProductAreaDropdown onChange={(value) => setProductArea(value)} />
-          <InterestsDropdown onChange={(value) => setInterests(value)} />
+          <RoleDropdown onChange={(value) => setRole(value)} value={role} />
+          <ProductAreaDropdown
+            onChange={(value) => setProductArea(value)}
+            value={productArea}/>
+          <InterestsDropdown
+            onChange={(value) => setInterests(value)}
+            value={interests}/>
         </div>
         <div className={classes.padding}>
           <MatchPreference
             onChange={(value) => setMatchPreference(value)}
+            value={matchPreference}
             shouldDisableMatchPreferenceFields={
               shouldDisableMatchPreferenceFields()}
           />

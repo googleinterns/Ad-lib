@@ -214,6 +214,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
               onChange={[Function]}
               required={false}
               tabIndex={-1}
+              value=""
             />
             <svg
               aria-hidden={true}
@@ -277,6 +278,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
               onChange={[Function]}
               required={false}
               tabIndex={-1}
+              value=""
             />
             <svg
               aria-hidden={true}
@@ -767,6 +769,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
               aria-hidden
               class="MuiSelect-nativeInput"
               name="role"
+              value=""
             >
             <svg
               aria-hidden
@@ -805,6 +808,7 @@ exports[`Form should render correctly in varying times and timezones 1`] = `
               aria-hidden
               class="MuiSelect-nativeInput"
               name="productArea"
+              value=""
             >
             <svg
               aria-hidden

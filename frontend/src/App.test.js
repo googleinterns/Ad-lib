@@ -38,7 +38,7 @@ describe('App', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  it('should initiate GET request using axios() to servlet', () => {
+  it('should initiate GET request using axios() to search-match', () => {
     const mockMatchStatus = {matchStatus: 'true'};
     const mockData = {data: mockMatchStatus};
     axios.get.mockResolvedValue(mockData);

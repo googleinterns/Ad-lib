@@ -17,7 +17,7 @@ import Form from './Form';
 import renderer from 'react-test-renderer';
 import axios from 'axios';
 import mockAxios from 'axios';
-import {validateFormInputs} from './Form';
+import {validateFormInputs, fetchUserData} from './Form';
 
 beforeAll(() => {
   const DATE_TO_USE = new Date('2020');
@@ -38,6 +38,23 @@ describe('Form', () => {
   it('should render correctly in varying times and timezones', () => {
     const tree = renderer.create(<Form />).toJSON();
     expect(tree).toMatchSnapshot();
+  });
+
+  it('should initiate GET request using axios() to load-user', () => {
+    const mockUserJSON = {
+      existing: true,
+      duration: 15,
+      role: 'Intern',
+      productArea: 'Google',
+      interests: ['Food', 'Travel'],
+      matchPreference: 'similar',
+    };
+    const mockData = {data: JSON.stringify(mockUserJSON)};
+    axios.get.mockResolvedValue(mockData);
+
+    return fetchUserData().then((response) => {
+      expect(JSON.parse(response)).toEqual(mockUserJSON);
+    });
   });
 
   it('POST request using axios() to servlet with form details', () => {

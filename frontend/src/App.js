@@ -78,7 +78,7 @@ export default function App() {
   function parseServletResponseAndUpdateUI() {
     setCurrentPage('loading');
     fetchMatch().then((response) => {
-      console.log(response);
+      //console.log(response);
       if (response === null) {
         setCurrentPage('error');
         clearTimeout(timeoutInterval);
